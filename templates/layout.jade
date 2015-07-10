@@ -1,0 +1,60 @@
+doctype html
+block vars
+  - var bodyclass = null;
+html(lang='en')
+  head
+    block head
+      meta(charset='utf-8')
+      meta(http-equiv='X-UA-Compatible', content='IE=edge,chrome=1')
+      meta(name='viewport', content='width=device-width')
+      meta(name="description", content="The blog of Max Irwin")
+      meta(name="author", content="Max Irwin")
+      meta(name="canonical", content="http://max.io")
+      meta(http-equiv="content-type", content="text/html;charset=UTF-8")
+      meta(name="viewport", content="width=device-width; initial-scale=1.0")
+      meta(property="og:image", content="http://binarymax.com/star200.png")
+      meta(property="og:title", content="max.io")
+      meta(property="og:type", content="website")
+      meta(property="og:description", content="The blog of Max Irwin")
+      meta(property="og:url", content="http://max.io/")
+      meta(property="og:site_name", content="max.io")
+      link(rel="shortcut icon", href="http://binarymax.com/star200.png" type="image/png")
+      link(rel="image_src", href="http://binarymax.com/star200.png")
+      title
+        block title
+          = locals.name
+      link(rel='alternate', href=locals.url+'/feed.xml', type='application/rss+xml', title=locals.description)
+      link(rel='stylesheet', href=contents.css['main.css'].url)
+      link(rel='stylesheet', href=contents.css['sonsofobsidian.css'].url)
+  body(class=bodyclass)
+    header.header
+      div.content-wrap
+        block header
+          div.logo
+            h1.author
+              a(href="/")= locals.name
+            h2= locals.description
+      hr.bow.sky
+      hr.bow.blue
+      hr.bow.viored
+      hr.bow.red
+      hr.bow.yellow
+    div#content
+      div.content-wrap
+        block content
+          h2 Welcome to max.io
+    footer
+      div.content-wrap
+        block footer
+          section.about
+            !=contents['about.md'].html
+          section.copy
+            p &copy; #{ new Date().getFullYear() } #{ locals.owner } &mdash; powered by&nbsp;
+              a(href='https://github.com/jnordberg/wintersmith') Wintersmith
+              //- please leave the "powered by" if you use the design
+            p Please treat people the same way you want them to treat you
+
+    script(src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js")
+    script(src=locals.scripts + "prettyprint.js")
+    script(src=locals.scripts + "analytics.js")
+

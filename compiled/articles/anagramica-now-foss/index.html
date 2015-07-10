@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="The blog of Max Irwin">
+    <meta name="author" content="Max Irwin">
+    <meta name="canonical" content="http://max.io">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta property="og:image" content="http://binarymax.com/star200.png">
+    <meta property="og:title" content="max.io">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="The blog of Max Irwin">
+    <meta property="og:url" content="http://max.io/">
+    <meta property="og:site_name" content="max.io">
+    <link rel="shortcut icon" href="http://binarymax.com/star200.png" type="image/png">
+    <link rel="image_src" href="http://binarymax.com/star200.png">
+    <title>Anagramica is now FOSS - Max Irwin
+    </title>
+    <link rel="alternate" href="http://localhost:8080/feed.xml" type="application/rss+xml" title="code + art + philosophy">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/sonsofobsidian.css">
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <div class="logo">
+          <h1 class="author"><a href="/">Max Irwin</a></h1>
+          <h2>2013-08-03</h2>
+        </div>
+        <h1>Anagramica is now FOSS</h1>
+      </div>
+      <hr class="bow sky">
+      <hr class="bow blue">
+      <hr class="bow viored">
+      <hr class="bow red">
+      <hr class="bow yellow">
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>I’ve finally open sourced Anagramica (<a href="http://anagramica.com/">http://anagramica.com/</a>) </p>
+<p>The code is now available under the <span class="caps">MIT</span> license at <a href="https://github.com/binarymax/anagramica">https://github.com/binarymax/anagramica</a></p>
+<p>I’m not entirely sure why I never open sourced it in the first place.  After 25 years of coding I’ve only recently become active in opening my code for others to see and use.  I have a cathartic story to tell about a previous project, which I’ve never told anyone about, and silently open sourced this past&nbsp;winter.</p>
+<hr>
+<h4 id="keepaware">KeepAware</h4>
+<p>One minor regret I have, is holding on to a project called KeepAware[1] when I should have just opened the darn thing and let others use it and grow it.  In the beginning of July 2011, Node.js hit v0.5.0.  A huge milestone for that release was the port for Node.js to run on Windows.  I remember seeing the post[2] on a Wednesday, and spent most of that Saturday and Sunday writing KeepAware, thinking that I would be able to sell&nbsp;it.</p>
+<p>The premise was simple - KeepAware would load a Node.js project as a Windows service so it could run in the background, and not as a console application, and send all console output into the Windows Event Log.  Also, similar to nodemon, the service would restart every time a file in the project was changed, to allow seamless editing and previewing.  I thought these were great ideas, and also thought that folks who used Windows were no strangers to paying for stuff.  And, since I’ve never made any money from an independent project (or even tried), maybe I could finally get in on that sweet gravy&nbsp;train.</p>
+<p>After the project itself was finished, I started work on an ill-conceived website to allow folks to download it under a tiered license - free for non-commerial use, $20 for a commercial license, and $Zillions for an enterprise license.  I eventually ran out of steam late that Sunday and never finished or published the site, and KeepAware grew cobwebs as a private and unused repo in github.  I wasn’t even using it myself, since I had no desire to return to coding on Windows (I had switched to Linux 6 months beforehand and was not interested in turning&nbsp;back).</p>
+<p>Two months after I wrote KeepAware, I saw a post that someone at Microsoft coded a way for Node.js to play nice with <span class="caps">IIS</span>, and that was that.  I regret not just opening it up and posting it on HN the weekend I wrote it.  I was never a fan of IIS (but really enjoyed .NET otherwise).  In arrogant retrospect I still think the approach I had was better, keeping it as a separate service rather than piggy backing on IIS, since Node is much more than just a web app server.  Oh well.  On January 20<span class="ord">th</span> 2013, I silently opened up KeepAware and renamed it KeepAware-old, it is mostly useless now, but has some interesting bits in there - like automatically restarting a windows service when a file changes, and sending console output to the EventLog.  I also still have the domain keepaware.com, its always just been a 301 to binarymax.com, and maybe I will use it someday.  I still love the&nbsp;name.</p>
+<h4 id="lessons-learned">Lessons&nbsp;Learned</h4>
+<p>So back to the original story - Anagramica has a couple hardcore fans, and it averages about 10 plays per week, mostly through those finding it organically (I don’t advertise or market anything I make, other than a facebook or twitter post).  I never planned to make any money from it so I’m not sure why I kept it locked down for so long.  It may have to do with a mild case of imposter sydrome[3], as sometimes I am afraid of people in the outside world seeing my code and being critical.  So I’m trying to get over all that by coding out in the open and learning from those who do the same.  After I left Windows behind, I have been using some of the most amazing software ever written, and its free (as in beer and freedom), and even though my stuff is not nearly as amazing, I hope to give back what I can to the most revolutionary community in the world.  The world today runs on <span class="caps">FOSS</span>, and I am deeply&nbsp;grateful.</p>
+<p>[1] <a href="https://github.com/binarymax/KeepAware-old">https://github.com/binarymax/KeepAware-old</a></p>
+<p>[2] <a href="http://blog.nodejs.org/2011/07/06/node-v0-5-0-unstable/">http://blog.nodejs.org/2011/07/06/node-v0-5-0-unstable/</a></p>
+<p>[3] <a href="https://en.wikipedia.org/wiki/Impostor_syndrome">https://en.wikipedia.org/wiki/Impostor_syndrome</a></p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Max Irwin &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+          <p>Please treat people the same way you want them to treat you</p>
+        </section>
+      </div>
+    </footer>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+    <script src="/javascripts/prettyprint.js"></script>
+    <script src="/javascripts/analytics.js"></script>
+  </body>
+</html>
