@@ -5,9 +5,62 @@
     <atom:link href="http://localhost:8080/feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>http://localhost:8080</link>
     <description>code + art + philosophy</description>
-    <pubDate>Sun, 12 Jul 2015 01:00:00 +0100</pubDate>
+    <pubDate>Wed, 22 Jul 2015 01:00:00 +0100</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>Liquid Guilloché</title>
+      <link>http://localhost:8080/articles/liquid-guilloche/</link>
+      <pubDate>Wed, 22 Jul 2015 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/liquid-guilloche/</guid>
+      <author></author>
+      <description>&lt;p&gt;Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an HTML5 canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated guilloches.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;a-simple-rosette&quot;&gt;A Simple Rosette&lt;/h2&gt;
+&lt;p&gt;The formula for the basic rosette guilloche is not something you would stumble upon when playing around with graphics.  It is elegant and simple, and if you have a basic understanding of graphing trigonometry equations you can grasp it without difficulty.  In the physical world, a layperson would recognise it as a spirograph[2].&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau = &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau||(&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.PI*&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;);
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rosette = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(image,R,r,p,step)&lt;/span&gt; &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rr = R+r;
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rp = r+p;
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rrr = (R+r)/r;
+        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; theta=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,x=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,y=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;theta&amp;lt;&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau;theta+=step) {
+            x = &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.round(rr*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.cos(theta) + rp*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.cos(rrr*theta));
+            y = &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.round(rr*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.sin(theta) - rp*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.sin(rrr*theta));
+            image.putPixel(x,y,color(theta));
+        }
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; image;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;…Where &lt;em&gt;image&lt;/em&gt; is a canvas abstraction that exposes a putPixel method and &lt;em&gt;color()&lt;/em&gt; is a function that returns an RGBA object.  Here is the result:&lt;/p&gt;
+&lt;canvas id=&quot;rosette&quot;&gt;&lt;/canvas&gt;
+
+
+&lt;p&gt;A nice benefit of expressing a mathematical construct in code, is that you can iterate the variables over a range to animate.  Clicking on the above starts the animation.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;a-knee&quot;&gt;A Knee&lt;/h2&gt;
+&lt;p&gt;By changing the formula of the original, we can create new and interesting forms.  This example changes the formula slightly by calculating a tangent in place of a sine.&lt;/p&gt;
+&lt;canvas id=&quot;knee&quot;&gt;&lt;/canvas&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&quot;a-river&quot;&gt;A River&lt;/h2&gt;
+&lt;p&gt;By changing the formula of the original, we can create new and interesting forms.&lt;/p&gt;
+&lt;canvas id=&quot;river&quot;&gt;&lt;/canvas&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&quot;combining-forms&quot;&gt;Combining forms&lt;/h2&gt;
+&lt;p&gt;We can easily combine two or more forms to the same canvas.  Here is ‘Ribbon’, ‘Cross’, and ‘Rosette’ together.&lt;/p&gt;
+&lt;canvas id=&quot;multi1&quot;&gt;&lt;/canvas&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&quot;try-it-out-&quot;&gt;Try it out!&lt;/h2&gt;
+&lt;p&gt;The code is all available here: &lt;a href=&quot;https://github.com/binarymax/guilloche&quot;&gt;https://github.com/binarymax/guilloche&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;If you like this, you can also follow me on twitter &lt;a href=&quot;https://twitter.com/binarymax&quot;&gt;@binarymax&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;[1] &lt;a href=&quot;http://ministryoftype.co.uk/words/article/guilloches/&quot;&gt;http://ministryoftype.co.uk/words/article/guilloches/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2] &lt;a href=&quot;https://en.wikipedia.org/wiki/Spirograph&quot;&gt;https://en.wikipedia.org/wiki/Spirograph&lt;/a&gt;&lt;/p&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/pixels.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/guilloche.js&quot;&gt;&lt;/script&gt;</description>
+    </item>
     <item>
       <title>The State of State in the Browser</title>
       <link>http://localhost:8080/articles/the-state-of-state-in-the-browser/</link>

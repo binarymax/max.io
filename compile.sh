@@ -1,7 +1,7 @@
 #!/bin/bash
 wintersmith build --output compiled
-git add contents/**/*
 git add compiled/**/*
+git add --a
 suffix=$(date +%s)
 commitname=static$suffix
 git commit -m $commitname
