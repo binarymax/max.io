@@ -1,6 +1,5 @@
 #!/bin/bash
-wintersmith build
-mv build compiled
+wintersmith build --output compiled
 git add contents/**/*
 git add compiled/**/*
 suffix=$(date +%s)

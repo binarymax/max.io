@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="The blog of Max Irwin">
+    <meta name="author" content="Max Irwin">
+    <meta name="canonical" content="http://max.io">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta property="og:image" content="http://binarymax.com/star200.png">
+    <meta property="og:title" content="max.io">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="The blog of Max Irwin">
+    <meta property="og:url" content="http://max.io/">
+    <meta property="og:site_name" content="max.io">
+    <link rel="shortcut icon" href="http://binarymax.com/star200.png" type="image/png">
+    <link rel="image_src" href="http://binarymax.com/star200.png">
+    <title>Liquid Guilloché - Max Irwin
+    </title>
+    <link rel="alternate" href="http://localhost:8080/feed.xml" type="application/rss+xml" title="code + art + philosophy">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/sonsofobsidian.css">
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <div class="logo">
+          <h1 class="author"><a href="/">Max Irwin</a></h1>
+          <h2>2015-07-22</h2>
+        </div>
+        <h1>Liquid Guilloché</h1>
+      </div>
+      <hr class="bow sky">
+      <hr class="bow blue">
+      <hr class="bow viored">
+      <hr class="bow red">
+      <hr class="bow yellow">
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an <span class="caps">HTML5</span> canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated&nbsp;guilloches.</p>
+<hr>
+<h2 id="a-simple-rosette">A Simple&nbsp;Rosette</h2>
+<p>The formula for the basic rosette guilloche is not something you would stumble upon when playing around with graphics.  It is elegant and simple, and if you have a basic understanding of graphing trigonometry equations you can grasp it without difficulty.  In the physical world, a layperson would recognise it as a&nbsp;spirograph[2].</p>
+<pre><code class="lang-javascript">    <span class="built_in">Math</span>.tau = <span class="built_in">Math</span>.tau||(<span class="built_in">Math</span>.<span class="caps">PI</span>*<span class="number">2</span>);
+    <span class="keyword">var</span> rosette = <span class="function"><span class="keyword">function</span><span class="params">(image,R,r,p,step)</span> </span>{
+        <span class="keyword">var</span> rr = R+r;
+        <span class="keyword">var</span> rp = r+p;
+        <span class="keyword">var</span> rrr = (R+r)/r;
+        <span class="keyword">for</span>(<span class="keyword">var</span> theta=<span class="number">0</span>,x=<span class="number">0</span>,y=<span class="number">0</span>;theta&lt;<span class="built_in">Math</span>.tau;theta+=step) {
+            x = <span class="built_in">Math</span>.round(rr*<span class="built_in">Math</span>.cos(theta) + rp*<span class="built_in">Math</span>.cos(rrr*theta));
+            y = <span class="built_in">Math</span>.round(rr*<span class="built_in">Math</span>.sin(theta) - rp*<span class="built_in">Math</span>.sin(rrr*theta));
+            image.putPixel(x,y,color(theta));
+        }
+        <span class="keyword">return</span> image;
+    }
+</code></pre>
+<p>…Where <em>image</em> is a canvas abstraction that exposes a putPixel method and <em>color()</em> is a function that returns an <span class="caps">RGBA</span> object.  Here is the&nbsp;result:</p>
+<canvas id="rosette"></canvas>
+
+
+<p>A nice benefit of expressing a mathematical construct in code, is that you can iterate the variables over a range to animate.  Clicking on the above starts the&nbsp;animation.</p>
+<hr>
+<h2 id="a-knee">A&nbsp;Knee</h2>
+<p>By changing the formula of the original, we can create new and interesting forms.  This example changes the formula slightly by calculating a tangent in place of a&nbsp;sine.</p>
+<canvas id="knee"></canvas>
+
+<hr>
+<h2 id="a-river">A&nbsp;River</h2>
+<p>By changing the formula of the original, we can create new and interesting&nbsp;forms.</p>
+<canvas id="river"></canvas>
+
+<hr>
+<h2 id="combining-forms">Combining&nbsp;forms</h2>
+<p>We can easily combine two or more forms to the same canvas.  Here is ‘Ribbon’, ‘Cross’, and ‘Rosette’&nbsp;together.</p>
+<canvas id="multi1"></canvas>
+
+<hr>
+<h2 id="try-it-out-">Try it&nbsp;out!</h2>
+<p>The code is all available here: <a href="https://github.com/binarymax/guilloche">https://github.com/binarymax/guilloche</a></p>
+<p>If you like this, you can also follow me on twitter <a href="https://twitter.com/binarymax">@binarymax</a></p>
+<hr>
+<p>[1] <a href="http://ministryoftype.co.uk/words/article/guilloches/">http://ministryoftype.co.uk/words/article/guilloches/</a></p>
+<p>[2] <a href="https://en.wikipedia.org/wiki/Spirograph">https://en.wikipedia.org/wiki/Spirograph</a></p>
+<script type="text/javascript" src="/javascripts/pixels.js"></script>
+<script type="text/javascript" src="/javascripts/guilloche.js"></script></section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2015 Max Irwin &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+          <p>Please treat people the same way you want them to treat you</p>
+        </section>
+      </div>
+    </footer>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+    <script src="/javascripts/prettyprint.js"></script>
+    <script src="/javascripts/analytics.js"></script>
+  </body>
+</html>
