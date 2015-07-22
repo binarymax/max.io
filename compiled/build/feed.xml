@@ -1,0 +1,541 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Max Irwin</title>
+    <atom:link href="http://localhost:8080/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <link>http://localhost:8080</link>
+    <description>code + art + philosophy</description>
+    <pubDate>Wed, 22 Jul 2015 01:00:00 +0100</pubDate>
+    <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
+    <language>en</language>
+    <item>
+      <title>Liquid Guilloché</title>
+      <link>http://localhost:8080/articles/liquid-guilloche/</link>
+      <pubDate>Wed, 22 Jul 2015 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/liquid-guilloche/</guid>
+      <author></author>
+      <description>&lt;p&gt;Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an HTML5 canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated guilloches.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;a-simple-rosette&quot;&gt;A Simple Rosette&lt;/h2&gt;
+&lt;p&gt;The formula for the basic rosette guilloche is not something you would stumble upon when playing around with graphics.  It is elegant and simple, and if you have a basic understanding of graphing trigonometry equations you can grasp it without difficulty.  In the physical world, a layperson would recognise it as a spirograph[2].&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau = &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau||(&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.PI*&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;);
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rosette = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(image,R,r,p,step)&lt;/span&gt; &lt;/span&gt;{
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rr = R+r;
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rp = r+p;
+        &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rrr = (R+r)/r;
+        &lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; theta=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,x=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,y=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;theta&amp;lt;&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau;theta+=step) {
+            x = &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.round(rr*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.cos(theta) + rp*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.cos(rrr*theta));
+            y = &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.round(rr*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.sin(theta) - rp*&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.sin(rrr*theta));
+            image.putPixel(x,y,color(theta));
+        }
+        &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; image;
+    }
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;…Where &lt;em&gt;image&lt;/em&gt; is a canvas abstraction that exposes a putPixel method and &lt;em&gt;color()&lt;/em&gt; is a function that returns an RGBA object.  Here is the result:&lt;/p&gt;
+&lt;canvas id=&quot;rosette&quot;&gt;&lt;/canvas&gt;
+
+
+&lt;p&gt;A nice benefit of expressing a mathematical construct in code, is that you can iterate the variables over a range to animate.  Clicking on the above starts the animation.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;a-knee&quot;&gt;A Knee&lt;/h2&gt;
+&lt;p&gt;By changing the formula of the original, we can create new and interesting forms.  This example changes the formula slightly by calculating a tangent in place of a sine.&lt;/p&gt;
+&lt;canvas id=&quot;knee&quot;&gt;&lt;/canvas&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&quot;a-river&quot;&gt;A River&lt;/h2&gt;
+&lt;p&gt;By changing the formula of the original, we can create new and interesting forms.&lt;/p&gt;
+&lt;canvas id=&quot;river&quot;&gt;&lt;/canvas&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&quot;combining-forms&quot;&gt;Combining forms&lt;/h2&gt;
+&lt;p&gt;We can easily combine two or more forms to the same canvas.  Here is ‘Ribbon’, ‘Cross’, and ‘Rosette’ together.&lt;/p&gt;
+&lt;canvas id=&quot;multi1&quot;&gt;&lt;/canvas&gt;
+
+&lt;hr&gt;
+&lt;h2 id=&quot;try-it-out-&quot;&gt;Try it out!&lt;/h2&gt;
+&lt;p&gt;The code is all available here: &lt;a href=&quot;https://github.com/binarymax/guilloche&quot;&gt;https://github.com/binarymax/guilloche&lt;/a&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;[1] &lt;a href=&quot;http://ministryoftype.co.uk/words/article/guilloches/&quot;&gt;http://ministryoftype.co.uk/words/article/guilloches/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2] &lt;a href=&quot;https://en.wikipedia.org/wiki/Spirograph&quot;&gt;https://en.wikipedia.org/wiki/Spirograph&lt;/a&gt;&lt;/p&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/pixels.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/guilloche.js&quot;&gt;&lt;/script&gt;</description>
+    </item>
+    <item>
+      <title>The State of State in the Browser</title>
+      <link>http://localhost:8080/articles/the-state-of-state-in-the-browser/</link>
+      <pubDate>Sun, 12 Jul 2015 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/the-state-of-state-in-the-browser/</guid>
+      <author></author>
+      <description>&lt;p&gt;The mechanisms for storing data in the client are inadequate and unprepared for the next generation of web applications.  A new solution for persistent state management in the client is needed that is based on well understood foundations long prevalent on the desktop and server.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&quot;background&quot;&gt;Background&lt;/h3&gt;
+&lt;p&gt;I had the privilege of attending the yearly Edge conference in London the last weekend of June.  It was one of the best conferences I have ever attended.  The topics were well chosen and the format was geared towards discussion instead of lectures.&lt;/p&gt;
+&lt;p&gt;One of the topics I felt I had a strong stake in was Front End Data.  There was a panel discussion with audience interaction, and then breakout session for folks interested in talking more directly about the subject.  A goal of each breakout session was to have actions for the market (mostly browser vendors and spec writers), to guide future implementation.&lt;/p&gt;
+&lt;p&gt;I singled out Front End Data for this post which I will elaborate on here, since the vision for ‘Front End Data’ seems narrow and based on limited ambition.  Possibly due to disjointed growth coupled with shortsightedness.  We left the breakout session with no goals in mind, or even any real ideas on what we should be doing to further the technology.  I will point out examples that display this and propose a basic solution.&lt;/p&gt;
+&lt;h3 id=&quot;what-is-front-end-data-&quot;&gt;What is ‘Front End Data’?&lt;/h3&gt;
+&lt;p&gt;This is the single most important question we need to be asking in the web development community.  Because to break from the reactionary and parasitic path of state always being kept in the DOM, the current solutions have not lived up to the task.  ‘Front End Data’ is any state that is kept in the browser, either persistent or transient.  Browser state can be kept in a variety of either too-basic or too-specific implementations.  In fact, the entire availability of state storage in the browser is based on new custom implementations of the concept, and none of the historically valid and well suited ways that computing has taught us over the years.&lt;/p&gt;
+&lt;p&gt;Persisting state in the browser has always been ill conceived because of the false assumption that the server will eventually be there to keep our data.  What happens when your data becomes huge and your browser application platform becomes more than a toy?&lt;/p&gt;
+&lt;h2 id=&quot;software-and-state&quot;&gt;Software and State&lt;/h2&gt;
+&lt;p&gt;Software is a tool for the manipulation of state.  State being memory or data, and manipulation being a transformation from one form to another.&lt;/p&gt;
+&lt;p&gt;Some examples of transitions are state being captured through an interface, stored on a disk or in memory, or visually displayed through a GUI.  State can come from a server or other external environment (such as sensors), or be fabricated entirely from procedural code.  The software is the glue that takes the state through these many paths.  Software without state is like pipes without water.&lt;/p&gt;
+&lt;p&gt;In the context of a web page or web app, software has grown not in a traditional sense but rather as a side effect of a content delivery platform (the WWW).  Javascript was created for the most basic of tasks for interacting with the DOM.  The mindset of how to keep browser state has not kept up with the pace of web application development, which is now a mature field and has brilliant minds and innovations pushing it forward.&lt;/p&gt;
+&lt;h3 id=&quot;what-is-missing-&quot;&gt;What is missing?&lt;/h3&gt;
+&lt;p&gt;Imagine, for a moment, you are about to write some software.  You want to keep data for your software, and you want that data to live on for a while, since that is the purpose of the software.  You don’t want to rely on a 3rd party to keep it for you (like a server or peer), and you want it to be reasonably fast.  These are not outrageous demands.  Perhaps the data is private and you don’t want to trust it to 3rd parties, or perhaps it is too large for a transfer over a network in a reasonable time.&lt;/p&gt;
+&lt;p&gt;You are now only given three options to store your persistent state: (1) A limited size place for data that was originally meant for state communication over a network (a cookie), (2) a basic synchronous key value store without any obvious way to organize hierarchy or relationships (localStorage), or (3) IndexedDB/WebSQL.&lt;/p&gt;
+&lt;p&gt;What is IndexedDB?&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;a database of records holding simple values and hierarchical objects. Each record consists of a key and some value. Moreover, the database maintains indexes over records it stores. An application developer directly uses an API to locate records either by their key or by using an index. A query language can be layered on this API. An indexed database can be implemented using a persistent B-tree data structure. [1]&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;What is WebSQL?&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;an API for storing data in databases that can be queried using a variant of SQL.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;…with the caveat&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;“Beware. This specification is no longer in active maintenance and the Web Applications Working Group does not intend to maintain it further.”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Writing any meaningful state software that is not predicated on the above 3 options is not tenable.  Also, while it is not obvious up front, for the options above the transmission of data is all-or-nothing.  Meaning that to write any state, you must give the entirety of the state over to the system in the form of a value or record.  The transaction operation may be asynchronous once the API has the data, but you still need to give it the whole thing all at once.&lt;/p&gt;
+&lt;p&gt;Why does that matter?  Because for anyone who wants to write software that processes state efficiently, we don’t have the equivalent of stdin/stdout or stream in a browser state context.  This is a bigger deal than it sounds, because while basic uses for state are mostly covered, anything sufficiently complex is unaddressed.  It is also worth noting that none of the above make any guarantees that the state will persist indefinitely until a decision is made by the user to explicitly delete it.&lt;/p&gt;
+&lt;p&gt;As a good example I will single out Lucene, because I have a professional stake in making sure people can find things easily [2].  There is a great post by the folks at Parse.ly on how Lucene works [3], and there is a good section on how state is covered.  The most important points being:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;We store all the document values in a simple format on-disk. Basically, in flat files.&lt;/p&gt;
+&lt;p&gt;…&lt;/p&gt;
+&lt;p&gt;when you read a 100-megabyte file twice, once after the other, the second access will be quicker, because the file blocks come directly from the page cache in memory and do not have to be read from the hard disk again.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;It is not possible to port Lucene in a way that works well in a browser context.  I challenge anyone to port Lucene or to write any other reasonably complicated data storage and query device beyond the available KVM/NoSQL with an optional B-Tree index.&lt;/p&gt;
+&lt;h3 id=&quot;file-api&quot;&gt;File API&lt;/h3&gt;
+&lt;p&gt;So what about File API?!  I purposefully left off File API above, because while it currently is on track to support reading of files, the File &lt;em&gt;Writer&lt;/em&gt; API specification is dead[4].  Chrome supports a version that is being used for chrome apps[5], but wider support is not going to happen without a specification.  Additionally, File API is a difficult sell, because Web Apps should be conceptually removed from the file system that is in direct control of the user.  Many mobile devices do not implement the concept of a traditional file system, and web app state should be kept as a construct of the isolated browser sandbox.  Having the user shuffle around files for your web application is an insurmountable barrier.&lt;/p&gt;
+&lt;p&gt;Let’s ask some more important questions, and give some answers while we’re at it:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Why does the browser need to encapsulate its own file system?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A: To maintain the same standards and ideals of historically successful application development.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: Are you really going to use files as big as 100MB in a browser? &lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A: yes.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: What kind of applications do you think you will need to support?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;A: Any that are currently made untenable by the existing browser storage options.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;enter-webassembly&quot;&gt;Enter WebAssembly&lt;/h3&gt;
+&lt;p&gt;Not having a well designed layer for state persistence negates all the benefits of having a mature software stack.&lt;/p&gt;
+&lt;p&gt;WebAssembly is just around the corner.  The answer that vendors have agreed upon to run mature software in a browser, with support for a variety of languages beyond Javascript. &lt;/p&gt;
+&lt;p&gt;We need a sane way to keep application state for WebAssembly applications.&lt;/p&gt;
+&lt;h3 id=&quot;security&quot;&gt;Security&lt;/h3&gt;
+&lt;p&gt;Having any sort of proposal on file storage and interaction with users would be a waste if there were no security considerations involved.  We need to address some basic expectations on security and keep an open conversation going with any implications that will arise.&lt;/p&gt;
+&lt;p&gt;The good news is that all of these questions are already addressed in other specifications for both web and desktop.  We can borrow from experience and good existing practices to have a workable solution, when creating a specification.&lt;/p&gt;
+&lt;p&gt;Standards such as CORS and built in protocols and restrictions around MIME types should be used.&lt;/p&gt;
+&lt;p&gt;Considerations:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;Q: Who should be able to access the data for an application?  This includes users and other local web applications.&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;In the context of the application, the data can be abstracted from the user any way the application deems appropriate.  Using a hostname restricted approach and CORS should dictate how other local web applications can access the data.&lt;/p&gt;
+&lt;p&gt;Local non-web applications separate from the browser, should be able to access the data while in the filesystem, constrained by userspace permissions.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: Who can transfer data between the browser and the local filesystem, for example by ‘save-as’ functionality?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;An authorised device user, and only an authorised device user, should be able to transfer data from the browser to the local filesystem.  Browsers should rely on MIME-types to trigger appropriate applications for any ‘open with’ operations.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: How to trust the data generated in the browser?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Entire fields have been created in the search for trust between data and machine.  The browser should use existing trust mechanisms that would normally be associated with data coming from a server for a specific domain.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Q: How to limit the amount of data one application is able to create?&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;User experience research should be driving the answer to this question, but in other contexts, the consensus is allowing for a small initial ‘default’ amount without permission from the user.  Allowing the application to exceed that amount should be requested from the user where appropriate.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h3 id=&quot;proposal&quot;&gt;Proposal&lt;/h3&gt;
+&lt;p&gt;To avoid the sin of complaining without presenting any solution, I propose a new API named “Application State” or AppState for short.&lt;/p&gt;
+&lt;p&gt;AppState is a sandboxed file space in the persistent filesystem allocated exclusively by the browser.  It has a global object exposed to the scripting layer that allows interaction with the sandboxed files (or ‘blobs’).&lt;/p&gt;
+&lt;h4 id=&quot;structure&quot;&gt;Structure&lt;/h4&gt;
+&lt;p&gt;Each application has access context identified by domain.&lt;/p&gt;
+&lt;p&gt;The structure of the AppState for an application is a hierarchy of nodes, where each node has a key, an optional blob, and zero or more child nodes.  Nodes can be easily accessed by concatenating one or more keys, separated by the delimiter ‘/‘.  Glob syntax[6] can be used to return zero or more nodes.&lt;/p&gt;
+&lt;p&gt;If you think this almost looks like a file system you are right.  The difference being that each node (perhaps analogous to a folder) can also have a blob.  This simplifies things by not needing different concepts for a folder or file.&lt;/p&gt;
+&lt;h4 id=&quot;storage&quot;&gt;Storage&lt;/h4&gt;
+&lt;p&gt;For each node an optional blob of arbitrary length can be allocated and resized.  A blob is an ArrayBuffer object[6].  The difference being that the ArrayBuffer is always persisted to disk.  Writing to the node’s blob via a TypedArray is guaranteed to be persisted.&lt;/p&gt;
+&lt;p&gt;To keep with existing conventions, when new to a browser, the application will only have permission to keep a small size of AppState.  When AppState is first accessed, if the size exceeds this small default, the application must prompt with the amount of storage being requested.  If an application exhausts its allowed storage amount, it must request more.  An initial default of 50MB is proposed.&lt;/p&gt;
+&lt;p&gt;To make use of the benefits and abstractions provided by the OS kernel and userspace, the browser will keep the AppState blobs in a location of its choice on the device’s file system (to which the browser already has access).&lt;/p&gt;
+&lt;p&gt;Arranging and naming individual blobs in the file system, and keeping a map or index of the nodes to their blobs, must be maintained by the browser.&lt;/p&gt;
+&lt;p&gt;Importantly, the browser must not alter the blobs themselves in any way.  For example: compressing, splitting, or concatenating node blobs by the browser in the filesystem must not be allowed.&lt;/p&gt;
+&lt;h4 id=&quot;access&quot;&gt;Access&lt;/h4&gt;
+&lt;p&gt;There must exist the ability for synchronous reading and writing of the ArrayBuffer object through a TypedArray, and asynchronous access via a new abstraction.&lt;/p&gt;
+&lt;h3 id=&quot;example-api&quot;&gt;Example API&lt;/h3&gt;
+&lt;p&gt;This section contains a proposed API for illustration purposes only.  It is minimal and does not cover many details and edge cases that need to be worked out.  Hopefully, at the very least, it begins a discussion for future possibilities.&lt;/p&gt;
+&lt;p&gt;The API below covers the ApplicationState, Node, Blob, and TypedStream objects.&lt;/p&gt;
+&lt;h4 id=&quot;node&quot;&gt;Node&lt;/h4&gt;
+&lt;h5 id=&quot;properties-&quot;&gt;Properties:&lt;/h5&gt;
+&lt;p&gt;All properties are readonly getters, and can only be altered by prototype methods.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;key&lt;/strong&gt; : string&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;size&lt;/strong&gt; : int32&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;blob&lt;/strong&gt; : ArrayBuffer&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;childNodes&lt;/strong&gt; : Array&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;path&lt;/em&gt;&lt;/strong&gt; : Returns the full path of the node in the AppState hierarchy, using the root ‘$’ and delimiter ‘/‘ and no trailing slash.  For example: “$/path/to/node”&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&quot;methods-&quot;&gt;Methods:&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;getNodes(string glob)&lt;/em&gt;&lt;/strong&gt; : Returns an array of nodes matching the glob syntax, searching the node and all levels of children stemming from the node.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;createNode(string key [, int32 size])&lt;/em&gt;&lt;/strong&gt; : Creates a new child node with name key and an optional blob of size bytes, and appends it to the childNodes array.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;resize(int32 size)&lt;/em&gt;&lt;/strong&gt; : if size is greater than the existing blob size, the blob is grown to the new size with 0’s filling the new space.  if size is less than the existing blob size, the blob is truncated to the new size and the truncated data will be deleted.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;delete()&lt;/em&gt;&lt;/strong&gt; : Deletes the node and all of its child nodes.  This cannot be undone.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&quot;blob-&quot;&gt;Blob:&lt;/h5&gt;
+&lt;p&gt;A blob is a binary ArrayBuffer, but it must be kept synchronous with the persistent storage at all times by the browser.  A node of size 1 has a blob formed of one octet (8 bits).  A node of size 20 has a blob formed of 20 octets (160 bits).&lt;/p&gt;
+&lt;h5 id=&quot;typedstream-&quot;&gt;TypedStream:&lt;/h5&gt;
+&lt;p&gt;The TypedStream is based on the familiar TypedArray, that abstracts a sized interactive array over a binary blob.  Its purpose is to enable asynchronous get and set access to the blob.&lt;/p&gt;
+&lt;p&gt;Syntax&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;new TypedStream(blob)&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;The TypedStream has the same conceptual property, method, and prototypal definitions as the Uint8ClampedArray object.&lt;/p&gt;
+&lt;p&gt;TypedStream, however, when using bracket notation for index read and write, triggers events after the get and set operations.  Subscribing to these events allow for the asynchronous stream nature of working with objects on disk.&lt;/p&gt;
+&lt;p&gt;For synchronous operation with the blob object, a classic TypedArray should be used to wrap the ArrayBuffer blob.&lt;/p&gt;
+&lt;h4 id=&quot;applicationstate&quot;&gt;ApplicationState&lt;/h4&gt;
+&lt;p&gt;The ApplicationState is a property of the global object (similar to localStorage) and can be accessed as such:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;window.ApplicationState&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;ApplicationState does not allocate any space by default. This applies to when the application has never called the create method in the current session or any past sessions.  To check if any ApplicationState space has been allocated, check the size property.&lt;/p&gt;
+&lt;p&gt;When the application loads in the browser, if any sessions prior had allocated space, then the ApplicationState initializes with all the nodes and blobs previously created.&lt;/p&gt;
+&lt;h5 id=&quot;properties&quot;&gt;Properties&lt;/h5&gt;
+&lt;p&gt;All properties are readonly getters, and can only be altered by prototype methods.&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;key&lt;/strong&gt; : string&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;size&lt;/strong&gt; : int32&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;childNodes&lt;/strong&gt; : Array&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;path&lt;/em&gt;&lt;/strong&gt; : Always returns the string ‘$’*&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&quot;methods-&quot;&gt;Methods:&lt;/h5&gt;
+&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;create(int32 size)&lt;/em&gt;&lt;/strong&gt;: Creates the AppState with size of length bytes.  If the size given is greater than the default size, it may need to ask permission from the user.  If the ApplicationState has already been created and this method is called, an exception will be thrown.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;getNodes(string glob)&lt;/em&gt;&lt;/strong&gt; : Returns an array of nodes matching the glob syntax, searching all levels of children.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;&lt;em&gt;resize(int32 size)&lt;/em&gt;&lt;/strong&gt; : If size is greater than the existing filespace size, the filespace is allowed to fill to the new size with node blobs.  If size is less than the sizes of existing blob size already in the filespace, an exception is thrown.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;&lt;strong&gt;create(int32 size)&lt;/strong&gt;: Creates the AppState with size of length bytes&lt;/em&gt;&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;h5 id=&quot;examples&quot;&gt;Examples&lt;/h5&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; AppState = &lt;span class=&quot;built_in&quot;&gt;window&lt;/span&gt;.ApplicationState;
+
+&lt;span class=&quot;comment&quot;&gt;//Allocates 50MB for the entire ApplicationState.  This will not prompt the user.&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;if&lt;/span&gt;(!AppState.size) AppState.create(&lt;span class=&quot;number&quot;&gt;50000000&lt;/span&gt;);
+
+&lt;span class=&quot;comment&quot;&gt;//Allocates 200MB for the entire ApplicationState.  This will prompt the user.&lt;/span&gt;
+AppState.resize(&lt;span class=&quot;number&quot;&gt;2e8&lt;/span&gt;);
+
+&lt;span class=&quot;comment&quot;&gt;//Create a node with no blob allocated&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; node0 = AppState.createNode(&lt;span class=&quot;string&quot;&gt;'node0'&lt;/span&gt;);
+
+&lt;span class=&quot;comment&quot;&gt;//Create one hundred children of node0, each with a 20k blob&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt;(&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; i=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;i&amp;lt;&lt;span class=&quot;number&quot;&gt;100&lt;/span&gt;;i++) {
+    node0.createNode(&lt;span class=&quot;string&quot;&gt;'child'&lt;/span&gt;+i,&lt;span class=&quot;number&quot;&gt;2e4&lt;/span&gt;);
+}
+
+&lt;span class=&quot;comment&quot;&gt;//Outputs 2000000&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(node0.size);
+
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; child50 = AppState.getNode(&lt;span class=&quot;string&quot;&gt;'$/node0/child50'&lt;/span&gt;);
+
+&lt;span class=&quot;comment&quot;&gt;//Outputs 20000&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(child50.size);
+
+&lt;span class=&quot;comment&quot;&gt;//Resizes the child to 30k&lt;/span&gt;
+child50.resize(&lt;span class=&quot;number&quot;&gt;30000&lt;/span&gt;);
+
+&lt;span class=&quot;comment&quot;&gt;//Outputs 2010000&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(node0.size);
+
+&lt;span class=&quot;comment&quot;&gt;//Set each bit in the binary blob of child50 to 1&lt;/span&gt;
+&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; array = &lt;span class=&quot;keyword&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;built_in&quot;&gt;Uint8ClampedArray&lt;/span&gt;(child50.blob);
+&lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt;(i=&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;;i&amp;lt;child50.size;i++) {
+    array[i] = &lt;span class=&quot;number&quot;&gt;0xff&lt;/span&gt;;
+}
+
+&lt;span class=&quot;comment&quot;&gt;//Deletes node0 and all its children&lt;/span&gt;
+node0.delete();
+
+&lt;span class=&quot;comment&quot;&gt;//Outputs 200000000&lt;/span&gt;
+&lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(AppState.size);
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h3&gt;
+&lt;p&gt;And there you have it.  Simple, powerful, and a good start for web applications needing to keep data persisted in the client.  I would be more than happy to discuss further details, please feel free to contact me on twitter &lt;a href=&quot;https://twitter.com/binarymax&quot;&gt;@binarymax&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;“AppState” is not to be confused with and has no relation to the deprecated Android AppState interface, nor any other existing construct with the AppState name.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;-&lt;/p&gt;
+&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;http://www.w3.org/TR/IndexedDB/#abstract&quot;&gt;http://www.w3.org/TR/IndexedDB/#abstract&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] I’m into search technology at Wolters Kluwer.&lt;/li&gt;
+&lt;li&gt;[3] &lt;a href=&quot;http://blog.parsely.com/post/1691/lucene/&quot;&gt;http://blog.parsely.com/post/1691/lucene/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[4] &lt;a href=&quot;http://www.w3.org/TR/file-writer-api/&quot;&gt;http://www.w3.org/TR/file-writer-api/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[5] &lt;a href=&quot;https://groups.google.com/a/chromium.org/forum/#!topic/chromium-apps/k39Lb1VYWEI&quot;&gt;https://groups.google.com/a/chromium.org/forum/#!topic/chromium-apps/k39Lb1VYWEI&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[6] &lt;a href=&quot;https://en.wikipedia.org/wiki/Glob_%28programming%29&quot;&gt;https://en.wikipedia.org/wiki/Glob_%28programming%29&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[7] &lt;a href=&quot;http://www.ecma-international.org/ecma-262/6.0/#sec-arraybuffer-constructor&quot;&gt;http://www.ecma-international.org/ecma-262/6.0/#sec-arraybuffer-constructor&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+</description>
+    </item>
+    <item>
+      <title>Harissa</title>
+      <link>http://localhost:8080/articles/harissa/</link>
+      <pubDate>Fri, 10 Jul 2015 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/harissa/</guid>
+      <author></author>
+      <description>&lt;p&gt;After some hammock driven development, Harissa is mature enough to release some results.  Originally intended for entire videos, I found the process better suited for only several frame remixes, usually of an identical source image.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;img src=&quot;yield.gif&quot; border=&quot;0&quot; class=&quot;image-column-left&quot; /&gt; &lt;img src=&quot;rex.gif&quot; border=&quot;0&quot; class=&quot;image-column-right&quot; /&gt;&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;img src=&quot;firechrome.gif&quot; border=&quot;0&quot; class=&quot;image-column-left&quot; /&gt; &lt;img src=&quot;flowers.gif&quot; border=&quot;0&quot; class=&quot;image-column-right&quot; /&gt;&lt;/p&gt;
+&lt;h3 id=&quot;how-it-works&quot;&gt;How it works&lt;/h3&gt;
+&lt;p&gt;Take a source set of frames, with a target being each processed frame interspersed with an equal number of transition frames.  For example, if there are 4 raw images and 5 intermediate transition frames, there will be 20 frames for the final result.&lt;/p&gt;
+&lt;p&gt;There are two steps to the process, the mixer and the blender.&lt;/p&gt;
+&lt;p&gt;The mixer preprocesses each frame into circles using a genetic algorithm, as outlined in the post &lt;a href=&quot;http://localhost:8080/articles/hidden-shapes/&quot;&gt;Hidden Shapes&lt;/a&gt;.  The circles are stored in JSON, each with the necessary data of x, y, radius and color.&lt;/p&gt;
+&lt;p&gt;The blender takes each successive processed frame and matches the best pairs of circles from each frame.  By using a KD-Tree for nearest neighbors, each circle from one frame gets a sibling from the next successive frame.&lt;/p&gt;
+&lt;p&gt;After every circle has a sibling in its next frame, the path is animated from one to another.  A simple interpolation formula takes in x, y, and radius.  It returns an array of objects for the transition.  Each transition step becomes a new frame in the target animation.&lt;/p&gt;
+&lt;h3 id=&quot;research&quot;&gt;Research&lt;/h3&gt;
+&lt;p&gt;It took awhile to refine the process, and along the way I discovered many interesting attributes of color spaces and contrast related to the algorithm.  I learned early in the project that linear distance is not a reliable way to differentiate colors, and research took me down the paths to delta-e.  I ended up keeping linear distance, however, since it gives an interesting look to the results.&lt;/p&gt;
+&lt;p&gt;As a side effect, color simplicity and high border contrast become key, for the mixer algorithm to give good representations.  Some would consider this a flaw, but it is indeed purposeful for the art.  A more accurate color difference formula would just give results similar to that of a photoshop filter.  It also forced me to keep constraints on photo style for good consistency.&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>Hidden Shapes</title>
+      <link>http://localhost:8080/articles/hidden-shapes/</link>
+      <pubDate>Sun, 25  Aug 2013 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/hidden-shapes/</guid>
+      <author></author>
+      <description>&lt;p&gt;I am slowly working on a side-project that makes a video into a mishmash of circles for each frame.  I have an early version running, that manually takes a video, splits it into frames, remixes each frame into the circle mishmash, and recomposes the video with the new remixed frames.  The project is called ‘Harissa’.  The name Harissa comes from an Armenian dish and is made from chicken and a local type of wheat.  It cooks for a long time, until it is a thick porridge.  It is a fitting name because fully rendering a video is a slow process, and the result is an interesting mishmash of the original.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&quot;harissa&quot;&gt;Harissa&lt;/h3&gt;
+&lt;p&gt;The original idea for the Harissa project came from a competition I entered to recreate Mondriaan’s last unfinished work (the ‘Victory Boogie Woogie’) with code.  My entry used an algorithm to generate a likeness of the work by randomly placing circles on a canvas, and either kept a circle if the resulting image was closer to the painting, or discarded it otherwise.  After thousands of iterations an interesting likeness emerged.  I re-purposed the algorithm for Harissas frame remixer, made use of imagemagick and mencoder for the image and video processing with a node backend, and wrote some glue code to stitch it all together.  It is a fun project and the first resulting video got some good reactions.&lt;/p&gt;
+&lt;p&gt;I want to take Harissa to the next level.  Since it uses javascript for the frame remixer, it is still quite slow (and will always be slow unless I rewrite it in CUDA or similar).  It takes about 30 seconds per frame.  When you want to generate a 5 minute video at 12 frames per second, that ends up being a big number.  I enjoy the challenges this poses.  I use web workers to speed up some operations, and will probably use some sort of websocket connection delegation to allow for multiple machines to browse to the project and each contribute to the video.  Theoretically if I use 3 machines instead of 1, it should only take a third of the time.&lt;/p&gt;
+&lt;p&gt;The main thing I am missing, however, is the choppiness between frames.  If one frame is a bunch of random circles, and the next frame is a different bunch of random circles, the transition from one frame to the next looks jarring.  With the goal of smoothing it out, I want to insert two or more new ‘transition’ frames, that take one frame and smoothly transition the circles to the next adjacent frame.  I have no idea how this will look in the end, and have some hurdles to jump before I can realize the result, but it is worth pursuing just to see what happens.&lt;/p&gt;
+&lt;h3 id=&quot;hidden-shapes&quot;&gt;Hidden Shapes&lt;/h3&gt;
+&lt;p&gt;Today I jumped the first hurdle, and want to share a nice algorithm I wrote in the process.  Before we can start calculating transitions, we need to clean up the circles.  Since lots of circles are haphazardly placed on the canvas for each frame, some of them get covered up entirely and are useless in the final image.  So I needed to know whether a circle is visible when all the other circles have been drawn.  If I can get rid of the unnecessary circles I can save some time when doing later calculations.&lt;/p&gt;
+&lt;p&gt;There are at least 2 ways to do this, but probably more.  The first way is to do something called raycasting.  Imagine a beam of light shining down onto our circles - tag the first circle the beam of light hits.  Do this for every pixel on the canvas, and remove all the circles that have not been tagged.  The second way, which I eventually decided to use, is to iterate through all the circles.  For each iteration, draw the current circle with a special color, then draw all the other circles around it.  If the special color is not visible in the final slice, then it is hidden.  Either method would suffice (and there might be a better one).&lt;/p&gt;
+&lt;p&gt;Here is the code that draws the shapes to a canvas.  This code is taken from a larger module, but one can easily see that the shapes are drawn to a canvas that are not hidden, and only in the bounds we specify.  Each shape has at least the following properties: x,y,z,radius,color.  A shape is hidden if it was previously tagged as such, and is therefore ignored.  Since drawing circles is a computationally intensive process, we only want to draw the circles that might be hovering above the circle we are testing.&lt;/p&gt;
+&lt;pre class=&quot;prettyprint lang-javascript&quot;&gt;
+//Draws shapes to the canvas, within the specified bounds
+var drawshapes = function(context,shapes,left,top,right,bottom){
+    left=left||0;
+    top=top||0; 
+    right=right||(\_width\*\_scale);
+    bottom=bottom||(\_height\*\_scale);
+    for(var i=0,l=shapes.length;i&amp;lt;l;i++) {
+        var shape = shapes[i];
+        if(!shape.hidden) {
+            var x = shape.x\*\_scale;
+            var y = shape.y\*\_scale;
+            if (x&amp;gt;=left &amp;&amp; y&amp;gt;=top &amp;&amp; x&amp;lt;=right &amp;&amp; y&amp;lt;=bottom) {
+                var r = shape.radius\*\_scale;
+                context.beginPath();
+                context.fillStyle = shape.color;
+                context.arc(x, y, r, 0, \_360, false);
+                context.closePath();
+                context.fill();
+            }
+        }         
+       };
+};
+&lt;/pre&gt;
+
+&lt;p&gt;This is the code that tests if a specified shape is visible.  First it gets the bounds to test based on a maximum possible radius (_guessradius, set to 10 in Harissa), then it draws the shapes in those bounds using the above drawshapes function, and finally it loops through each pixel and sees if it finds any trace of our special color.  In this case I used the color r=5,g=0,b=5 (I always choose ‘505’ for stuff because it was my fathers favorite number).  I also made sure to account for this when I am devising a palette subset for each frame.  If it senses 505, I reassign it to 515 instead, just in case.  The testvisible function returns true at the first sight of 505, so we don’t waste any cycles.  If it gets through the entire section without seeing 505, it means our circle was covered up by one or more others and is therefore not visible.&lt;/p&gt;
+&lt;pre class=&quot;prettyprint lang-javascript&quot;&gt;
+//Tests if shape specified by the index is hidden, 
+//  when all other shapes are rendered
+var testvisible = function(context,shapes,index){
+    var shape = shapes[index];
+    var x = shape.x*_scale;
+    var y = shape.y*_scale;
+    var r = shape.radius*_scale;
+    var l1 = Math.floor(x-r-1); l1=l1&amp;lt;0?0:l1;
+    var t1 = Math.floor(y-r-1); t1=t1&amp;lt;0?0:t1;
+    var d1 = Math.ceil (r*2+2);
+
+    var l2 = Math.floor(x-_guessradius-1);
+    var t2 = Math.floor(y-_guessradius-1);
+    var d2 = Math.ceil (_guessradius*2+2);
+
+    drawshapes(context,shapes,l2,t2,l2+d2,t2+d2);
+    var data = context.getImageData(l1, t1, d1, d1).data;
+    for(var i=0,l=data.length;i&amp;lt;l;i+=4) {
+        if (data[i]===5 &amp;&amp; data[i+1]===0 &amp;&amp; data[i+2]===5 &amp;&amp; data[i+3]===255) {
+                return true;
+        }
+    }
+    return false;
+};
+&lt;/pre&gt;
+
+&lt;h3 id=&quot;next-steps&quot;&gt;Next Steps&lt;/h3&gt;
+&lt;p&gt;For an average of 3000 initial circles on the canvas, this handy little algorithm removes about one third of the circles since they are hidden.  That is a great improvement!  When I need to start matching neighbor circles together between adjacent frames, this will shave off a significant amount of time in the calculation.&lt;/p&gt;
+&lt;p&gt;So now I need to jump the next hurdle - taking two adjacent frames, and doing a nearest nearest neighbor search for every circle.  Once we have that mapping we can make our transition frames to insert between the original adjacent frames.  But those will be for another day, and another post!&lt;/p&gt;
+&lt;p&gt;When the code is all done, I will post a video, but for now if you want to see the work in progress, you can view it here: &lt;a href=&quot;https://github.com/binarymax/harissa&quot;&gt;https://github.com/binarymax/harissa&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>Theories on Artificial Expression</title>
+      <link>http://localhost:8080/articles/theories-on-artificial-expression/</link>
+      <pubDate>Tue, 06  Aug 2013 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/theories-on-artificial-expression/</guid>
+      <author></author>
+      <description>&lt;p&gt;It is hard to write a program that invents original art.  Two of the main reasons that software cannot create original expressive art are lack of context, and lack of experience.&lt;/p&gt;
+&lt;p&gt;Software lacks the ability to derive a human-like context from its surroundings.  Some trivial examples are not knowing whether a flower is beautiful, or whether satire is funny.  Software also does not know how to learn to understand this context, it cannot experience its surroundings in a similar fashion to that of the observer, and therefore cannot relate to the subject nor connect with the observer in any meaningful way.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h3 id=&quot;ae-and-ai&quot;&gt;AE and AI&lt;/h3&gt;
+&lt;p&gt;Artificial Expression(AE) draws a parallel to Artificial Intelligence(AI), in that an artificially expressive program will display sentience relating to creating original subjective aesthetics.  I explore the ideas behind these complexities, as well as techniques in use today to generate art, and set a standard to use in deciding whether a work is an artificial expression.&lt;/p&gt;
+&lt;h3 id=&quot;deriving-meaning-from-an-image&quot;&gt;Deriving Meaning from an Image&lt;/h3&gt;
+&lt;p&gt;Some impressive strides have been made recently in getting software to understand the stuff we throw at it.  Machines were originally built to process numbers, and then text, and then visual and audio media, in that order.  This evolutionary order makes sense because numbers are represented as on/off switches, text is one dimensional and can be represented numerically, and sound and image processing did not come about until more complex algorithms, digital screens and cameras, and digital speakers and microphones were invented.  Machines and programs with the ability to not only operate as complex input/output devices, but to computationally derive meaning, is still in the very early scientific stages of discovery.&lt;/p&gt;
+&lt;p&gt;It is trivial to make a program to parse a sentence into words and figure out what the nouns are.  Converting words to their numeric representation and looking them up in a table/dictionary is a fundamental aspect of computing and widely available.  People have long since done the work to classify parts of speech and keep them in an easy-to-find list for a computer to use effectively and efficiently.  However, parsing a picture and trying to find the nouns is much more complicated.  There is no standard definition of what a fox looks like, and cannot simply be looked up in a table.  An entire field, known as cognitive science, deals with such complexities.  See the two examples below for a clearer explanation.&lt;/p&gt;
+&lt;table&gt;
+    &lt;tr&gt;
+        &lt;td style=&quot;vertical-align:middle; width:50%;padding:10px; border:1px solid #ccc; text-align:center;&quot;&gt;&lt;em&gt;The quick brown fox jumps&lt;br /&gt;over the lazy dog&lt;/em&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top; width:50%;padding:10px; border:1px solid #ccc;&quot;&gt;Write a program to derive:
+            &lt;ul&gt;
+            &lt;li&gt;colors: brown (easy)&lt;/li&gt;
+            &lt;li&gt;nouns: fox,dog (easy)&lt;/li&gt;
+            &lt;li&gt;verbs: jump (easy)&lt;/li&gt;
+            &lt;li&gt;adjectives: quick,lazy (easy)&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+    &lt;tr&gt;
+        &lt;td style=&quot;vertical-align:top; width:50%;padding:10px; border:1px solid #ccc; text-align:center;&quot;&gt;&lt;img src=&quot;foxes.jpg&quot; alt=&quot;Lithograph of two Sahara Foxes (Fennecs)&quot; title=&quot;The True Fennec (Canis zerda)&quot; /&gt;&lt;br /&gt;Source: ayacata7 on Flickr&lt;sup&gt;&lt;a href=&quot;#cite1&quot;&gt;[1]&lt;/a&gt;&lt;/sup&gt;&lt;/td&gt;
+        &lt;td style=&quot;vertical-align:top; width:50%;padding:10px; border:1px solid #ccc;padding-top:20px;&quot;&gt;Write a program to derive:
+            &lt;ul&gt;
+            &lt;li&gt;colors: orange,brown,grey (easy)&lt;/li&gt;
+            &lt;li&gt;nouns: foxes,grass,rocks (hard)&lt;/li&gt;
+            &lt;li&gt;verbs: stand,hide (very hard)&lt;/li&gt;
+            &lt;li&gt;adjectives: alert,cute (very hard)&lt;/li&gt;
+            &lt;/ul&gt;
+        &lt;/td&gt;
+    &lt;/tr&gt;
+&lt;/table&gt;
+
+&lt;p&gt;The differences in complexity are clear, and the subjective nature of the verbs and adjectives derived from the lithograph is obvious.  Not all people find foxes to be cute, and is the fox on the right hiding?  Colors are adjectives, but I noted them separately to show that these are purely representable numerically, and therefore easy for software to parse.&lt;/p&gt;
+&lt;p&gt;Not to fret, this task is being worked on by very smart people.  Since people enjoy photographing and creating and describing things so much, we can use shortcuts to semantically derive meaning from images paired with captions.  See Google image search &lt;sup&gt;&lt;a href=&quot;#cite2&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt;&lt;sup&gt;&lt;a href=&quot;#cite3&quot;&gt;[3]&lt;/a&gt;&lt;/sup&gt;.  Indeed, as programs become better at deriving contextual meaning from language, all the existing treatise on imagery will be automatically inheritable knowledge to the same programs, even if they are merely referenced and not parsed directly.  A program capable of accurately comprehending the snippet &lt;em&gt;“The following is a picture of a very cute fox &amp;lt;some picture&amp;gt;”&lt;/em&gt;, without delving into the actual content of &lt;em&gt;&amp;lt;some picture&amp;gt;&lt;/em&gt;, can still make the appropriate association for reference.&lt;/p&gt;
+&lt;p&gt;There is also an emerging type of technology, called Reverse Image Search&lt;sup&gt;&lt;a href=&quot;#cite4&quot;&gt;[4]&lt;/a&gt;&lt;/sup&gt;, which is becoming more accurate.  It uses the same methods of semantic association as above, combined with advanced combinations of algorithms, to deduce image similarities.  While the search program does not understand the meaning behind what is being fetched, the trajectory of the technology can be forecast, and beyond improving the search this is the next step.&lt;/p&gt;
+&lt;h3 id=&quot;starting-backwards-learning-from-patterns&quot;&gt;Starting Backwards - Learning from Patterns&lt;/h3&gt;
+&lt;p&gt;Before creating original works, AE must be able to appreciate works created by other artists.  Some key aspects of recognizing original and pleasing artwork involve pattern recognition and memory association.&lt;/p&gt;
+&lt;p&gt;People are very creative, and are very good at finding patterns.  Software is not.  A programmer must specifically dictate the patterns software should find in a given text or image.  One of my university professors, Paliath Narendran, wrote a proof&lt;sup&gt;&lt;a href=&quot;#cite5&quot;&gt;[5]&lt;/a&gt;&lt;/sup&gt; that finding arbitrary patterns in sets of numbers is NP-Complete (Mostly meaning it is impossible to solve using known programming techniques).&lt;/p&gt;
+&lt;p&gt;Find the pattern in 2, 4, 8, 16, 32, 64 … (easy).  Find the pattern in 1, 0, 2, -1, 3, -2, 4, -3, 5 … (medium).  Find the pattern in 2, 3, 0, 1, 6, 7, 4, 5, 10 … (hard&lt;sup&gt;&lt;a href=&quot;#cite6&quot;&gt;[6]&lt;/a&gt;&lt;/sup&gt;).  Generating complexity is easy, compared to sorting through it.  Cellular automata is an excellent example of this.  Simple rules can unleash massive complexity.  To take a slice of time out of a cellular automata and matching it to its parameters is no simple task.&lt;/p&gt;
+&lt;canvas id=&quot;patternxor&quot; style=&quot;width:700px; height:250px;&quot;&gt;&lt;/canvas&gt;
+
+&lt;p&gt;&lt;em&gt;Cellular Automata - Math.sin(x^y)*Math.cos(x&amp;amp;y)&lt;/em&gt;&lt;/p&gt;
+&lt;canvas id=&quot;patternand&quot; style=&quot;width:700px; height:250px;&quot;&gt;&lt;/canvas&gt;
+
+&lt;p&gt;&lt;em&gt;Cellular Automata - Math.sin(x^y)*Math.tan(x|y)&lt;/em&gt;&lt;/p&gt;
+&lt;canvas id=&quot;patterntan&quot; style=&quot;width:700px; height:250px;&quot;&gt;&lt;/canvas&gt;
+
+&lt;p&gt;&lt;em&gt;Cellular Automata - Math.tan(x^y)*Math.cos(x&amp;amp;y)&lt;/em&gt;&lt;/p&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/ae-patterns.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;The complexities generated by a set of simple rules can quickly grow into seemingly pure abstraction.  A hallmark of expression is to show this complexity, yet still relate to the subject.  If I draw a portrait of a fox, the entropy generated from my amateur pencil strokes may deviate my result significantly from the subject, but another person will still be able to look at the work and say “Oh, a fox”.  That is how we demonstrate our amazing pattern recognition abilities.  Any AE must be able to do the same.&lt;/p&gt;
+&lt;h3 id=&quot;bias-and-randomness&quot;&gt;Bias and Randomness&lt;/h3&gt;
+&lt;p&gt;Think of a random number between one and ten.  Is it really random?  Probably not.  Sorry to tell you, but you are probably not very good at choosing purely random numbers, because (no offense) you are biased and therefore predictable when it comes to picking numbers.  For example, your favorite number might be seven, and maybe you won’t choose seven because you subconsciously don’t consider it random enough, and that is bias. &lt;/p&gt;
+&lt;p&gt;But now, instead of thinking of a random number, flail your arms and wrists around while keeping them loose.  You’ve just created a lot of entropy, even if your motions might be biased.  If we could somehow measure the velocity and direction of all the microscopic particles of dust you just moved around in the air, they would meet the standards of randomness.&lt;/p&gt;
+&lt;p&gt;Computers have another type of bias, they don’t have favorite numbers, but they are predictable.  In fact, being predictable is what made software so appealing in the first place.  You can trust that a computer should always tell you that 237465234 * 127623476234 = 30306138647800248756.  But there is a side effect to absolute predictability.  Since machines are deterministic, it is impossible for software to generate random numbers without using input from an external environment.  Did you know that the way you type and the way you move your mouse cursor helps your computer generate random numbers?  When you wave your mouse around that gives your computer some good entropy to use.  For programs to get randomness when mouse movements are not available, or not reliable enough, they can use a service.  There is a website dedicated to serving guaranteed random numbers by grabbing entropy from atmospheric noise&lt;sup&gt;&lt;a href=&quot;#cite7&quot;&gt;[7]&lt;/a&gt;&lt;/sup&gt;.  Another thing that generates randomness is when lots of people send trillions of 140 byte messages to broadcast their thoughts to each other and the world:&lt;/p&gt;
+&lt;p&gt;&lt;img style=&quot;border:1px solid #333;&quot; src=&quot;http://www.binarymax.com/brownian_2.gif&quot; alt=&quot;A generated work of lines that used messages on twitter as entropy to create random images&quot; title=&quot;Twitter Brownian Motion&quot; /&gt;&lt;br /&gt;&lt;em&gt;“tRand” - Brownian Motion based on Twitter messages - &amp;copy; 2010 Max Irwin&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Understanding true randomness is a precursor to Artificial Expression, because every input based on real-world experience given to a program will be random (even if it may follow a trend).  To understand anything in the world around us and express it through art, vast swaths of randomness pass through the artist and are filtered, associated, and organised into a singular subjective expression.&lt;/p&gt;
+&lt;p&gt;Artists thrive on entropy.  Brush strokes of paint are not calculated and perfected to the molecule.  Colors are mixed and remixed without precise instrumental measurements, and paint is layered emotionally and without dependency on external calculations or instruments.  By the time the subject passes through the eyes of the artist and is slowly laid to a canvas, the representation is unique and original.  Unless a projector&lt;sup&gt;&lt;a href=&quot;#cite8&quot;&gt;[8]&lt;/a&gt;&lt;/sup&gt; is involved, or the artist has some superhuman ability, the work will certainly deviate from the subject in form and substance.  A talented artist captures the subject to match the expressive goal, rather than simply making a verbatim copy.&lt;/p&gt;
+&lt;h3 id=&quot;generating-simple-artistic-forms&quot;&gt;Generating Simple Artistic Forms&lt;/h3&gt;
+&lt;p&gt;My first use of computers, in 1985 at Harris Hill Elementary school, was for generating art.  I used the Logo programming language, and naively generated some interesting forms.  Indeed, I still have a dot-matrix printout of one of my first generated works.  I was seven years old, and I gave it a cool tech sounding title:&lt;/p&gt;
+&lt;p&gt;&lt;img style=&quot;border:1px solid #333;&quot; src=&quot;CPU_1985_small.jpg&quot; alt=&quot;A Logo Generated abstract, greyscale dot-matrix printout&quot; title=&quot;C.P.U.&quot; /&gt;&lt;br /&gt;&lt;em&gt;“C.P.U.” - dot-matrix print - &amp;copy; 1985 Max Irwin&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Generative Art is as popular as ever.  Countless artists&lt;sup&gt;&lt;a href=&quot;#cite9&quot;&gt;[9]&lt;/a&gt;&lt;/sup&gt;, including myself&lt;sup&gt;&lt;a href=&quot;#cite10&quot;&gt;[10]&lt;/a&gt;&lt;/sup&gt;, are creating works today, many available to see on the internet, and many interactive.  Traditionally shown in galleries through prints and media installations, the explosion of interactive generative art through the web happened mostly via Java Applets in the 1990’s, then Flash in the early to late 2000’s, and now primarily through JavaScript via Canvas, WebGL, and SVG.  Creating a work of Generative Art today is as easy as it was for me when I was only seven, and now it can be instantaneously shared with the entire world.  Just as a child with paints and paper can create a painting, so can a child produce generative art with a computer.&lt;/p&gt;
+&lt;p&gt;I focus on this distinction, that Generative Art and Artificial Expression have similarities, but are fundamentally different.  While Generative Art, even the interactive kind, is a revelation, it does not nearly approach the complexity or necessary ingenuity required for Artificial Expression.  The reasoning here is that a great deal of Generative Art is abstract and, lacking subject matter, is not prone to the pitfalls of representation of a subject in an original form.  Wikipedia cites &lt;em&gt;“Ten Questions Concerning Generative Computer Art”&lt;/em&gt; &lt;sup&gt;&lt;a href=&quot;#cite11&quot;&gt;[11]&lt;/a&gt;&lt;/sup&gt;, but a formal distinction must be made between generative art and artificial expression.  Indeed, spewing out random pieces of poetic looking rhyming pentameter is not considered artificial intelligence, and algorithmic abstract shapes should not be considered artificial expression.&lt;/p&gt;
+&lt;h3 id=&quot;a-thousand-words&quot;&gt;A Thousand Words&lt;/h3&gt;
+&lt;p&gt;If I ask a person to “draw a cute fox”, that might be enough information the person needs to draw a fox that most people would consider cute (artistic talent notwithstanding).  This is due to several factors, including but not limited to our experience with the natural world, and our perception of contextual emotion.  “Cute” is loaded with a vast history of experience, not only just a life’s worth, but generations of evolutionary instinct that allow us to subconsciously tell the difference between a cute fox and a ferocious fox.&lt;/p&gt;
+&lt;p&gt;The cliché “A picture is worth a thousand words” is very apt when it comes to artificially expressing a textual description as art.  To ask software to draw a cute fox is an insurmountable request.  We would first need to somehow grant the software with not only the corpus of all of human experience and instinct related to foxes, but also the anatomy of a fox and its context in times of different emotions.  Shortcuts may be taken, as most people capable of drawing a cute fox do not have a complete understanding of the fox anatomy, but they still know that visible teeth probably won’t fit in the picture.&lt;/p&gt;
+&lt;h3 id=&quot;recognizing-artificial-expression&quot;&gt;Recognizing Artificial Expression&lt;/h3&gt;
+&lt;p&gt;For Artificial Intelligence, the Turing Test is noted as a primary milestone for computational linguistics.  Once a person is able to have a meaningful conversation with a program, and not be able to distinguish its software-companion’s dialog from that of a fellow human, we will have reached the first stage of a breakthrough in AI. &lt;/p&gt;
+&lt;p&gt;Comparatively, when a program is able to experience its environment contextually, and produce a purely original non-abstract thought-provoking artwork, indistinguishable from that of an amateur artist, we will have reached the first stage of a breakthrough in Artificial Expression.  I propose a new type of test, called the &lt;em&gt;Cute Fox Test&lt;/em&gt;, that when passed, meets the following constraints:&lt;/p&gt;
+&lt;p&gt;The work MUST:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Be based on a subject or subjects&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Be aesthetically pleasing&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Be purely original&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;The work MUST NOT:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Be bound to a specific style&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Be predictable or reproducible given a set of starting parameters&lt;/p&gt;
+&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Be a filtered or transformed version of another original&lt;/p&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;These constraints, when met, should reasonably signal that a program shows artificial expressive merit.&lt;/p&gt;
+&lt;h3 id=&quot;a-path-to-realization&quot;&gt;A Path to Realization&lt;/h3&gt;
+&lt;p&gt;While I have no formal proof, I postulate that the problem of Artificial Expression is NP-Complete (again, not possible to solve using existing techniques). &lt;/p&gt;
+&lt;p&gt;Therefore, current methods that yield Generative Art is a dead end.  No amount of hand-coded filters, remixers, or cellular automata can achieve the sentience necessary for AE to become a reality.  Some works of Genetic Programming and Machine Learning pass the “MUST” tests, but all fail the “MUST NOT” tests.&lt;/p&gt;
+&lt;p&gt;AI has entire formalized scientific fields, including cognitive science and computational linguistics, devoted to unraveling the Natural Language Processing mystery.  AE is in need of such a field or fields, where dedicated studies by academia can be made to devise plans and experiments to further the prerequisite knowledge needed and push for a breakthrough.&lt;/p&gt;
+&lt;p&gt;Expression is needed for any artificial sentience to relate on an emotional level with humanity.  Emotionless intelligent machines that artificially come to the conclusion that earth would be more efficient without humans getting in the way is the stuff of nightmare science fiction, but cannot be ignored or disregarded as as an impossibility.  It is most certainly a possibility, even if unlikely.  Artificially expressive intelligence may recognize the necessity of organic life and beauty through an emotional connection with its creators.  Additionally, as we make more advanced machines, they will be our companions.  Robotic cars will drive us when we are drunk&lt;sup&gt;&lt;a href=&quot;#cite12&quot;&gt;[12]&lt;/a&gt;&lt;/sup&gt;, and robotic nurses will aid our infirmed.  Imagine being able to joke with your automatic taxi on the way home&lt;sup&gt;&lt;a href=&quot;#cite13&quot;&gt;[13]&lt;/a&gt;&lt;/sup&gt;, or have an automatic nurse sympathize with your pain and comfort you.  Emotions are directly related to art and indeed, science may give us knowledge, but art gives us purpose.&lt;/p&gt;
+&lt;hr border=&quot;0&quot; thickness=&quot;0&quot;&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/share&quot; class=&quot;twitter-share-button&quot; data-lang=&quot;en&quot;&gt;Tweet&lt;/a&gt;&lt;/p&gt;
+&lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=&quot;https://platform.twitter.com/widgets.js&quot;;fjs.parentNode.insertBefore(js,fjs);}}(document,&quot;script&quot;,&quot;twitter-wjs&quot;);&lt;/script&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://twitter.com/binarymax&quot; class=&quot;twitter-follow-button&quot; data-show-count=&quot;false&quot; data-lang=&quot;en&quot;&gt;Follow @binarymax&lt;/a&gt;&lt;/p&gt;
+&lt;script&gt;!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=&quot;//platform.twitter.com/widgets.js&quot;;fjs.parentNode.insertBefore(js,fjs);}}(document,&quot;script&quot;,&quot;twitter-wjs&quot;);&lt;/script&gt;
+
+&lt;hr border=&quot;0&quot; thickness=&quot;0&quot;&gt;
+
+&lt;p&gt;&lt;a name=&quot;cite1&quot;&gt;&lt;/a&gt;
+[1] &lt;a href=&quot;http://www.flickr.com/photos/odisea2008/5792712409/sizes/o/in/photolist-9PTazT-9PW2LS-9PTarv-7RQxGx-9PTacT-9PTaxi-9PTaS2-9PW3bd-9PTaLa-9PW32h-49FA62-6y3vdr-6y3t14-7bVJ1j-7gMwA9-7bVQ8G-9PW35u-9PTam8-9PTahr-r4gbi-r4gas-2CQsca-9PTaXF-9LBtV2-4VbnfN-7BQFWc-7bBPhG-7bBHay-9NFu2f-bxwefA-9NFpHu-5V5iiW-5V5i9Q-Ng49m-Ngaev-Ng49A-Ng49y-Ng49C-NgaeB-NgaeM-bsLC3C-Ngaf8-2CQscv-4W4y7w-4yY9Mi-9NEKvf-6LyFri-9NCE48-8fN7et-7XMjvn-3f9aki/&quot; target=&quot;_blank&quot;&gt;Source: ayacata7 on Flickr&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite2&quot;&gt;&lt;/a&gt;
+[2] &lt;a href=&quot;https://encrypted.google.com/search?tbm=isch&amp;q=cute%20fox&amp;tbs=imgo:1&amp;biw=1855&amp;bih=955&amp;sei=ijP-UYawEYXBhAeP2oC4BA&amp;pws=0&quot; target=&quot;_blank&quot;&gt;Cute fox - Google image search ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite3&quot;&gt;&lt;/a&gt;
+[3] &lt;a href=&quot;https://encrypted.google.com/search?tbm=isch&amp;q=angry%20fox&amp;tbs=imgo:1&amp;biw=1855&amp;bih=955&amp;sei=5jP-UaHLN4yThgeJi4GACQ&amp;pws=0&quot; target=&quot;_blank&quot;&gt;Angry fox - Google image search ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite4&quot;&gt;&lt;/a&gt;
+[4] &lt;a href=&quot;https://tineye.com/search/a0fdb44a5db5c509689401585fb2d4575e8d7a77/?sort=score&amp;order=asc&quot; target=&quot;_blank&quot;&gt;TinEye - Reverse Image Search (fox) ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite5&quot;&gt;&lt;/a&gt;
+[5] Paliath Narendran, &lt;em&gt;Unification and Matching modulo Nilpotence&lt;/em&gt; &lt;a href=&quot;http://www.cs.albany.edu/~dran/my_research/papers/cade96.ps&quot; target=&quot;_blank&quot;&gt;PDF&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite6&quot;&gt;&lt;/a&gt;
+[6] The next number is 11.  &lt;em&gt;&lt;strong&gt;f&lt;/strong&gt;(i,j) =&amp;gt; (i^j*2)&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite7&quot;&gt;&lt;/a&gt;
+[7] &lt;a href=&quot;http://random.org/&quot; target=&quot;_blank&quot;&gt;RANDOM.ORG ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite8&quot;&gt;&lt;/a&gt;
+[8] &lt;a href=&quot;https://en.wikipedia.org/wiki/Camera_Obscura&quot; target=&quot;_blank&quot;&gt;Camera Obscura ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite9&quot;&gt;&lt;/a&gt;
+[9] &lt;a href=&quot;http://www.generatorx.no/&quot; target=&quot;_blank&quot;&gt;Generator.x ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite10&quot;&gt;&lt;/a&gt;
+[10] &lt;a href=&quot;http://binarymax.com/&quot; target=&quot;_blank&quot;&gt;binarymax ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite11&quot;&gt;&lt;/a&gt;
+[11] &lt;a href=&quot;http://diotima.infotech.monash.edu.au/~jonmc/sa/news/ten-questions-concerning-generative-computer-art/&quot; target=&quot;_blank&quot;&gt;Ten Questions Concerning Generative Computer Art ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite12&quot;&gt;&lt;/a&gt;
+[12] &lt;a href=&quot;https://en.wikipedia.org/wiki/Google_driverless_car&quot; target=&quot;_blank&quot;&gt;Google Driverless Cars ^&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a name=&quot;cite13&quot;&gt;&lt;/a&gt;
+[13] &lt;a href=&quot;http://www.acl2013.org/site/short/2197.html&quot; target=&quot;_blank&quot;&gt;Unsupervised joke generation from big data ^&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>Anagramica is now FOSS</title>
+      <link>http://localhost:8080/articles/anagramica-now-foss/</link>
+      <pubDate>Sat, 03  Aug 2013 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/anagramica-now-foss/</guid>
+      <author></author>
+      <description>&lt;p&gt;I’ve finally open sourced Anagramica (&lt;a href=&quot;http://anagramica.com/&quot;&gt;http://anagramica.com/&lt;/a&gt;) &lt;/p&gt;
+&lt;p&gt;The code is now available under the MIT license at &lt;a href=&quot;https://github.com/binarymax/anagramica&quot;&gt;https://github.com/binarymax/anagramica&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;I’m not entirely sure why I never open sourced it in the first place.  After 25 years of coding I’ve only recently become active in opening my code for others to see and use.  I have a cathartic story to tell about a previous project, which I’ve never told anyone about, and silently open sourced this past winter.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h4 id=&quot;keepaware&quot;&gt;KeepAware&lt;/h4&gt;
+&lt;p&gt;One minor regret I have, is holding on to a project called KeepAware[1] when I should have just opened the darn thing and let others use it and grow it.  In the beginning of July 2011, Node.js hit v0.5.0.  A huge milestone for that release was the port for Node.js to run on Windows.  I remember seeing the post[2] on a Wednesday, and spent most of that Saturday and Sunday writing KeepAware, thinking that I would be able to sell it.&lt;/p&gt;
+&lt;p&gt;The premise was simple - KeepAware would load a Node.js project as a Windows service so it could run in the background, and not as a console application, and send all console output into the Windows Event Log.  Also, similar to nodemon, the service would restart every time a file in the project was changed, to allow seamless editing and previewing.  I thought these were great ideas, and also thought that folks who used Windows were no strangers to paying for stuff.  And, since I’ve never made any money from an independent project (or even tried), maybe I could finally get in on that sweet gravy train.&lt;/p&gt;
+&lt;p&gt;After the project itself was finished, I started work on an ill-conceived website to allow folks to download it under a tiered license - free for non-commerial use, $20 for a commercial license, and $Zillions for an enterprise license.  I eventually ran out of steam late that Sunday and never finished or published the site, and KeepAware grew cobwebs as a private and unused repo in github.  I wasn’t even using it myself, since I had no desire to return to coding on Windows (I had switched to Linux 6 months beforehand and was not interested in turning back).&lt;/p&gt;
+&lt;p&gt;Two months after I wrote KeepAware, I saw a post that someone at Microsoft coded a way for Node.js to play nice with IIS, and that was that.  I regret not just opening it up and posting it on HN the weekend I wrote it.  I was never a fan of IIS (but really enjoyed .NET otherwise).  In arrogant retrospect I still think the approach I had was better, keeping it as a separate service rather than piggy backing on IIS, since Node is much more than just a web app server.  Oh well.  On January 20th 2013, I silently opened up KeepAware and renamed it KeepAware-old, it is mostly useless now, but has some interesting bits in there - like automatically restarting a windows service when a file changes, and sending console output to the EventLog.  I also still have the domain keepaware.com, its always just been a 301 to binarymax.com, and maybe I will use it someday.  I still love the name.&lt;/p&gt;
+&lt;h4 id=&quot;lessons-learned&quot;&gt;Lessons Learned&lt;/h4&gt;
+&lt;p&gt;So back to the original story - Anagramica has a couple hardcore fans, and it averages about 10 plays per week, mostly through those finding it organically (I don’t advertise or market anything I make, other than a facebook or twitter post).  I never planned to make any money from it so I’m not sure why I kept it locked down for so long.  It may have to do with a mild case of imposter sydrome[3], as sometimes I am afraid of people in the outside world seeing my code and being critical.  So I’m trying to get over all that by coding out in the open and learning from those who do the same.  After I left Windows behind, I have been using some of the most amazing software ever written, and its free (as in beer and freedom), and even though my stuff is not nearly as amazing, I hope to give back what I can to the most revolutionary community in the world.  The world today runs on FOSS, and I am deeply grateful.&lt;/p&gt;
+&lt;p&gt;[1] &lt;a href=&quot;https://github.com/binarymax/KeepAware-old&quot;&gt;https://github.com/binarymax/KeepAware-old&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[2] &lt;a href=&quot;http://blog.nodejs.org/2011/07/06/node-v0-5-0-unstable/&quot;&gt;http://blog.nodejs.org/2011/07/06/node-v0-5-0-unstable/&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;[3] &lt;a href=&quot;https://en.wikipedia.org/wiki/Impostor_syndrome&quot;&gt;https://en.wikipedia.org/wiki/Impostor_syndrome&lt;/a&gt;&lt;/p&gt;
+</description>
+    </item>
+    <item>
+      <title>The Idea Is Art</title>
+      <link>http://localhost:8080/articles/the-idea-is-art/</link>
+      <pubDate>Sun, 28 Jul 2013 01:00:00 +0100</pubDate>
+      <guid isPermaLink="true">http://localhost:8080/articles/the-idea-is-art/</guid>
+      <author></author>
+      <description>&lt;p&gt;I’ve been known to debate about a subject, which I like to call ‘The Idea is Art’.  I defend that whatever imagery we can conceive of in our mind can be considered art, even when lacking a physical manifestation.&lt;/p&gt;
+&lt;p&gt;‘What is art’ has been debated ad infinitum, and some like to draw the line and say something is not art if it cannot be expressed - as art is, by definition, expression.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;My argument is that one not even need express the idea outwards with our own voice, hands, or otherwise.  The idea can exist purely in one’s own mind and still be a work of art.  It is expression to oneself, therefore it is art.&lt;/p&gt;
+&lt;p&gt;I also enjoy drawing on this small thought experiment, to say that art can sometimes only be expressed when a technological bridge exposes the work to others:&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;Imagine first an island, which is surrounded by rocks and perpetual treacherous waves.  The island is unapproachable and uninhabited.  Now imagine an artist sailor, whos small craft crashes upon the rocks.  The artist survives and is washed to the island, along with a bag containing paints, brushes, and some canvas.  The artist, the first and only inhaitant of this island, paints a work on the canvas, and hangs it from a tree facing the seas.  Other ships regularly sail past the island but cannot see the canvas, because it is too far away.  One day, a crewmember of a passing ship uses a telescope and sees the canvas, the first observer.  Only through this technological medium, the telescope, was another able to admire the canvas.&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;Now imagine that island as a brain, and the canvas an idea.  We do not currently posess the technology to see the idea without purposeful outward expression by the thinker.  The silence of the artist are rocks and waves to the observer.  Eventually some device will be developed to allow us to see into the mind, to extract visions and dreams directly from the grey matter and project them onto a screen.  &lt;/p&gt;
+&lt;p&gt;Does the current lack of this technology limit the definition of art?  No.  &lt;/p&gt;
+&lt;p&gt;Is the idea art, with or without the medium to admire it?  Yes. &lt;/p&gt;
+</description>
+    </item>
+  </channel>
+</rss>
