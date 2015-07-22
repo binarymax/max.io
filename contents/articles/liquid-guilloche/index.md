@@ -65,11 +65,15 @@ We can easily combine two or more forms to the same canvas.  Here is 'Ribbon', '
 
 The code is all available here: https://github.com/binarymax/guilloche
 
+If you like this, you can also follow me on twitter [@binarymax][10]
+
 ---
 
 [1] http://ministryoftype.co.uk/words/article/guilloches/
 
 [2] https://en.wikipedia.org/wiki/Spirograph
+
+[10]:https://twitter.com/binarymax
 
 <script type="text/javascript" src="/javascripts/pixels.js"></script>
 <script type="text/javascript" src="/javascripts/guilloche.js"></script>
