@@ -2,17 +2,432 @@
 <rss version="2.0" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:wfw="http://wellformedweb.org/CommentAPI/" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Max Irwin</title>
-    <atom:link href="http://localhost:8080/feed.xml" rel="self" type="application/rss+xml"></atom:link>
-    <link>http://localhost:8080</link>
+    <atom:link href="http://localhost:5050/feed.xml" rel="self" type="application/rss+xml"></atom:link>
+    <link>http://localhost:5050</link>
     <description>code + art + philosophy</description>
-    <pubDate>Wed, 22 Jul 2015 01:00:00 +0100</pubDate>
+    <pubDate>Mon, 15 Feb 2016 00:00:00 +0000</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
     <item>
+      <title>Porting a Numpy neural network to Torch</title>
+      <link>http://localhost:5050/articles/porting-numpy-to-torch/</link>
+      <pubDate>Mon, 15 Feb 2016 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">http://localhost:5050/articles/porting-numpy-to-torch/</guid>
+      <author></author>
+      <description>&lt;p&gt;This article outlines the process for porting Andrew Trask’s (aka IAmTrask) 11-line neural network[1] from Numpy (Python) to Torch (Lua).&lt;/p&gt;
+&lt;p&gt;I’ve documented my progress here, for those who are interested in learning about Torch and Numpy and their differences.  As I started from scratch I hope this can prove useful to others who get stuck or need guidance.  &lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;intro&quot;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;When I started this project, I knew very little about neural networks, Python, and Lua.  After reading Andrej Karpathy’s excellent Char-RNN article[2], and diving confusedly into the original code from the Oxford ML class, I was intrigued and wanted to learn more so I could better understand how it all worked.  Several articles later I found IAmTrask’s brilliant tutorials and knew that I was on the correct path.  The Oxford code and other examples are all in Torch, and the Numpy code from IAmTrask has some key differences in how the libraries and languages work.  After getting to know the Numpy version well, this port seemed like the best next step.&lt;/p&gt;
+&lt;p&gt;Undertaking this seemingly small project has proven incredibly difficult and rewarding, considering the nature of not only the languages and libraries, but the complexity of neural networks themselves (not to mention needing a wikipedia refresher course in linear algebra).  Also, it should be obvious that I am not suddenly an expert in these domains.  While what I have written below may seem straightforward, it is only after much reading, trial and error, coffee, and help from the friendly folks in the Torch community that I have finally become somewhat confident these examples.  Therefore, if you see any errors or have suggestions - please feel free to reach out to me @binarymax&lt;/p&gt;
+&lt;p&gt;Note: this is a direct map of Numpy operations to Torch operations, without using Torch’s nn module.  As I continue my studies, I will post some more examples using the nn module approach.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;matrices-arrays-and-tensors&quot;&gt;Matrices, Arrays, and Tensors&lt;/h2&gt;
+&lt;p&gt;Let’s start with the absolute basics: Matrices. &lt;/p&gt;
+&lt;p&gt;In Numpy, we represent a matrix as an array.  In Torch, it is represented through a tensor (which can have many more than 2 dimensions).  These two constructs form the basis for all of our operations, so lets dive into some small examples:&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;y = np.array([&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;])
+&lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[0 0 1 1]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;y = torch.Tensor({&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;})
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(y)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; 0
+ 0
+ 1
+ 1
+[torch.DoubleTensor of size 4]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;These are both one dimensional matrices of size 4, as taken from IAmTrask’s example.  Before getting into his neural network though, we will need to know how to do the following in both libraries: dot product, matrix by matrix multiplication, addition, and subtraction.  Both libraries behave a little differently, and mapping the two gives us critical insight into their behavior.&lt;/p&gt;
+&lt;h2 id=&quot;matrix-addition&quot;&gt;Matrix Addition&lt;/h2&gt;
+&lt;p&gt;As a simple exercise, we want to create a 4x3 matrix &lt;code&gt;X&lt;/code&gt;, and then add our 1 dimensional matrix &lt;code&gt;y&lt;/code&gt;, and store the result in &lt;code&gt;A&lt;/code&gt;.  Note that for an &lt;code&gt;m&lt;/code&gt;x&lt;code&gt;n&lt;/code&gt; matrix, the m is the number of rows and n is the number of columns.  Also, if you are used to representing (x,y) coordinates on an axis as columns and rows like me, prepare to force your brain to mentally transpose!&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;y = np.array([&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;])
+X = np.array([
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]
+    ])
+A = X + y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Traceback (most recent call last):
+  File &amp;quot;python-examples.py&amp;quot;, line 15, in &amp;lt;module&amp;gt;
+    A = y + X
+ValueError: operands could not be broadcast together with shapes (4,) (4,3)
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;y = torch.Tensor({&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;})
+X = torch.Tensor({
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}
+})
+A = X + y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/home/max/torch/install/bin/luajit: inconsistent tensor size at /home/max/torch
+/pkg/torch/lib/TH/generic/THTensorMath.c:500
+stack traceback:
+        [C]: at 0x7ffb9bab25d0
+        [C]: in function &amp;#39;__sub&amp;#39;
+        torch-examples.lua:15: in main chunk
+        [C]: in function &amp;#39;dofile&amp;#39;
+        .../max/torch/install/lib/luarocks/rocks/trepl/scm-1/bin/th:145: in main chunk
+        [C]: at 0x00406670
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;What happened?  Well, we are missing a dimension.  In both cases, &lt;code&gt;y&lt;/code&gt; is one dimensional (4) and &lt;code&gt;X&lt;/code&gt; is two dimensional (4x1).  Also note that our Numpy error is a bit clearer in what went wrong.  It kindly gives us the code and exact problem, where Torch is a bit more vague by giving a generic exception and stack trace with a line number (but still has enough info to find the problem in our code).  Lets fix the issue in both, by making &lt;code&gt;y&lt;/code&gt; two dimensional as a 4x1 matrix and try again.  Note the change in declaration for the &lt;code&gt;y&lt;/code&gt; array/tensor in both examples:&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#y = np.array([0,0,1,1])&lt;/span&gt;
+y = np.array([[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]])
+X = np.array([
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]
+    ])
+A = X + y
+print(A)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[[0 0 1]
+ [0 1 1]
+ [2 1 2]
+ [2 2 2]]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;comment&quot;&gt;--y = torch.Tensor({0,0,1,1})&lt;/span&gt;
+y = torch.Tensor({{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}})
+X = torch.Tensor({
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}
+})
+A = X + y
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;/home/max/torch/install/bin/luajit: inconsistent tensor size at /home/max/torch
+/pkg/torch/lib/TH/generic/THTensorMath.c:500
+stack traceback:
+        [C]: at 0x7f08896cc5d0
+        [C]: in function &amp;#39;__sub&amp;#39;
+        torch-examples.lua:15: in main chunk
+        [C]: in function &amp;#39;dofile&amp;#39;
+        .../max/torch/install/lib/luarocks/rocks/trepl/scm-1/bin/th:145: in main chunk
+        [C]: at 0x00406670
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And now we see our first difference between the two libraries.  When we made our Array 4x1 in Numpy it worked fine, but Torch doesn’t know how to add a 4x1 Tensor to a 4x3 Tensor.  To fix this, we need to make &lt;code&gt;y&lt;/code&gt; into a 4x3 Tensor so Torch can add them successfully.  This is easily done using the &lt;code&gt;repeatTensor&lt;/code&gt; Torch library method.  We will keep &lt;code&gt;y&lt;/code&gt; intact and make a new 4x3 Tensor &lt;code&gt;B&lt;/code&gt; and add that to &lt;code&gt;X&lt;/code&gt; instead:&lt;/p&gt;
+&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;y = torch.Tensor({{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}})
+X = torch.Tensor({
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}
+})
+B = torch.repeatTensor(y,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;3&lt;/span&gt;)
+A = X + B
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(A)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; 0  0  1
+ 0  1  1
+ 2  1  2
+ 2  2  2
+[torch.DoubleTensor of size 4x3]
+&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id=&quot;matrix-multiplication&quot;&gt;Matrix multiplication&lt;/h2&gt;
+&lt;p&gt;Lets try some multiplication.  Eventually we’ll need to multiply matrices to as part of the network training.  We can use examples directly from IAmTrask, and convert that to Torch.  We’ll create a 4x1 Tensor that will hold a synapse, and multiply it with our input layer &lt;code&gt;X&lt;/code&gt;.  Remember from Matrix arithmetic, when you multiply one matrix &lt;code&gt;m&lt;/code&gt;x&lt;code&gt;n&lt;/code&gt; with another matrix &lt;code&gt;n&lt;/code&gt;x&lt;code&gt;p&lt;/code&gt;, the result is an &lt;code&gt;n&lt;/code&gt;x&lt;code&gt;p&lt;/code&gt; matrix.&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;synapse_0 = np.array([
+        [-&lt;span class=&quot;number&quot;&gt;0.16595599&lt;/span&gt;],
+        [ &lt;span class=&quot;number&quot;&gt;0.44064899&lt;/span&gt;],
+        [-&lt;span class=&quot;number&quot;&gt;0.99977125&lt;/span&gt;]
+    ])
+layer_0 = X
+multi_0 = np.dot( layer_0, synapse_0 )
+&lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; multi_0
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[[-0.99977125]
+ [-0.55912226]
+ [-1.16572724]
+ [-0.72507825]]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;synapse_0 = torch.Tensor({
+        {-&lt;span class=&quot;number&quot;&gt;0.16595599&lt;/span&gt;},
+        { &lt;span class=&quot;number&quot;&gt;0.44064899&lt;/span&gt;},
+        {-&lt;span class=&quot;number&quot;&gt;0.99977125&lt;/span&gt;}
+    })
+layer_0 = X
+multi_0 = layer_0 * synapse_0
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(multi_0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;-0.9998
+-0.5591
+-1.1657
+-0.7251
+[torch.DoubleTensor of size 4x1]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Note in the above example that the multiplication was a bit easier in Torch.  We needed to use the Numpy dot method to multiply the two, but in Torch the * operator has been overloaded.&lt;/p&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;sigmoid&quot;&gt;Sigmoid&lt;/h2&gt;
+&lt;p&gt;Lets do a more complicated operation.  The reasons for calculating the sigmoid is well described in the cited articles, so we will need to perform the operation in our code.  Using &lt;code&gt;multi_0&lt;/code&gt; calculated above as our input into the function, this is expressed as follows:&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
+    output = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;/(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;+np.exp(-x))
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; output
+sig_0 = sigmoid(multi_0)
+print(sig_0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[[ 0.2689864 ]
+ [ 0.36375058]
+ [ 0.23762817]
+ [ 0.3262757 ]]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
+    B = torch.exp(-A) + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;
+    B:apply(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;/x &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;)
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; B
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+sig_0 = sigmoid(multi_0)
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(sig_0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; 0.2690
+ 0.3638
+ 0.2376
+ 0.3263
+[torch.DoubleTensor of size 4x1]
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can see that in Numpy, the operation is straightforward, and was cleanly translated from the mathematical formula.  In Torch is is not so simple.  Even replacing &lt;code&gt;torch.exp(-A) + 1&lt;/code&gt; with &lt;code&gt;1 + torch.exp(-A)&lt;/code&gt; won’t work, as type coercion in Lua can’t make sense of the latter.  Then we run into a scalar/matrix division problem due to the same reason, so we need to fall back to an element-by-element division using the Tensor’s apply method.  That seems woefully inefficient though.  Wouldn’t it be nice if we could do a matrix operation to get the inverse of each element?  There isn’t a built in method, but we can construct a couple.&lt;/p&gt;
+&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_cdiv_fixed&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
+    B = torch.exp(-A) + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;
+    C = torch.Tensor({{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}})
+    D = torch.cdiv(C,B)
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; D
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_cdiv&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
+    B = torch.exp(-A) + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;
+    C = torch.Tensor(A:size(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;),&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;):fill(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)
+    D = torch.cdiv(C,B)
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; D
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+sig_0 = sigmoid(multi_0)
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(sig_0)
+sig_cdiv_fixed_0 = sigmoid_cdiv_fixed(multi_0)
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(sig_cdiv_fixed_0)
+sig_cdiv_0 = sigmoid_cdiv(multi_0)
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(sig_cdiv_0)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The first method &lt;code&gt;sigmoid_cdiv_fixed&lt;/code&gt; uses the element-wise Torch cdiv method for two tensor division, but you should notice that I used a hardcoded tensor declaration with a fixed size to calculate &lt;code&gt;D&lt;/code&gt;.  We’d rather that not be the case, so we can make it generic and create our &lt;code&gt;sigmoid_cdiv&lt;/code&gt; function, in which we construct &lt;code&gt;C&lt;/code&gt; by getting the size of &lt;code&gt;A&lt;/code&gt; and filling it with ones.&lt;/p&gt;
+&lt;h3 id=&quot;performance-testing&quot;&gt;Performance testing&lt;/h3&gt;
+&lt;p&gt;All three functions give the same output, but which is best?  In the world of Machine Learning, we want the fastest solution.  We are also interested in the tradeoff of having the generic &lt;code&gt;sigmoid_cdiv&lt;/code&gt; function versus the &lt;code&gt;sigmoid_cdiv_fixed&lt;/code&gt; function with the fixed-size tensor.  &lt;/p&gt;
+&lt;p&gt;Let’s construct a simple test and run through lots of calculations to see how performance works out.  For the test we will have three scripts.  Each will create a random 4x1 matrix and run one of the respective functions, and do it 100k times.&lt;/p&gt;
+&lt;h4 id=&quot;torch-tensor-apply&quot;&gt;Torch tensor:apply&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_apply.lua 
+
+real 0m2.318s
+user 0m2.216s
+sys  0m0.088s
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;torch-tensor-cdiv-fixed&quot;&gt;Torch tensor:cdiv fixed&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_cdiv_fixed.lua 
+
+real 0m2.666s
+user 0m2.516s
+sys  0m0.136s
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;torch-tensor-cdiv&quot;&gt;Torch tensor:cdiv&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_cdiv.lua 
+
+real 0m2.863s
+user 0m2.740s
+sys  0m0.112s
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And there we have it, apply works the fastest because it doesn’t need any matrix maths - it brute forces it with a loop.  It wasn’t all for naught through, we learned an important lesson that will be very helpful in the future.  We also learned that we lose a little less time than I expected when sizing the &lt;code&gt;C&lt;/code&gt; tensor at runtime.  So when possible it is best to use a fixed tensor for matrix operations, but you won’t be penalized much when you do need a generic solution.  For reference, lets see how Numpy performs with the calculation:&lt;/p&gt;
+&lt;h4 id=&quot;numpy-sigmoid-with-coercion&quot;&gt;Numpy sigmoid with coercion&lt;/h4&gt;
+&lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time python python_sigmoid.py 
+
+real 0m2.801s
+user 0m2.788s
+sys  0m0.016s
+&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;1m-iterations&quot;&gt;1M iterations&lt;/h4&gt;
+&lt;p&gt;Lets run all the tests one more time, increasing the iterations from 100K to 1M.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ ./sigmoid_all.sh 
+
+Torch apply
+real 0m22.587s
+user 0m21.792s
+sys  0m0.780s
+
+Torch cdiv_fixed
+real 0m27.303s
+user 0m26.316s
+sys  0m0.972s
+
+Torch cdiv
+real 0m30.145s
+user 0m29.116s
+sys  0m1.012s
+
+Numpy coercion
+real 0m27.625s
+user 0m27.608s
+sys  0m0.012s
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;element-multiplication&quot;&gt;Element Multiplication&lt;/h3&gt;
+&lt;p&gt;For the sigmoid derivative, we will need to do an element-wise multiplication of two matrices.&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_slope&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
+    output = x*(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;-x)
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; output
+&lt;/code&gt;&lt;/pre&gt;
+&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_slope&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; A:cmul(((-A)+&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;))
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We just introduced some new syntax in the Torch example.  Did you catch it?  The tensor &lt;code&gt;A&lt;/code&gt; has a method call cmul (similar to cdiv, but for element-wise multiplication), that we invoked with a colon &lt;code&gt;:&lt;/code&gt;.  Calling the method in this way, instead of as a torch function, allows the use of the ‘self’.  So we are multiplying &lt;code&gt;A&lt;/code&gt; by &lt;code&gt;(1-A)&lt;/code&gt;.  This is a bit more verbose than the Numpy variant, but should be clear based on previous examples.  Remember that ordering &lt;code&gt;(-A)+1&lt;/code&gt; is important because of type coercion!&lt;/p&gt;
+&lt;h3 id=&quot;transposition&quot;&gt;Transposition&lt;/h3&gt;
+&lt;p&gt;Transposing a matrix is fundamental in many operations.  Both libraries provide convenience methods for when the array/tensor is 2 dimensional.&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;K = np.array([
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]
+    ])
+t = K.T
+&lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; t
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Output:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[[0 0 1 1]
+ [0 1 0 1]
+ [1 1 1 1]]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;K = torch.Tensor({
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}
+})
+t = K:t()
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(t)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Output:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; 0  0  1  1
+ 0  1  0  1
+ 1  1  1  1
+[torch.DoubleTensor of size 3x4]
+&lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
+&lt;h2 id=&quot;show-me-the-port-already&quot;&gt;Show me the port already&lt;/h2&gt;
+&lt;p&gt;Now that we’ve attacked the basics, we have enough knowledge of Torch to do a full port.  I won’t dive into the application line-by-line, since IAmTrask does that much better for us.  Rather I will show the two examples side-by-side for you to scan and grok the differences as a whole.  Thanks for reading!&lt;/p&gt;
+&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; copy, numpy &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; np
+
+np.random.seed(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
+    output = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;/(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;+np.exp(-x))
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; output
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_slope&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
+    output = x*(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;-x)
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; output
+
+X = np.array([
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
+        [&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]
+    ])
+
+y = np.array([[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]])
+
+&lt;span class=&quot;comment&quot;&gt;#synapse_0 = 2*np.random.random((3,1)) - 1                        # &amp;lt;== random&lt;/span&gt;
+synapse_0 = np.array([[-&lt;span class=&quot;number&quot;&gt;0.16595599&lt;/span&gt;],[ &lt;span class=&quot;number&quot;&gt;0.44064899&lt;/span&gt;],[-&lt;span class=&quot;number&quot;&gt;0.99977125&lt;/span&gt;]]) &lt;span class=&quot;comment&quot;&gt;# &amp;lt;== determ&lt;/span&gt;
+
+&lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; i &lt;span class=&quot;keyword&quot;&gt;in&lt;/span&gt; xrange(&lt;span class=&quot;number&quot;&gt;5000&lt;/span&gt;):
+    layer_0 = X
+    layer_1 = sigmoid( np.dot( layer_0, synapse_0 ) )
+    layer_1_error = y.T - layer_1
+    layer_1_slope = sigmoid_slope(layer_1)
+    layer_1_delta = layer_1_error * layer_1_slope
+    weight_adjust = np.dot( layer_0.T, layer_1_delta )
+    synapse_0 = weight_adjust + synapse_0
+
+&lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; layer_1
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;[[ 0.00853151  0.00853151  0.99058279  0.99058279]
+ [ 0.00367044  0.00367044  0.99775755  0.99775755]
+ [ 0.00307474  0.00307474  0.99717866  0.99717866]
+ [ 0.00131869  0.00131869  0.99933157  0.99933157]]
+&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;'torch'&lt;/span&gt;
+
+torch.manualSeed(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
+    B = torch.exp(-A) + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;
+    B:apply(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;/x &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;)
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; B
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_slope&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
+    B = torch.cmul(A,((-A)+&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;))
+    &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; B
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+X = torch.Tensor({
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
+    {&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}
+})
+
+y = torch.Tensor({{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}}):repeatTensor(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;)
+
+&lt;span class=&quot;comment&quot;&gt;--synapse_0 = torch.rand(3,1)*2-1                                     -- &amp;lt;== random&lt;/span&gt;
+synapse_0 = torch.Tensor({{-&lt;span class=&quot;number&quot;&gt;0.16595599&lt;/span&gt;},{ &lt;span class=&quot;number&quot;&gt;0.44064899&lt;/span&gt;},{-&lt;span class=&quot;number&quot;&gt;0.99977125&lt;/span&gt;}}) &lt;span class=&quot;comment&quot;&gt;-- &amp;lt;== determ&lt;/span&gt;
+synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;4&lt;/span&gt;)
+
+&lt;span class=&quot;keyword&quot;&gt;for&lt;/span&gt; i=&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;5000&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;do&lt;/span&gt;
+    layer_0 = X
+    layer_1 = sigmoid(torch.mm(layer_0,synapse_0))
+    layer_1_error = y:t() - layer_1
+    layer_1_slope = sigmoid_slope(layer_1)
+    layer_1_delta = torch.cmul(layer_1_error,layer_1_slope)
+    layer_0_trans = layer_0:t()
+    weight_adjust = torch.mm(layer_0_trans,layer_1_delta)
+    synapse_0:add(weight_adjust)
+&lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
+
+&lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(layer_1)
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Outputs:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt; 0.0085  0.0085  0.9906  0.9906
+ 0.0037  0.0037  0.9978  0.9978
+ 0.0031  0.0031  0.9972  0.9972
+ 0.0013  0.0013  0.9993  0.9993
+[torch.DoubleTensor of size 4x4]
+&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;links&quot;&gt;Links&lt;/h2&gt;
+&lt;ul&gt;
+&lt;li&gt;[1] &lt;a href=&quot;https://iamtrask.github.io/2015/07/12/basic-python-network/&quot;&gt;https://iamtrask.github.io/2015/07/12/basic-python-network/&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;[2] &lt;a href=&quot;https://karpathy.github.io/2015/05/21/rnn-effectiveness/&quot;&gt;https://karpathy.github.io/2015/05/21/rnn-effectiveness/&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&quot;code&quot;&gt;Code&lt;/h2&gt;
+&lt;p&gt;The code for all of these examples can be found on github here:&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;https://github.com/binarymax/max.io/tree/master/contents/articles/porting-numpy-to-torch&quot;&gt;https://github.com/binarymax/max.io/tree/master/contents/articles/porting-numpy-to-torch&lt;/a&gt; &lt;/p&gt;
+</description>
+    </item>
+    <item>
       <title>Liquid Guilloché</title>
-      <link>http://localhost:8080/articles/liquid-guilloche/</link>
+      <link>http://localhost:5050/articles/liquid-guilloche/</link>
       <pubDate>Wed, 22 Jul 2015 01:00:00 +0100</pubDate>
-      <guid isPermaLink="true">http://localhost:8080/articles/liquid-guilloche/</guid>
+      <guid isPermaLink="true">http://localhost:5050/articles/liquid-guilloche/</guid>
       <author></author>
       <description>&lt;p&gt;Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an HTML5 canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated guilloches.&lt;/p&gt;
 &lt;hr&gt;
@@ -63,9 +478,9 @@
     </item>
     <item>
       <title>The State of State in the Browser</title>
-      <link>http://localhost:8080/articles/the-state-of-state-in-the-browser/</link>
+      <link>http://localhost:5050/articles/the-state-of-state-in-the-browser/</link>
       <pubDate>Sun, 12 Jul 2015 01:00:00 +0100</pubDate>
-      <guid isPermaLink="true">http://localhost:8080/articles/the-state-of-state-in-the-browser/</guid>
+      <guid isPermaLink="true">http://localhost:5050/articles/the-state-of-state-in-the-browser/</guid>
       <author></author>
       <description>&lt;p&gt;The mechanisms for storing data in the client are inadequate and unprepared for the next generation of web applications.  A new solution for persistent state management in the client is needed that is based on well understood foundations long prevalent on the desktop and server.&lt;/p&gt;
 &lt;hr&gt;
@@ -264,9 +679,9 @@ node0.delete();
     </item>
     <item>
       <title>Harissa</title>
-      <link>http://localhost:8080/articles/harissa/</link>
+      <link>http://localhost:5050/articles/harissa/</link>
       <pubDate>Fri, 10 Jul 2015 01:00:00 +0100</pubDate>
-      <guid isPermaLink="true">http://localhost:8080/articles/harissa/</guid>
+      <guid isPermaLink="true">http://localhost:5050/articles/harissa/</guid>
       <author></author>
       <description>&lt;p&gt;After some hammock driven development, Harissa is mature enough to release some results.  Originally intended for entire videos, I found the process better suited for only several frame remixes, usually of an identical source image.&lt;/p&gt;
 &lt;hr&gt;
@@ -276,7 +691,7 @@ node0.delete();
 &lt;h3 id=&quot;how-it-works&quot;&gt;How it works&lt;/h3&gt;
 &lt;p&gt;Take a source set of frames, with a target being each processed frame interspersed with an equal number of transition frames.  For example, if there are 4 raw images and 5 intermediate transition frames, there will be 20 frames for the final result.&lt;/p&gt;
 &lt;p&gt;There are two steps to the process, the mixer and the blender.&lt;/p&gt;
-&lt;p&gt;The mixer preprocesses each frame into circles using a genetic algorithm, as outlined in the post &lt;a href=&quot;http://localhost:8080/articles/hidden-shapes/&quot;&gt;Hidden Shapes&lt;/a&gt;.  The circles are stored in JSON, each with the necessary data of x, y, radius and color.&lt;/p&gt;
+&lt;p&gt;The mixer preprocesses each frame into circles using a genetic algorithm, as outlined in the post &lt;a href=&quot;http://localhost:5050/articles/hidden-shapes/&quot;&gt;Hidden Shapes&lt;/a&gt;.  The circles are stored in JSON, each with the necessary data of x, y, radius and color.&lt;/p&gt;
 &lt;p&gt;The blender takes each successive processed frame and matches the best pairs of circles from each frame.  By using a KD-Tree for nearest neighbors, each circle from one frame gets a sibling from the next successive frame.&lt;/p&gt;
 &lt;p&gt;After every circle has a sibling in its next frame, the path is animated from one to another.  A simple interpolation formula takes in x, y, and radius.  It returns an array of objects for the transition.  Each transition step becomes a new frame in the target animation.&lt;/p&gt;
 &lt;h3 id=&quot;research&quot;&gt;Research&lt;/h3&gt;
@@ -286,9 +701,9 @@ node0.delete();
     </item>
     <item>
       <title>Hidden Shapes</title>
-      <link>http://localhost:8080/articles/hidden-shapes/</link>
+      <link>http://localhost:5050/articles/hidden-shapes/</link>
       <pubDate>Sun, 25  Aug 2013 01:00:00 +0100</pubDate>
-      <guid isPermaLink="true">http://localhost:8080/articles/hidden-shapes/</guid>
+      <guid isPermaLink="true">http://localhost:5050/articles/hidden-shapes/</guid>
       <author></author>
       <description>&lt;p&gt;I am slowly working on a side-project that makes a video into a mishmash of circles for each frame.  I have an early version running, that manually takes a video, splits it into frames, remixes each frame into the circle mishmash, and recomposes the video with the new remixed frames.  The project is called ‘Harissa’.  The name Harissa comes from an Armenian dish and is made from chicken and a local type of wheat.  It cooks for a long time, until it is a thick porridge.  It is a fitting name because fully rendering a video is a slow process, and the result is an interesting mishmash of the original.&lt;/p&gt;
 &lt;hr&gt;
@@ -361,9 +776,9 @@ var testvisible = function(context,shapes,index){
     </item>
     <item>
       <title>Theories on Artificial Expression</title>
-      <link>http://localhost:8080/articles/theories-on-artificial-expression/</link>
+      <link>http://localhost:5050/articles/theories-on-artificial-expression/</link>
       <pubDate>Tue, 06  Aug 2013 01:00:00 +0100</pubDate>
-      <guid isPermaLink="true">http://localhost:8080/articles/theories-on-artificial-expression/</guid>
+      <guid isPermaLink="true">http://localhost:5050/articles/theories-on-artificial-expression/</guid>
       <author></author>
       <description>&lt;p&gt;It is hard to write a program that invents original art.  Two of the main reasons that software cannot create original expressive art are lack of context, and lack of experience.&lt;/p&gt;
 &lt;p&gt;Software lacks the ability to derive a human-like context from its surroundings.  Some trivial examples are not knowing whether a flower is beautiful, or whether satire is funny.  Software also does not know how to learn to understand this context, it cannot experience its surroundings in a similar fashion to that of the observer, and therefore cannot relate to the subject nor connect with the observer in any meaningful way.&lt;/p&gt;
@@ -499,9 +914,9 @@ var testvisible = function(context,shapes,index){
     </item>
     <item>
       <title>Anagramica is now FOSS</title>
-      <link>http://localhost:8080/articles/anagramica-now-foss/</link>
+      <link>http://localhost:5050/articles/anagramica-now-foss/</link>
       <pubDate>Sat, 03  Aug 2013 01:00:00 +0100</pubDate>
-      <guid isPermaLink="true">http://localhost:8080/articles/anagramica-now-foss/</guid>
+      <guid isPermaLink="true">http://localhost:5050/articles/anagramica-now-foss/</guid>
       <author></author>
       <description>&lt;p&gt;I’ve finally open sourced Anagramica (&lt;a href=&quot;http://anagramica.com/&quot;&gt;http://anagramica.com/&lt;/a&gt;) &lt;/p&gt;
 &lt;p&gt;The code is now available under the MIT license at &lt;a href=&quot;https://github.com/binarymax/anagramica&quot;&gt;https://github.com/binarymax/anagramica&lt;/a&gt;&lt;/p&gt;
@@ -521,9 +936,9 @@ var testvisible = function(context,shapes,index){
     </item>
     <item>
       <title>The Idea Is Art</title>
-      <link>http://localhost:8080/articles/the-idea-is-art/</link>
+      <link>http://localhost:5050/articles/the-idea-is-art/</link>
       <pubDate>Sun, 28 Jul 2013 01:00:00 +0100</pubDate>
-      <guid isPermaLink="true">http://localhost:8080/articles/the-idea-is-art/</guid>
+      <guid isPermaLink="true">http://localhost:5050/articles/the-idea-is-art/</guid>
       <author></author>
       <description>&lt;p&gt;I’ve been known to debate about a subject, which I like to call ‘The Idea is Art’.  I defend that whatever imagery we can conceive of in our mind can be considered art, even when lacking a physical manifestation.&lt;/p&gt;
 &lt;p&gt;‘What is art’ has been debated ad infinitum, and some like to draw the line and say something is not art if it cannot be expressed - as art is, by definition, expression.&lt;/p&gt;

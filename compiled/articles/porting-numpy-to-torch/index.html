@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="The blog of Max Irwin">
+    <meta name="author" content="Max Irwin">
+    <meta name="canonical" content="http://max.io">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width; initial-scale=1.0">
+    <meta property="og:image" content="http://binarymax.com/star200.png">
+    <meta property="og:title" content="max.io">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="The blog of Max Irwin">
+    <meta property="og:url" content="http://max.io/">
+    <meta property="og:site_name" content="max.io">
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:site:id" content="binarymax">
+    <meta property="twitter:title" content="Porting a Numpy neural network to Torch">
+    <meta property="twitter:image" content="http://binarymax.com/star200.png">
+    <meta property="twitter:description" content="code + art + philosophy">
+    <link rel="shortcut icon" href="http://binarymax.com/star200.png" type="image/png">
+    <link rel="image_src" href="http://binarymax.com/star200.png">
+    <title>Porting a Numpy neural network to Torch - Max Irwin
+    </title>
+    <link rel="alternate" href="http://localhost:5050/feed.xml" type="application/rss+xml" title="code + art + philosophy">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/sonsofobsidian.css">
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <div class="logo">
+          <h1 class="author"><a href="/">Max Irwin</a></h1>
+          <h2>2016-02-15</h2>
+        </div>
+        <h1>Porting a Numpy neural network to Torch</h1>
+      </div>
+      <hr class="bow sky">
+      <hr class="bow blue">
+      <hr class="bow viored">
+      <hr class="bow red">
+      <hr class="bow yellow">
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>This article outlines the process for porting Andrew Trask’s (aka IAmTrask) 11-line neural network[1] from Numpy (Python) to Torch&nbsp;(Lua).</p>
+<p>I’ve documented my progress here, for those who are interested in learning about Torch and Numpy and their differences.  As I started from scratch I hope this can prove useful to others who get stuck or need&nbsp;guidance.  </p>
+<hr>
+<h2 id="intro">Intro</h2>
+<p>When I started this project, I knew very little about neural networks, Python, and Lua.  After reading Andrej Karpathy’s excellent Char-<span class="caps">RNN</span> article[2], and diving confusedly into the original code from the Oxford ML class, I was intrigued and wanted to learn more so I could better understand how it all worked.  Several articles later I found IAmTrask’s brilliant tutorials and knew that I was on the correct path.  The Oxford code and other examples are all in Torch, and the Numpy code from IAmTrask has some key differences in how the libraries and languages work.  After getting to know the Numpy version well, this port seemed like the best next&nbsp;step.</p>
+<p>Undertaking this seemingly small project has proven incredibly difficult and rewarding, considering the nature of not only the languages and libraries, but the complexity of neural networks themselves (not to mention needing a wikipedia refresher course in linear algebra).  Also, it should be obvious that I am not suddenly an expert in these domains.  While what I have written below may seem straightforward, it is only after much reading, trial and error, coffee, and help from the friendly folks in the Torch community that I have finally become somewhat confident these examples.  Therefore, if you see any errors or have suggestions - please feel free to reach out to me&nbsp;@binarymax</p>
+<p>Note: this is a direct map of Numpy operations to Torch operations, without using Torch’s nn module.  As I continue my studies, I will post some more examples using the nn module&nbsp;approach.</p>
+<hr>
+<h2 id="matrices-arrays-and-tensors">Matrices, Arrays, and&nbsp;Tensors</h2>
+<p>Let’s start with the absolute basics:&nbsp;Matrices. </p>
+<p>In Numpy, we represent a matrix as an array.  In Torch, it is represented through a tensor (which can have many more than 2 dimensions).  These two constructs form the basis for all of our operations, so lets dive into some small&nbsp;examples:</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python">y = np.array([<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>])
+<span class="keyword">print</span> y
+</code></pre>
+<p>Outputs:</p>
+<pre><code>[0 0 1 1]
+</code></pre><h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua">y = torch.Tensor({<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>})
+<span class="built_in">print</span>(y)
+</code></pre>
+<p>Outputs:</p>
+<pre><code> 0
+ 0
+ 1
+ 1
+[torch.DoubleTensor of size 4]
+</code></pre><p>These are both one dimensional matrices of size 4, as taken from IAmTrask’s example.  Before getting into his neural network though, we will need to know how to do the following in both libraries: dot product, matrix by matrix multiplication, addition, and subtraction.  Both libraries behave a little differently, and mapping the two gives us critical insight into their&nbsp;behavior.</p>
+<h2 id="matrix-addition">Matrix&nbsp;Addition</h2>
+<p>As a simple exercise, we want to create a 4x3 matrix <code>X</code>, and then add our 1 dimensional matrix <code>y</code>, and store the result in <code>A</code>.  Note that for an <code>m</code>x<code>n</code> matrix, the m is the number of rows and n is the number of columns.  Also, if you are used to representing (x,y) coordinates on an axis as columns and rows like me, prepare to force your brain to mentally&nbsp;transpose!</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python">y = np.array([<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>])
+X = np.array([
+        [<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]
+    ])
+A = X + y
+</code></pre>
+<p>Outputs:</p>
+<pre><code>Traceback (most recent call last):
+  File &quot;python-examples.py&quot;, line 15, in &lt;module&gt;
+    A = y + X
+ValueError: operands could not be broadcast together with shapes (4,) (4,3)
+</code></pre><h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua">y = torch.Tensor({<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>})
+X = torch.Tensor({
+    {<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>}
+})
+A = X + y
+</code></pre>
+<p>Outputs:</p>
+<pre><code>/home/max/torch/install/bin/luajit: inconsistent tensor size at /home/max/torch
+/pkg/torch/lib/TH/generic/THTensorMath.c:500
+stack traceback:
+        [C]: at 0x7ffb9bab25d0
+        [C]: in function &#39;__sub&#39;
+        torch-examples.lua:15: in main chunk
+        [C]: in function &#39;dofile&#39;
+        .../max/torch/install/lib/luarocks/rocks/trepl/scm-1/bin/th:145: in main chunk
+        [C]: at 0x00406670
+</code></pre><p>What happened?  Well, we are missing a dimension.  In both cases, <code>y</code> is one dimensional (4) and <code>X</code> is two dimensional (4x1).  Also note that our Numpy error is a bit clearer in what went wrong.  It kindly gives us the code and exact problem, where Torch is a bit more vague by giving a generic exception and stack trace with a line number (but still has enough info to find the problem in our code).  Lets fix the issue in both, by making <code>y</code> two dimensional as a 4x1 matrix and try again.  Note the change in declaration for the <code>y</code> array/tensor in both&nbsp;examples:</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python"><span class="comment">#y = np.array([0,0,1,1])</span>
+y = np.array([[<span class="number">0</span>],[<span class="number">0</span>],[<span class="number">1</span>],[<span class="number">1</span>]])
+X = np.array([
+        [<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]
+    ])
+A = X + y
+print(A)
+</code></pre>
+<p>Outputs:</p>
+<pre><code>[[0 0 1]
+ [0 1 1]
+ [2 1 2]
+ [2 2 2]]
+</code></pre><h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua"><span class="comment">--y = torch.Tensor({0,0,1,1})</span>
+y = torch.Tensor({{<span class="number">0</span>},{<span class="number">0</span>},{<span class="number">1</span>},{<span class="number">1</span>}})
+X = torch.Tensor({
+    {<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>}
+})
+A = X + y
+</code></pre>
+<p>Outputs:</p>
+<pre><code>/home/max/torch/install/bin/luajit: inconsistent tensor size at /home/max/torch
+/pkg/torch/lib/TH/generic/THTensorMath.c:500
+stack traceback:
+        [C]: at 0x7f08896cc5d0
+        [C]: in function &#39;__sub&#39;
+        torch-examples.lua:15: in main chunk
+        [C]: in function &#39;dofile&#39;
+        .../max/torch/install/lib/luarocks/rocks/trepl/scm-1/bin/th:145: in main chunk
+        [C]: at 0x00406670
+</code></pre><p>And now we see our first difference between the two libraries.  When we made our Array 4x1 in Numpy it worked fine, but Torch doesn’t know how to add a 4x1 Tensor to a 4x3 Tensor.  To fix this, we need to make <code>y</code> into a 4x3 Tensor so Torch can add them successfully.  This is easily done using the <code>repeatTensor</code> Torch library method.  We will keep <code>y</code> intact and make a new 4x3 Tensor <code>B</code> and add that to <code>X</code> instead:</p>
+<h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua">y = torch.Tensor({{<span class="number">0</span>},{<span class="number">0</span>},{<span class="number">1</span>},{<span class="number">1</span>}})
+X = torch.Tensor({
+    {<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>}
+})
+B = torch.repeatTensor(y,<span class="number">1</span>,<span class="number">3</span>)
+A = X + B
+<span class="built_in">print</span>(A)
+</code></pre>
+<p>Outputs:</p>
+<pre><code> 0  0  1
+ 0  1  1
+ 2  1  2
+ 2  2  2
+[torch.DoubleTensor of size 4x3]
+</code></pre><hr>
+<h2 id="matrix-multiplication">Matrix&nbsp;multiplication</h2>
+<p>Lets try some multiplication.  Eventually we’ll need to multiply matrices to as part of the network training.  We can use examples directly from IAmTrask, and convert that to Torch.  We’ll create a 4x1 Tensor that will hold a synapse, and multiply it with our input layer <code>X</code>.  Remember from Matrix arithmetic, when you multiply one matrix <code>m</code>x<code>n</code> with another matrix <code>n</code>x<code>p</code>, the result is an <code>n</code>x<code>p</code> matrix.</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python">synapse_0 = np.array([
+        [-<span class="number">0.16595599</span>],
+        [ <span class="number">0.44064899</span>],
+        [-<span class="number">0.99977125</span>]
+    ])
+layer_0 = X
+multi_0 = np.dot( layer_0, synapse_0 )
+<span class="keyword">print</span> multi_0
+</code></pre>
+<p>Outputs:</p>
+<pre><code>[[-0.99977125]
+ [-0.55912226]
+ [-1.16572724]
+ [-0.72507825]]
+</code></pre><h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua">synapse_0 = torch.Tensor({
+        {-<span class="number">0.16595599</span>},
+        { <span class="number">0.44064899</span>},
+        {-<span class="number">0.99977125</span>}
+    })
+layer_0 = X
+multi_0 = layer_0 * synapse_0
+<span class="built_in">print</span>(multi_0)
+</code></pre>
+<p>Outputs:</p>
+<pre><code>-0.9998
+-0.5591
+-1.1657
+-0.7251
+[torch.DoubleTensor of size 4x1]
+</code></pre><p>Note in the above example that the multiplication was a bit easier in Torch.  We needed to use the Numpy dot method to multiply the two, but in Torch the * operator has been&nbsp;overloaded.</p>
+<hr>
+<h2 id="sigmoid">Sigmoid</h2>
+<p>Lets do a more complicated operation.  The reasons for calculating the sigmoid is well described in the cited articles, so we will need to perform the operation in our code.  Using <code>multi_0</code> calculated above as our input into the function, this is expressed as&nbsp;follows:</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(x)</span>:</span>
+    output = <span class="number">1</span>/(<span class="number">1</span>+np.exp(-x))
+    <span class="keyword">return</span> output
+sig_0 = sigmoid(multi_0)
+print(sig_0)
+</code></pre>
+<p>Outputs:</p>
+<pre><code>[[ 0.2689864 ]
+ [ 0.36375058]
+ [ 0.23762817]
+ [ 0.3262757 ]]
+</code></pre><h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua"><span class="function"><span class="keyword">function</span> <span class="title">sigmoid</span><span class="params">(A)</span></span>
+    B = torch.exp(-A) + <span class="number">1</span>
+    B:apply(<span class="function"><span class="keyword">function</span><span class="params">(x)</span></span> <span class="keyword">return</span> <span class="number">1</span>/x <span class="keyword">end</span>)
+    <span class="keyword">return</span> B
+<span class="keyword">end</span>
+sig_0 = sigmoid(multi_0)
+<span class="built_in">print</span>(sig_0)
+</code></pre>
+<p>Outputs:</p>
+<pre><code> 0.2690
+ 0.3638
+ 0.2376
+ 0.3263
+[torch.DoubleTensor of size 4x1]
+</code></pre><p>We can see that in Numpy, the operation is straightforward, and was cleanly translated from the mathematical formula.  In Torch is is not so simple.  Even replacing <code>torch.exp(-A) + 1</code> with <code>1 + torch.exp(-A)</code> won’t work, as type coercion in Lua can’t make sense of the latter.  Then we run into a scalar/matrix division problem due to the same reason, so we need to fall back to an element-by-element division using the Tensor’s apply method.  That seems woefully inefficient though.  Wouldn’t it be nice if we could do a matrix operation to get the inverse of each element?  There isn’t a built in method, but we can construct a&nbsp;couple.</p>
+<h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua"><span class="function"><span class="keyword">function</span> <span class="title">sigmoid_cdiv_fixed</span><span class="params">(A)</span></span>
+    B = torch.exp(-A) + <span class="number">1</span>
+    C = torch.Tensor({{<span class="number">1</span>},{<span class="number">1</span>},{<span class="number">1</span>},{<span class="number">1</span>}})
+    D = torch.cdiv(C,B)
+    <span class="keyword">return</span> D
+<span class="keyword">end</span>
+
+<span class="function"><span class="keyword">function</span> <span class="title">sigmoid_cdiv</span><span class="params">(A)</span></span>
+    B = torch.exp(-A) + <span class="number">1</span>
+    C = torch.Tensor(A:size(<span class="number">1</span>),<span class="number">1</span>):fill(<span class="number">1</span>)
+    D = torch.cdiv(C,B)
+    <span class="keyword">return</span> D
+<span class="keyword">end</span>
+
+sig_0 = sigmoid(multi_0)
+<span class="built_in">print</span>(sig_0)
+sig_cdiv_fixed_0 = sigmoid_cdiv_fixed(multi_0)
+<span class="built_in">print</span>(sig_cdiv_fixed_0)
+sig_cdiv_0 = sigmoid_cdiv(multi_0)
+<span class="built_in">print</span>(sig_cdiv_0)
+</code></pre>
+<p>The first method <code>sigmoid_cdiv_fixed</code> uses the element-wise Torch cdiv method for two tensor division, but you should notice that I used a hardcoded tensor declaration with a fixed size to calculate <code>D</code>.  We’d rather that not be the case, so we can make it generic and create our <code>sigmoid_cdiv</code> function, in which we construct <code>C</code> by getting the size of <code>A</code> and filling it with&nbsp;ones.</p>
+<h3 id="performance-testing">Performance&nbsp;testing</h3>
+<p>All three functions give the same output, but which is best?  In the world of Machine Learning, we want the fastest solution.  We are also interested in the tradeoff of having the generic <code>sigmoid_cdiv</code> function versus the <code>sigmoid_cdiv_fixed</code> function with the fixed-size&nbsp;tensor.  </p>
+<p>Let’s construct a simple test and run through lots of calculations to see how performance works out.  For the test we will have three scripts.  Each will create a random 4x1 matrix and run one of the respective functions, and do it 100k&nbsp;times.</p>
+<h4 id="torch-tensor-apply">Torch&nbsp;tensor:apply</h4>
+<pre><code>max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_apply.lua 
+
+real 0m2.318s
+user 0m2.216s
+sys  0m0.088s
+</code></pre><h4 id="torch-tensor-cdiv-fixed">Torch tensor:cdiv&nbsp;fixed</h4>
+<pre><code>max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_cdiv_fixed.lua 
+
+real 0m2.666s
+user 0m2.516s
+sys  0m0.136s
+</code></pre><h4 id="torch-tensor-cdiv">Torch&nbsp;tensor:cdiv</h4>
+<pre><code>max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_cdiv.lua 
+
+real 0m2.863s
+user 0m2.740s
+sys  0m0.112s
+</code></pre><p>And there we have it, apply works the fastest because it doesn’t need any matrix maths - it brute forces it with a loop.  It wasn’t all for naught through, we learned an important lesson that will be very helpful in the future.  We also learned that we lose a little less time than I expected when sizing the <code>C</code> tensor at runtime.  So when possible it is best to use a fixed tensor for matrix operations, but you won’t be penalized much when you do need a generic solution.  For reference, lets see how Numpy performs with the&nbsp;calculation:</p>
+<h4 id="numpy-sigmoid-with-coercion">Numpy sigmoid with&nbsp;coercion</h4>
+<pre><code>max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time python python_sigmoid.py 
+
+real 0m2.801s
+user 0m2.788s
+sys  0m0.016s
+</code></pre><h4 id="1m-iterations">1M&nbsp;iterations</h4>
+<p>Lets run all the tests one more time, increasing the iterations from 100K to&nbsp;1M.</p>
+<pre><code>max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ ./sigmoid_all.sh 
+
+Torch apply
+real 0m22.587s
+user 0m21.792s
+sys  0m0.780s
+
+Torch cdiv_fixed
+real 0m27.303s
+user 0m26.316s
+sys  0m0.972s
+
+Torch cdiv
+real 0m30.145s
+user 0m29.116s
+sys  0m1.012s
+
+Numpy coercion
+real 0m27.625s
+user 0m27.608s
+sys  0m0.012s
+</code></pre><h3 id="element-multiplication">Element&nbsp;Multiplication</h3>
+<p>For the sigmoid derivative, we will need to do an element-wise multiplication of two&nbsp;matrices.</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python"><span class="function"><span class="keyword">def</span> <span class="title">sigmoid_slope</span><span class="params">(x)</span>:</span>
+    output = x*(<span class="number">1</span>-x)
+    <span class="keyword">return</span> output
+</code></pre>
+<h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua"><span class="function"><span class="keyword">function</span> <span class="title">sigmoid_slope</span><span class="params">(A)</span></span>
+    <span class="keyword">return</span> A:cmul(((-A)+<span class="number">1</span>))
+<span class="keyword">end</span>
+</code></pre>
+<p>We just introduced some new syntax in the Torch example.  Did you catch it?  The tensor <code>A</code> has a method call cmul (similar to cdiv, but for element-wise multiplication), that we invoked with a colon <code>:</code>.  Calling the method in this way, instead of as a torch function, allows the use of the ‘self’.  So we are multiplying <code>A</code> by <code>(1-A)</code>.  This is a bit more verbose than the Numpy variant, but should be clear based on previous examples.  Remember that ordering <code>(-A)+1</code> is important because of type&nbsp;coercion!</p>
+<h3 id="transposition">Transposition</h3>
+<p>Transposing a matrix is fundamental in many operations.  Both libraries provide convenience methods for when the array/tensor is 2&nbsp;dimensional.</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python">K = np.array([
+        [<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]
+    ])
+t = K.T
+<span class="keyword">print</span> t
+</code></pre>
+<p>Output:</p>
+<pre><code>[[0 0 1 1]
+ [0 1 0 1]
+ [1 1 1 1]]
+</code></pre><h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua">K = torch.Tensor({
+    {<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>}
+})
+t = K:t()
+<span class="built_in">print</span>(t)
+</code></pre>
+<p>Output:</p>
+<pre><code> 0  0  1  1
+ 0  1  0  1
+ 1  1  1  1
+[torch.DoubleTensor of size 3x4]
+</code></pre><hr>
+<h2 id="show-me-the-port-already">Show me the port&nbsp;already</h2>
+<p>Now that we’ve attacked the basics, we have enough knowledge of Torch to do a full port.  I won’t dive into the application line-by-line, since IAmTrask does that much better for us.  Rather I will show the two examples side-by-side for you to scan and grok the differences as a whole.  Thanks for&nbsp;reading!</p>
+<h3 id="numpy-">Numpy:</h3>
+<pre><code class="lang-python"><span class="keyword">import</span> copy, numpy <span class="keyword">as</span> np
+
+np.random.seed(<span class="number">1</span>)
+
+<span class="function"><span class="keyword">def</span> <span class="title">sigmoid</span><span class="params">(x)</span>:</span>
+    output = <span class="number">1</span>/(<span class="number">1</span>+np.exp(-x))
+    <span class="keyword">return</span> output
+
+<span class="function"><span class="keyword">def</span> <span class="title">sigmoid_slope</span><span class="params">(x)</span>:</span>
+    output = x*(<span class="number">1</span>-x)
+    <span class="keyword">return</span> output
+
+X = np.array([
+        [<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>],
+        [<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>]
+    ])
+
+y = np.array([[<span class="number">0</span>],[<span class="number">0</span>],[<span class="number">1</span>],[<span class="number">1</span>]])
+
+<span class="comment">#synapse_0 = 2*np.random.random((3,1)) - 1                        # &lt;== random</span>
+synapse_0 = np.array([[-<span class="number">0.16595599</span>],[ <span class="number">0.44064899</span>],[-<span class="number">0.99977125</span>]]) <span class="comment"># &lt;== determ</span>
+
+<span class="keyword">for</span> i <span class="keyword">in</span> xrange(<span class="number">5000</span>):
+    layer_0 = X
+    layer_1 = sigmoid( np.dot( layer_0, synapse_0 ) )
+    layer_1_error = y.T - layer_1
+    layer_1_slope = sigmoid_slope(layer_1)
+    layer_1_delta = layer_1_error * layer_1_slope
+    weight_adjust = np.dot( layer_0.T, layer_1_delta )
+    synapse_0 = weight_adjust + synapse_0
+
+<span class="keyword">print</span> layer_1
+</code></pre>
+<p>Outputs:</p>
+<pre><code>[[ 0.00853151  0.00853151  0.99058279  0.99058279]
+ [ 0.00367044  0.00367044  0.99775755  0.99775755]
+ [ 0.00307474  0.00307474  0.99717866  0.99717866]
+ [ 0.00131869  0.00131869  0.99933157  0.99933157]]
+</code></pre><h3 id="torch-">Torch:</h3>
+<pre><code class="lang-lua"><span class="built_in">require</span> <span class="string">'torch'</span>
+
+torch.manualSeed(<span class="number">1</span>)
+
+<span class="function"><span class="keyword">function</span> <span class="title">sigmoid</span><span class="params">(A)</span></span>
+    B = torch.exp(-A) + <span class="number">1</span>
+    B:apply(<span class="function"><span class="keyword">function</span><span class="params">(x)</span></span> <span class="keyword">return</span> <span class="number">1</span>/x <span class="keyword">end</span>)
+    <span class="keyword">return</span> B
+<span class="keyword">end</span>
+
+<span class="function"><span class="keyword">function</span> <span class="title">sigmoid_slope</span><span class="params">(A)</span></span>
+    B = torch.cmul(A,((-A)+<span class="number">1</span>))
+    <span class="keyword">return</span> B
+<span class="keyword">end</span>
+
+X = torch.Tensor({
+    {<span class="number">0</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">0</span>,<span class="number">1</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">0</span>,<span class="number">1</span>},
+    {<span class="number">1</span>,<span class="number">1</span>,<span class="number">1</span>}
+})
+
+y = torch.Tensor({{<span class="number">0</span>},{<span class="number">0</span>},{<span class="number">1</span>},{<span class="number">1</span>}}):repeatTensor(<span class="number">1</span>,<span class="number">4</span>)
+
+<span class="comment">--synapse_0 = torch.rand(3,1)*2-1                                     -- &lt;== random</span>
+synapse_0 = torch.Tensor({{-<span class="number">0.16595599</span>},{ <span class="number">0.44064899</span>},{-<span class="number">0.99977125</span>}}) <span class="comment">-- &lt;== determ</span>
+synapse_0 = torch.repeatTensor(synapse_0,<span class="number">1</span>,<span class="number">4</span>)
+
+<span class="keyword">for</span> i=<span class="number">1</span>,<span class="number">5000</span> <span class="keyword">do</span>
+    layer_0 = X
+    layer_1 = sigmoid(torch.mm(layer_0,synapse_0))
+    layer_1_error = y:t() - layer_1
+    layer_1_slope = sigmoid_slope(layer_1)
+    layer_1_delta = torch.cmul(layer_1_error,layer_1_slope)
+    layer_0_trans = layer_0:t()
+    weight_adjust = torch.mm(layer_0_trans,layer_1_delta)
+    synapse_0:add(weight_adjust)
+<span class="keyword">end</span>
+
+<span class="built_in">print</span>(layer_1)
+</code></pre>
+<p>Outputs:</p>
+<pre><code> 0.0085  0.0085  0.9906  0.9906
+ 0.0037  0.0037  0.9978  0.9978
+ 0.0031  0.0031  0.9972  0.9972
+ 0.0013  0.0013  0.9993  0.9993
+[torch.DoubleTensor of size 4x4]
+</code></pre><h2 id="links">Links</h2>
+<ul>
+<li>[1] <a href="https://iamtrask.github.io/2015/07/12/basic-python-network/">https://iamtrask.github.io/2015/07/12/basic-python-network/</a></li>
+<li>[2] <a href="https://karpathy.github.io/2015/05/21/rnn-effectiveness/">https://karpathy.github.io/2015/05/21/rnn-effectiveness/</a></li>
+</ul>
+<h2 id="code">Code</h2>
+<p>The code for all of these examples can be found on github&nbsp;here:</p>
+<p><a href="https://github.com/binarymax/max.io/tree/master/contents/articles/porting-numpy-to-torch">https://github.com/binarymax/max.io/tree/master/contents/articles/porting-numpy-to-torch</a> </p>
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2016 Max Irwin &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+          <p>Please treat people the same way you want them to treat you</p>
+        </section>
+      </div>
+    </footer>
+    <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
+    <script src="/javascripts/prettyprint.js"></script>
+    <script src="/javascripts/analytics.js"></script>
+  </body>
+</html>
