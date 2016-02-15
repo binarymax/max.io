@@ -12,7 +12,13 @@ This article outlines the process for poring IAmTrask's 9-line neural network[1]
 
 When I started this project, I knew very little about neural networks, Python, and Lua.  After reading Karpathy's excellent Char-RNN article, and diving into the original code from Oxford ML class, I was intrigued and wanted to learn more.  Several articles later I found IAmTrask's brilliant articles and knew that it was finally time to dive in.  The Oxford code and other examples are all in Torch, and the Numpy code from IAmTrask has some key differences in how the libraries and languages work.  I've captured my process here, for those who are interested in any area of the above.  As I started from scratch I hope this can prove useful to others who get stuck or need guidance.  
 
-Undertaking this seemingly small project has proven incredibly difficult and rewarding, considering the nature of not only the languages and libraries, but the complexity of neural networks themselves (not to mention needing a personal refresher course in Matrix mathematics).  Also, it should be obvious that I am not suddenly an expert in these domains.  While what I have written below may seem straightforward, it is only after much reading, trial and error, coffee, and help from the friendly folks in the Torch community that I have finally become somewhat confident these examples.  Therefore, if you see any errors or suggestions - please feel free to reach out!
+---
+
+##Intro
+
+Undertaking this seemingly small project has proven incredibly difficult and rewarding, considering the nature of not only the languages and libraries, but the complexity of neural networks themselves (not to mention needing a wikipedia refresher course in Matrix mathematics).  Also, it should be obvious that I am not suddenly an expert in these domains.  While what I have written below may seem straightforward, it is only after much reading, trial and error, coffee, and help from the friendly folks in the Torch community that I have finally become somewhat confident these examples.  Therefore, if you see any errors or have suggestions - please feel free to reach out to me @binarymax
+
+Note: this is a direct map of Numpy operations to Torch operations, without using Torch's nn module.  As I continue my studies, I will post some more examples using the nn module approach.
 
 ---
 
@@ -50,7 +56,7 @@ These are both one dimentional matricies of size 4, as taken from IAmTrasks exam
 
 ##Matrix Addition
 
-As a simple exercise, we want to create a 4x3 matrix 'X', and then add our 1 dimensional matrix 'y', and store the result in 'A'.  Note that for an mxn matrix, the m is the number of rows and n is the number of columns.  If you are used to representing (x,y) coordinates on an axis as columns and rows, prepare to force your brain to mentally remap!
+As a simple exercise, we want to create a 4x3 matrix 'X', and then add our 1 dimensional matrix 'y', and store the result in 'A'.  Note that for an mxn matrix, the m is the number of rows and n is the number of columns.  Also, if you are used to representing (x,y) coordinates on an axis as columns and rows like me, prepare to force your brain to mentally transpose!
 
 ###Numpy:
 ```python
@@ -352,11 +358,73 @@ user 0m27.608s
 sys  0m0.012s
 ```
 
-##Porting IamTrask's two layer NN
+###Element Multiplication
 
-Now that we've attacked the basics, we have enough knowledge of Torch to do a full port.
+For the sigmoid derivative, we will need to do an element-wise multiplication of two matricies.
+
+###Numpy:
+```python
+def sigmoid_slope(x):
+	output = x*(1-x)
+	return output
+```
+
+###Torch:
+```lua
+function sigmoid_slope(A)
+	return A:cmul(((-A)+1))
+end
+```
+
+We just introduced some new syntax in the Torch example.  Did you catch it?  The tensor 'A' has a method call cmul (similar to cdiv, but for element-wise multiplication), that we invoked with a colon ':'.  Calling the method in this way, instead of as a torch function, allows the use of the 'self'.  So we are multiplying A by (1-A).  This is a bit more verbose than the Numpy variant, but should be clear based on previous examples.  Remember that ordering (-A)+1 is important because of type coercion!
+
+###Transposition
+
+Transposing a matrix is fundamental in many operations.  Both libraries provide convenience methods for when the array/tensor is 2 dimensional.
+
+###Numpy:
+```python
+K = np.array([
+		[0,0,1],
+		[0,1,1],
+		[1,0,1],
+		[1,1,1]
+	])
+t = K.T
+print t
+```
+Output:
+```
+[[0 0 1 1]
+ [0 1 0 1]
+ [1 1 1 1]]
+```
+
+###Torch:
+```lua
+K = torch.Tensor({
+	{0,0,1},
+	{0,1,1},
+	{1,0,1},
+	{1,1,1}
+})
+t = K:t()
+print(t)
+```
+Output:
+```
+ 0  0  1  1
+ 0  1  0  1
+ 1  1  1  1
+[torch.DoubleTensor of size 3x4]
+```
 
 ---------------------------------
+
+##Show me the port already!
+
+Now that we've attacked the basics, we have enough knowledge of Torch to do a full port.  I won't dive into the application line-by-line, since IAmTrask does that much better for us!  Rather I will show the two examples side-by-side for you to scan and grok the differences as a whole.  Thanks for reading!
+
 
 ###Numpy:
 ```python

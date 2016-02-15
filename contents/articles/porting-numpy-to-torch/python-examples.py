@@ -28,3 +28,16 @@ def sigmoid(x):
 	return output
 sig_0 = sigmoid(multi_0)
 print(sig_0)
+
+def sigmoid_slope(x):
+	output = x*(1-x)
+	return output
+
+K = np.array([
+		[0,0,1],
+		[0,1,1],
+		[1,0,1],
+		[1,1,1]
+	])
+t = K.T
+print t

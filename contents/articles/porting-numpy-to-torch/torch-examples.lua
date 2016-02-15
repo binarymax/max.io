@@ -48,3 +48,16 @@ sig_cdiv_fixed_0 = sigmoid_cdiv_fixed(multi_0)
 print(sig_cdiv_fixed_0)
 sig_cdiv_0 = sigmoid_cdiv(multi_0)
 print(sig_cdiv_0)
+
+function sigmoid_slope(A)
+	return A:cmul(((-A)+1))
+end
+
+K = torch.Tensor({
+	{0,0,1},
+	{0,1,1},
+	{1,0,1},
+	{1,1,1}
+})
+t = K:t()
+print(t)
