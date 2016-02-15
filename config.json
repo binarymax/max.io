@@ -1,6 +1,6 @@
 {
   "locals": {
-    "url": "http://localhost:8080",
+    "url": "http://localhost:5050",
     "name": "Max Irwin",
     "owner": "Max Irwin",
     "description": "code + art + philosophy",
@@ -12,7 +12,8 @@
   "require": {
     "moment": "moment",
     "_": "underscore",
-    "typogr": "typogr"
+    "typogr": "typogr",
+    "tools": "./tools"
   },
   "jade": {
     "pretty": true

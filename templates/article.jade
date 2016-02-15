@@ -7,6 +7,11 @@ block append vars
 block prepend title
   | #{ page.title + " - "}
 
+block twitter
+  meta(property="twitter:title", content=page.title)
+  meta(property="twitter:image", content=tools.image(page.metadata.image))
+  meta(property="twitter:description", content=tools.description(page.metadata.description))
+
 block header
   div.logo
     h1.author
