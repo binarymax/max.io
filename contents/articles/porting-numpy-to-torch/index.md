@@ -421,21 +421,104 @@ Output:
 
 ---------------------------------
 
-##Show me the port already!
+##Show me the port already
 
-Now that we've attacked the basics, we have enough knowledge of Torch to do a full port.  I won't dive into the application line-by-line, since IAmTrask does that much better for us!  Rather I will show the two examples side-by-side for you to scan and grok the differences as a whole.  Thanks for reading!
+Now that we've attacked the basics, we have enough knowledge of Torch to do a full port.  I won't dive into the application line-by-line, since IAmTrask does that much better for us.  Rather I will show the two examples side-by-side for you to scan and grok the differences as a whole.  Thanks for reading!
 
 
 ###Numpy:
 ```python
+import copy, numpy as np
+
+np.random.seed(1)
+
+def sigmoid(x):
+	output = 1/(1+np.exp(-x))
+	return output
+
+def sigmoid_slope(x):
+	output = x*(1-x)
+	return output
+
+X = np.array([
+		[0,0,1],
+		[0,1,1],
+		[1,0,1],
+		[1,1,1]
+	])
+
+y = np.array([[0],[0],[1],[1]])
+
+#synapse_0 = 2*np.random.random((3,1)) - 1                        # <== random
+synapse_0 = np.array([[-0.16595599],[ 0.44064899],[-0.99977125]]) # <== determ
+
+for i in xrange(5000):
+	layer_0 = X
+	layer_1 = sigmoid( np.dot( layer_0, synapse_0 ) )
+	layer_1_error = y.T - layer_1
+	layer_1_slope = sigmoid_slope(layer_1)
+	layer_1_delta = layer_1_error * layer_1_slope
+	weight_adjust = np.dot( layer_0.T, layer_1_delta )
+	synapse_0 = weight_adjust + synapse_0
+
+print layer_1
 ```
 Outputs:
 ```
+[[ 0.00853151  0.00853151  0.99058279  0.99058279]
+ [ 0.00367044  0.00367044  0.99775755  0.99775755]
+ [ 0.00307474  0.00307474  0.99717866  0.99717866]
+ [ 0.00131869  0.00131869  0.99933157  0.99933157]]
 ```
 
 ###Torch:
 ```lua
+require 'torch'
+
+torch.manualSeed(1)
+
+function sigmoid(A)
+	B = torch.exp(-A) + 1
+	B:apply(function(x) return 1/x end)
+	return B
+end
+
+function sigmoid_slope(A)
+	B = torch.cmul(A,((-A)+1))
+	return B
+end
+
+X = torch.Tensor({
+	{0,0,1},
+	{0,1,1},
+	{1,0,1},
+	{1,1,1}
+})
+
+y = torch.Tensor({{0},{0},{1},{1}}):repeatTensor(1,4)
+
+--synapse_0 = torch.rand(3,1)*2-1                                     -- <== random
+synapse_0 = torch.Tensor({{-0.16595599},{ 0.44064899},{-0.99977125}}) -- <== determ
+synapse_0 = torch.repeatTensor(synapse_0,1,4)
+
+for i=1,5000 do
+	layer_0 = X
+	layer_1 = sigmoid(torch.mm(layer_0,synapse_0))
+	layer_1_error = y:t() - layer_1
+	layer_1_slope = sigmoid_slope(layer_1)
+	layer_1_delta = torch.cmul(layer_1_error,layer_1_slope)
+	layer_0_trans = layer_0:t()
+	weight_adjust = torch.mm(layer_0_trans,layer_1_delta)
+	synapse_0:add(weight_adjust)
+end
+
+print(layer_1)
 ```
 Outputs:
 ```
+ 0.0085  0.0085  0.9906  0.9906
+ 0.0037  0.0037  0.9978  0.9978
+ 0.0031  0.0031  0.9972  0.9972
+ 0.0013  0.0013  0.9993  0.9993
+[torch.DoubleTensor of size 4x4]
 ```
