@@ -8,25 +8,28 @@ tags: [code,lua,python,numpy,torch]
 
 #Porting a Numpy application to Torch
 
-This article outlines the process for poring IAmTrask's 9-line neural network[1] from Numpy (Python) to Torch (Lua).
+This article outlines the process for porting Andrew Trask's (aka IAmTrask) 11-line neural network[1] from Numpy (Python) to Torch (Lua).
 
-When I started this project, I knew very little about neural networks, Python, and Lua.  After reading Karpathy's excellent Char-RNN article, and diving into the original code from Oxford ML class, I was intrigued and wanted to learn more.  Several articles later I found IAmTrask's brilliant articles and knew that it was finally time to dive in.  The Oxford code and other examples are all in Torch, and the Numpy code from IAmTrask has some key differences in how the libraries and languages work.  I've captured my process here, for those who are interested in any area of the above.  As I started from scratch I hope this can prove useful to others who get stuck or need guidance.  
+I've documented my progress here, for those who are interested in learning about Torch and Numpy and their differences.  As I started from scratch I hope this can prove useful to others who get stuck or need guidance.  
+
 
 ---
 
 ##Intro
 
-Undertaking this seemingly small project has proven incredibly difficult and rewarding, considering the nature of not only the languages and libraries, but the complexity of neural networks themselves (not to mention needing a wikipedia refresher course in Matrix mathematics).  Also, it should be obvious that I am not suddenly an expert in these domains.  While what I have written below may seem straightforward, it is only after much reading, trial and error, coffee, and help from the friendly folks in the Torch community that I have finally become somewhat confident these examples.  Therefore, if you see any errors or have suggestions - please feel free to reach out to me @binarymax
+When I started this project, I knew very little about neural networks, Python, and Lua.  After reading Andrej Karpathy's excellent Char-RNN article[2], and diving confusedly into the original code from the Oxford ML class, I was intrigued and wanted to learn more so I could better understand how it all worked.  Several articles later I found IAmTrask's brilliant tutorials and knew that I was on the correct path.  The Oxford code and other examples are all in Torch, and the Numpy code from IAmTrask has some key differences in how the libraries and languages work.  After getting to know the Numpy version well, this port seemed like the best next step.
+
+Undertaking this seemingly small project has proven incredibly difficult and rewarding, considering the nature of not only the languages and libraries, but the complexity of neural networks themselves (not to mention needing a wikipedia refresher course in linear algebra).  Also, it should be obvious that I am not suddenly an expert in these domains.  While what I have written below may seem straightforward, it is only after much reading, trial and error, coffee, and help from the friendly folks in the Torch community that I have finally become somewhat confident these examples.  Therefore, if you see any errors or have suggestions - please feel free to reach out to me @binarymax
 
 Note: this is a direct map of Numpy operations to Torch operations, without using Torch's nn module.  As I continue my studies, I will post some more examples using the nn module approach.
 
 ---
 
-##Matricies, Arrays, and Tensors
+##Matrices, Arrays, and Tensors
 
-Let's start with the absolute basics: Matricies. 
+Let's start with the absolute basics: Matrices. 
 
-In Numpy, a matrix is represented as an array.  In Torch, it is a tensor.  These two constructs form the basis for all of our operations, so lets dive into some basic examples:
+In Numpy, we represent a matrix as an array.  In Torch, it is represented through a tensor (which can have many more than 2 dimensions).  These two constructs form the basis for all of our operations, so lets dive into some small examples:
 
 ###Numpy:
 ```python
@@ -52,7 +55,7 @@ Outputs:
 [torch.DoubleTensor of size 4]
 ```
 
-These are both one dimentional matricies of size 4, as taken from IAmTrasks example.  Before getting into his neural network though, we will need to know how to do the following in both libraries: dot product, matrix by matrix multiplication, addition, and subtraction.  Both libraries behave a little differently, and mapping the two gives us critical insight into their behavior.
+These are both one dimensional matrices of size 4, as taken from IAmTrask's example.  Before getting into his neural network though, we will need to know how to do the following in both libraries: dot product, matrix by matrix multiplication, addition, and subtraction.  Both libraries behave a little differently, and mapping the two gives us critical insight into their behavior.
 
 ##Matrix Addition
 
@@ -176,7 +179,7 @@ Outputs:
 
 ##Matrix multiplication
 
-Lets try some multiplication.  Eventually we'll need to multiply matricies to as part of the network training.  We can use examples directly from IAmTrask, and convert that to Torch.  We'll create a 4x1 Tensor that will hold a synapse, and multiply it with our input layer 'X'.  Remember from Matrix arithmetic, when you multiply one matrix mxn with another matrix nxp, the result is an nxp matrix.
+Lets try some multiplication.  Eventually we'll need to multiply matrices to as part of the network training.  We can use examples directly from IAmTrask, and convert that to Torch.  We'll create a 4x1 Tensor that will hold a synapse, and multiply it with our input layer 'X'.  Remember from Matrix arithmetic, when you multiply one matrix mxn with another matrix nxp, the result is an nxp matrix.
 
 
 ###Numpy:
@@ -222,7 +225,7 @@ Note in the above example that the multiplication was a bit easier in Torch.  We
 
 ##Sigmoid
 
-Lets do a more complicated operation.  The reasons for calculating the sigmoid is well descibed in the cited articles, so we will need to perform the operation in our code.  Using 'multi_0' calculated above as our input into the function, this is expressed as follows:
+Lets do a more complicated operation.  The reasons for calculating the sigmoid is well described in the cited articles, so we will need to perform the operation in our code.  Using 'multi_0' calculated above as our input into the function, this is expressed as follows:
 
 
 ###Numpy:
@@ -260,7 +263,7 @@ Outputs:
 [torch.DoubleTensor of size 4x1]
 ```
 
-We can see that in Numpy, the operation is straighforward, and was cleanly translated from the mathematical formula.  In Torch is is not so simple.  Even replacing ```torch.exp(-A) + 1``` with ```1 + torch.exp(-A)``` won't work, as type coercion in Lua can make sense of the latter.  Then we run into a scalar/matrix division problem due to the same reason, so we need to fall back to an element-by-element division using the Tensor's apply method.  That seems woefully inefficient though.  Wouldnt it be nice if we could do a matrix operation to get the inverse of each element?  There isn't a built in method, but we can construct a couple.
+We can see that in Numpy, the operation is straightforward, and was cleanly translated from the mathematical formula.  In Torch is is not so simple.  Even replacing ```torch.exp(-A) + 1``` with ```1 + torch.exp(-A)``` won't work, as type coercion in Lua can make sense of the latter.  Then we run into a scalar/matrix division problem due to the same reason, so we need to fall back to an element-by-element division using the Tensor's apply method.  That seems woefully inefficient though.  Wouldn't it be nice if we could do a matrix operation to get the inverse of each element?  There isn't a built in method, but we can construct a couple.
 
 ###Torch:
 ```lua
@@ -286,7 +289,7 @@ sig_cdiv_0 = sigmoid_cdiv(multi_0)
 print(sig_cdiv_0)
 ```
 
-The first method 'sigmoid_cdiv_fixed' uses the element-wize Torch cdiv method for two tensor division, but you should notice that I used a hardcoded tensor declaration with a fixed size to calculate 'D'.  We'd rather that not be the case, so we can make it generic and create our 'sigmoid_cdiv' function, in which we construct 'C' by getting the size of 'A' and filling it with ones.
+The first method 'sigmoid_cdiv_fixed' uses the element-wise Torch cdiv method for two tensor division, but you should notice that I used a hardcoded tensor declaration with a fixed size to calculate 'D'.  We'd rather that not be the case, so we can make it generic and create our 'sigmoid_cdiv' function, in which we construct 'C' by getting the size of 'A' and filling it with ones.
 
 ###Performance testing
 
@@ -321,7 +324,7 @@ user 0m2.740s
 sys  0m0.112s
 ```
 
-And there we have it, apply works the fastest because it doesnt need any matrix maths - it brute forces it with a loop.  It wasnt all for naught through, we learned an important lesson that will be very helpful in the future.  We also learned that we also lose a little less time than I expected when sizing the 'C' tensor at runtime.  So when possible it is best to use a fixed tensor for matrix operations, but you won't be penalized much when you do need a generic solution.  For reference, lets see how numpy performs with the no-nonsense calculation:
+And there we have it, apply works the fastest because it doesn't need any matrix maths - it brute forces it with a loop.  It wasn't all for naught through, we learned an important lesson that will be very helpful in the future.  We also learned that we also lose a little less time than I expected when sizing the 'C' tensor at runtime.  So when possible it is best to use a fixed tensor for matrix operations, but you won't be penalized much when you do need a generic solution.  For reference, lets see how numpy performs with the no-nonsense calculation:
 
 ####Numpy sigmoid with coercion
 ```
@@ -360,7 +363,7 @@ sys  0m0.012s
 
 ###Element Multiplication
 
-For the sigmoid derivative, we will need to do an element-wise multiplication of two matricies.
+For the sigmoid derivative, we will need to do an element-wise multiplication of two matrices.
 
 ###Numpy:
 ```python
@@ -522,3 +525,11 @@ Outputs:
  0.0013  0.0013  0.9993  0.9993
 [torch.DoubleTensor of size 4x4]
 ```
+
+##Links
+- [1] https://iamtrask.github.io/2015/07/12/basic-python-network/
+- [2] https://karpathy.github.io/2015/05/21/rnn-effectiveness/
+
+##Code
+The code for all of these examples can be found on github here:
+https://github.com/binarymax/max.io/tree/master/contents/articles/porting-numpy-to-torch 
