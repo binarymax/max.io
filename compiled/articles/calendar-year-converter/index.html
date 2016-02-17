@@ -17,12 +17,12 @@
     <meta property="og:site_name" content="max.io">
     <meta property="twitter:card" content="summary">
     <meta property="twitter:site:id" content="binarymax">
-    <meta property="twitter:title" content="Harissa">
+    <meta property="twitter:title" content="Calendar Year Converter">
     <meta property="twitter:image" content="http://binarymax.com/star200.png">
     <meta property="twitter:description" content="code + art + philosophy">
     <link rel="shortcut icon" href="http://binarymax.com/star200.png" type="image/png">
     <link rel="image_src" href="http://binarymax.com/star200.png">
-    <title>Harissa - Max Irwin
+    <title>Calendar Year Converter - Max Irwin
     </title>
     <link rel="alternate" href="http://localhost:5050/feed.xml" type="application/rss+xml" title="code + art + philosophy">
     <link rel="stylesheet" href="/css/main.css">
@@ -33,9 +33,9 @@
       <div class="content-wrap">
         <div class="logo">
           <h1 class="author"><a href="/">Max Irwin</a></h1>
-          <h2>2015-07-10</h2>
+          <h2>2016-02-17</h2>
         </div>
-        <h1>Harissa</h1>
+        <h1>Calendar Year Converter</h1>
       </div>
       <hr class="bow sky">
       <hr class="bow blue">
@@ -46,21 +46,30 @@
     <div id="content">
       <div class="content-wrap">
         <article class="article">
-          <section class="content"><p>After some hammock driven development, Harissa is mature enough to release some results.  Originally intended for entire videos, I found the process better suited for only several frame remixes, usually of an identical source&nbsp;image.</p>
+          <section class="content"><p>This tool converts a calendar year between Gregorian Common Era (<span class="caps">CE</span>) คริสต์ศักราช (ค.ศ.), Jula Sakarat (JS) จุลศักราช (จ.ศ.), Buddhist Era (BE) พุทธศักราช (พ.ศ.), and Ratanakosin Sakarat (RS) รัตนโกสินทร์ศก&nbsp;(ร.ศ.)</p>
 <hr>
-<p><img src="yield.gif" border="0" class="image-column-left" /> <img src="rex.gif" border="0" class="image-column-right" /></p>
-<hr>
-<p><img src="firechrome.gif" border="0" class="image-column-left" /> <img src="flowers.gif" border="0" class="image-column-right" /></p>
-<p>###How it&nbsp;works</p>
-<p>Take a source set of frames, with a target being each processed frame interspersed with an equal number of transition frames.  For example, if there are 4 raw images and 5 intermediate transition frames, there will be 20 frames for the final&nbsp;result.</p>
-<p>There are two steps to the process, the mixer and the&nbsp;blender.</p>
-<p>The mixer preprocesses each frame into circles using a genetic algorithm, as outlined in the post <a href="/articles/hidden-shapes/">Hidden Shapes</a>.  The circles are stored in <span class="caps">JSON</span>, each with the necessary data of x, y, radius and&nbsp;color.</p>
-<p>The blender takes each successive processed frame and matches the best pairs of circles from each frame.  By using a <span class="caps">KD</span>-Tree for nearest neighbors, each circle from one frame gets a sibling from the next successive&nbsp;frame.</p>
-<p>After every circle has a sibling in its next frame, the path is animated from one to another.  A simple interpolation formula takes in x, y, and radius.  It returns an array of objects for the transition.  Each transition step becomes a new frame in the target&nbsp;animation.</p>
-<p>###Research</p>
-<p>It took awhile to refine the process, and along the way I discovered many interesting attributes of color spaces and contrast related to the algorithm.  I learned early in the project that linear distance is not a reliable way to differentiate colors, and research took me down the paths to delta-e.  I ended up keeping linear distance, however, since it gives an interesting look to the&nbsp;results.</p>
-<p>As a side effect, color simplicity and high border contrast become key, for the mixer algorithm to give good representations.  Some would consider this a flaw, but it is indeed purposeful for the art.  A more accurate color difference formula would just give results similar to that of a photoshop filter.  It also forced me to keep constraints on photo style for good&nbsp;consistency.</p>
+<section>
+    <p>
+        <input type="number" id="CE" class="calendaryear" /> <label>Common Era (<span class="caps">CE</span>) <span class="thai">คริสต์ศักราช (ค.ศ.)</span></label>
+    </p>
+
+    <p>
+        <input type="number" id="BE" class="calendaryear" /> <label>Buddhist Era (<span class="caps">BE</span>) <span class="thai">พุทธศักราช (พ.ศ.)</span></label>
+    </p>
+
+    <p>
+        <input type="number" id="JS" class="calendaryear" /> <label>Jula Sakarat (<span class="caps">JS</span>) <span class="thai">จุลศักราช (จ.ศ.)</span></label>
+    </p>
+
+    <p>
+        <input type="number" id="RS" class="calendaryear" /> <label>Ratanakosin Sakarat (<span class="caps">RS</span>) <span class="thai">รัตนโกสินทร์ศก (ร.ศ.)</span></label>
+    </p>
 </section>
+
+<hr>
+<p>This is for my brother Anthony who, though having mastered Thai as a second language and can read Aramaic and Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead&nbsp;languages.</p>
+<script type="text/javascript" src="/javascripts/jquery-1.12.0.min.js"></script>
+<script type="text/javascript" src="/javascripts/calendaryear.js"></script></section>
         </article>
       </div>
     </div>

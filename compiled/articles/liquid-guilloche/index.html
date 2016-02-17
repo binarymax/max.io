@@ -48,10 +48,10 @@
         <article class="article">
           <section class="content"><p>Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an <span class="caps">HTML5</span> canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated&nbsp;guilloches.</p>
 <hr>
-<h2 id="a-simple-rosette">A Simple&nbsp;Rosette</h2>
+<p>##A Simple&nbsp;Rosette</p>
 <p>The formula for the basic rosette guilloche is not something you would stumble upon when playing around with graphics.  It is elegant and simple, and if you have a basic understanding of graphing trigonometry equations you can grasp it without difficulty.  In the physical world, a layperson would recognise it as a&nbsp;spirograph[2].</p>
 <pre><code class="lang-javascript">    <span class="built_in">Math</span>.tau = <span class="built_in">Math</span>.tau||(<span class="built_in">Math</span>.<span class="caps">PI</span>*<span class="number">2</span>);
-    <span class="keyword">var</span> rosette = <span class="function"><span class="keyword">function</span><span class="params">(image,R,r,p,step)</span> </span>{
+    <span class="keyword">var</span> rosette = <span class="function"><span class="keyword">function</span>(<span class="params">image,R,r,p,step</span>) </span>{
         <span class="keyword">var</span> rr = R+r;
         <span class="keyword">var</span> rp = r+p;
         <span class="keyword">var</span> rrr = (R+r)/r;
@@ -69,22 +69,22 @@
 
 <p>A nice benefit of expressing a mathematical construct in code, is that you can iterate the variables over a range to animate.  Clicking on the above starts the&nbsp;animation.</p>
 <hr>
-<h2 id="a-knee">A&nbsp;Knee</h2>
+<p>##A&nbsp;Knee</p>
 <p>By changing the formula of the original, we can create new and interesting forms.  This example changes the formula slightly by calculating a tangent in place of a&nbsp;sine.</p>
 <canvas id="knee"></canvas>
 
 <hr>
-<h2 id="a-river">A&nbsp;River</h2>
+<p>##A&nbsp;River</p>
 <p>By changing the formula of the original, we can create new and interesting&nbsp;forms.</p>
 <canvas id="river"></canvas>
 
 <hr>
-<h2 id="combining-forms">Combining&nbsp;forms</h2>
+<p>##Combining&nbsp;forms</p>
 <p>We can easily combine two or more forms to the same canvas.  Here is ‘Ribbon’, ‘Cross’, and ‘Rosette’&nbsp;together.</p>
 <canvas id="multi1"></canvas>
 
 <hr>
-<h2 id="try-it-out-">Try it&nbsp;out!</h2>
+<p>##Try it&nbsp;out!</p>
 <p>The code is all available here: <a href="https://github.com/binarymax/guilloche">https://github.com/binarymax/guilloche</a></p>
 <p>If you like this, you can also follow me on twitter <a href="https://twitter.com/binarymax">@binarymax</a></p>
 <hr>

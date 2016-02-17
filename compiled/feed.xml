@@ -5,9 +5,40 @@
     <atom:link href="http://localhost:5050/feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>http://localhost:5050</link>
     <description>code + art + philosophy</description>
-    <pubDate>Mon, 15 Feb 2016 00:00:00 +0000</pubDate>
+    <pubDate>Wed, 17 Feb 2016 00:00:00 +0000</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>Calendar Year Converter</title>
+      <link>http://localhost:5050/articles/calendar-year-converter/</link>
+      <pubDate>Wed, 17 Feb 2016 00:00:00 +0000</pubDate>
+      <guid isPermaLink="true">http://localhost:5050/articles/calendar-year-converter/</guid>
+      <author></author>
+      <description>&lt;p&gt;This tool converts a calendar year between Gregorian Common Era (CE) คริสต์ศักราช (ค.ศ.), Jula Sakarat (JS) จุลศักราช (จ.ศ.), Buddhist Era (BE) พุทธศักราช (พ.ศ.), and Ratanakosin Sakarat (RS) รัตนโกสินทร์ศก (ร.ศ.)&lt;/p&gt;
+&lt;hr&gt;
+&lt;section&gt;
+    &lt;p&gt;
+        &lt;input type=&quot;number&quot; id=&quot;CE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Common Era (CE) &lt;span class=&quot;thai&quot;&gt;คริสต์ศักราช (ค.ศ.)&lt;/span&gt;&lt;/label&gt;
+    &lt;/p&gt;
+
+    &lt;p&gt;
+        &lt;input type=&quot;number&quot; id=&quot;BE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Buddhist Era (BE) &lt;span class=&quot;thai&quot;&gt;พุทธศักราช (พ.ศ.)&lt;/span&gt;&lt;/label&gt;
+    &lt;/p&gt;
+
+    &lt;p&gt;
+        &lt;input type=&quot;number&quot; id=&quot;JS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Jula Sakarat (JS) &lt;span class=&quot;thai&quot;&gt;จุลศักราช (จ.ศ.)&lt;/span&gt;&lt;/label&gt;
+    &lt;/p&gt;
+
+    &lt;p&gt;
+        &lt;input type=&quot;number&quot; id=&quot;RS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Ratanakosin Sakarat (RS) &lt;span class=&quot;thai&quot;&gt;รัตนโกสินทร์ศก (ร.ศ.)&lt;/span&gt;&lt;/label&gt;
+    &lt;/p&gt;
+&lt;/section&gt;
+
+&lt;hr&gt;
+&lt;p&gt;This is for my brother Anthony who, though having mastered Thai as a second language and can read Aramaic and Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead languages.&lt;/p&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/jquery-1.12.0.min.js&quot;&gt;&lt;/script&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/calendaryear.js&quot;&gt;&lt;/script&gt;</description>
+    </item>
     <item>
       <title>Porting a Numpy neural network to Torch</title>
       <link>http://localhost:5050/articles/porting-numpy-to-torch/</link>
@@ -17,21 +48,21 @@
       <description>&lt;p&gt;This article outlines the process for porting Andrew Trask’s (aka IAmTrask) 11-line neural network[1] from Numpy (Python) to Torch (Lua).&lt;/p&gt;
 &lt;p&gt;I’ve documented my progress here, for those who are interested in learning about Torch and Numpy and their differences.  As I started from scratch I hope this can prove useful to others who get stuck or need guidance.  &lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id=&quot;intro&quot;&gt;Intro&lt;/h2&gt;
+&lt;p&gt;##Intro&lt;/p&gt;
 &lt;p&gt;When I started this project, I knew very little about neural networks, Python, and Lua.  After reading Andrej Karpathy’s excellent Char-RNN article[2], and diving confusedly into the original code from the Oxford ML class, I was intrigued and wanted to learn more so I could better understand how it all worked.  Several articles later I found IAmTrask’s brilliant tutorials and knew that I was on the correct path.  The Oxford code and other examples are all in Torch, and the Numpy code from IAmTrask has some key differences in how the libraries and languages work.  After getting to know the Numpy version well, this port seemed like the best next step.&lt;/p&gt;
 &lt;p&gt;Undertaking this seemingly small project has proven incredibly difficult and rewarding, considering the nature of not only the languages and libraries, but the complexity of neural networks themselves (not to mention needing a wikipedia refresher course in linear algebra).  Also, it should be obvious that I am not suddenly an expert in these domains.  While what I have written below may seem straightforward, it is only after much reading, trial and error, coffee, and help from the friendly folks in the Torch community that I have finally become somewhat confident these examples.  Therefore, if you see any errors or have suggestions - please feel free to reach out to me @binarymax&lt;/p&gt;
 &lt;p&gt;Note: this is a direct map of Numpy operations to Torch operations, without using Torch’s nn module.  As I continue my studies, I will post some more examples using the nn module approach.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id=&quot;matrices-arrays-and-tensors&quot;&gt;Matrices, Arrays, and Tensors&lt;/h2&gt;
+&lt;p&gt;##Matrices, Arrays, and Tensors&lt;/p&gt;
 &lt;p&gt;Let’s start with the absolute basics: Matrices. &lt;/p&gt;
 &lt;p&gt;In Numpy, we represent a matrix as an array.  In Torch, it is represented through a tensor (which can have many more than 2 dimensions).  These two constructs form the basis for all of our operations, so lets dive into some small examples:&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;y = np.array([&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;])
 &lt;span class=&quot;keyword&quot;&gt;print&lt;/span&gt; y
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Outputs:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;[0 0 1 1]
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;y = torch.Tensor({&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;})
 &lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(y)
 &lt;/code&gt;&lt;/pre&gt;
@@ -42,9 +73,9 @@
  1
 [torch.DoubleTensor of size 4]
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;These are both one dimensional matrices of size 4, as taken from IAmTrask’s example.  Before getting into his neural network though, we will need to know how to do the following in both libraries: dot product, matrix by matrix multiplication, addition, and subtraction.  Both libraries behave a little differently, and mapping the two gives us critical insight into their behavior.&lt;/p&gt;
-&lt;h2 id=&quot;matrix-addition&quot;&gt;Matrix Addition&lt;/h2&gt;
+&lt;p&gt;##Matrix Addition&lt;/p&gt;
 &lt;p&gt;As a simple exercise, we want to create a 4x3 matrix &lt;code&gt;X&lt;/code&gt;, and then add our 1 dimensional matrix &lt;code&gt;y&lt;/code&gt;, and store the result in &lt;code&gt;A&lt;/code&gt;.  Note that for an &lt;code&gt;m&lt;/code&gt;x&lt;code&gt;n&lt;/code&gt; matrix, the m is the number of rows and n is the number of columns.  Also, if you are used to representing (x,y) coordinates on an axis as columns and rows like me, prepare to force your brain to mentally transpose!&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;y = np.array([&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;])
 X = np.array([
         [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
@@ -59,7 +90,7 @@ A = X + y
   File &amp;quot;python-examples.py&amp;quot;, line 15, in &amp;lt;module&amp;gt;
     A = y + X
 ValueError: operands could not be broadcast together with shapes (4,) (4,3)
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;y = torch.Tensor({&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;})
 X = torch.Tensor({
     {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
@@ -80,7 +111,7 @@ stack traceback:
         .../max/torch/install/lib/luarocks/rocks/trepl/scm-1/bin/th:145: in main chunk
         [C]: at 0x00406670
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;What happened?  Well, we are missing a dimension.  In both cases, &lt;code&gt;y&lt;/code&gt; is one dimensional (4) and &lt;code&gt;X&lt;/code&gt; is two dimensional (4x1).  Also note that our Numpy error is a bit clearer in what went wrong.  It kindly gives us the code and exact problem, where Torch is a bit more vague by giving a generic exception and stack trace with a line number (but still has enough info to find the problem in our code).  Lets fix the issue in both, by making &lt;code&gt;y&lt;/code&gt; two dimensional as a 4x1 matrix and try again.  Note the change in declaration for the &lt;code&gt;y&lt;/code&gt; array/tensor in both examples:&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;comment&quot;&gt;#y = np.array([0,0,1,1])&lt;/span&gt;
 y = np.array([[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],[&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;]])
 X = np.array([
@@ -97,7 +128,7 @@ print(A)
  [0 1 1]
  [2 1 2]
  [2 2 2]]
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;comment&quot;&gt;--y = torch.Tensor({0,0,1,1})&lt;/span&gt;
 y = torch.Tensor({{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}})
 X = torch.Tensor({
@@ -119,7 +150,7 @@ stack traceback:
         .../max/torch/install/lib/luarocks/rocks/trepl/scm-1/bin/th:145: in main chunk
         [C]: at 0x00406670
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And now we see our first difference between the two libraries.  When we made our Array 4x1 in Numpy it worked fine, but Torch doesn’t know how to add a 4x1 Tensor to a 4x3 Tensor.  To fix this, we need to make &lt;code&gt;y&lt;/code&gt; into a 4x3 Tensor so Torch can add them successfully.  This is easily done using the &lt;code&gt;repeatTensor&lt;/code&gt; Torch library method.  We will keep &lt;code&gt;y&lt;/code&gt; intact and make a new 4x3 Tensor &lt;code&gt;B&lt;/code&gt; and add that to &lt;code&gt;X&lt;/code&gt; instead:&lt;/p&gt;
-&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;y = torch.Tensor({{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}})
 X = torch.Tensor({
     {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
@@ -138,9 +169,9 @@ A = X + B
  2  2  2
 [torch.DoubleTensor of size 4x3]
 &lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
-&lt;h2 id=&quot;matrix-multiplication&quot;&gt;Matrix multiplication&lt;/h2&gt;
+&lt;p&gt;##Matrix multiplication&lt;/p&gt;
 &lt;p&gt;Lets try some multiplication.  Eventually we’ll need to multiply matrices to as part of the network training.  We can use examples directly from IAmTrask, and convert that to Torch.  We’ll create a 4x1 Tensor that will hold a synapse, and multiply it with our input layer &lt;code&gt;X&lt;/code&gt;.  Remember from Matrix arithmetic, when you multiply one matrix &lt;code&gt;m&lt;/code&gt;x&lt;code&gt;n&lt;/code&gt; with another matrix &lt;code&gt;n&lt;/code&gt;x&lt;code&gt;p&lt;/code&gt;, the result is an &lt;code&gt;n&lt;/code&gt;x&lt;code&gt;p&lt;/code&gt; matrix.&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;synapse_0 = np.array([
         [-&lt;span class=&quot;number&quot;&gt;0.16595599&lt;/span&gt;],
         [ &lt;span class=&quot;number&quot;&gt;0.44064899&lt;/span&gt;],
@@ -155,7 +186,7 @@ multi_0 = np.dot( layer_0, synapse_0 )
  [-0.55912226]
  [-1.16572724]
  [-0.72507825]]
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;synapse_0 = torch.Tensor({
         {-&lt;span class=&quot;number&quot;&gt;0.16595599&lt;/span&gt;},
         { &lt;span class=&quot;number&quot;&gt;0.44064899&lt;/span&gt;},
@@ -173,9 +204,9 @@ multi_0 = layer_0 * synapse_0
 [torch.DoubleTensor of size 4x1]
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;Note in the above example that the multiplication was a bit easier in Torch.  We needed to use the Numpy dot method to multiply the two, but in Torch the * operator has been overloaded.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id=&quot;sigmoid&quot;&gt;Sigmoid&lt;/h2&gt;
+&lt;p&gt;##Sigmoid&lt;/p&gt;
 &lt;p&gt;Lets do a more complicated operation.  The reasons for calculating the sigmoid is well described in the cited articles, so we will need to perform the operation in our code.  Using &lt;code&gt;multi_0&lt;/code&gt; calculated above as our input into the function, this is expressed as follows:&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
     output = &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;/(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;+np.exp(-x))
     &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; output
@@ -187,7 +218,7 @@ print(sig_0)
  [ 0.36375058]
  [ 0.23762817]
  [ 0.3262757 ]]
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
     B = torch.exp(-A) + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;
     B:apply(&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;&lt;/span&gt; &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;/x &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;)
@@ -203,7 +234,7 @@ sig_0 = sigmoid(multi_0)
  0.3263
 [torch.DoubleTensor of size 4x1]
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;We can see that in Numpy, the operation is straightforward, and was cleanly translated from the mathematical formula.  In Torch is is not so simple.  Even replacing &lt;code&gt;torch.exp(-A) + 1&lt;/code&gt; with &lt;code&gt;1 + torch.exp(-A)&lt;/code&gt; won’t work, as type coercion in Lua can’t make sense of the latter.  Then we run into a scalar/matrix division problem due to the same reason, so we need to fall back to an element-by-element division using the Tensor’s apply method.  That seems woefully inefficient though.  Wouldn’t it be nice if we could do a matrix operation to get the inverse of each element?  There isn’t a built in method, but we can construct a couple.&lt;/p&gt;
-&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_cdiv_fixed&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
     B = torch.exp(-A) + &lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;
     C = torch.Tensor({{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},{&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;}})
@@ -226,36 +257,36 @@ sig_cdiv_0 = sigmoid_cdiv(multi_0)
 &lt;span class=&quot;built_in&quot;&gt;print&lt;/span&gt;(sig_cdiv_0)
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The first method &lt;code&gt;sigmoid_cdiv_fixed&lt;/code&gt; uses the element-wise Torch cdiv method for two tensor division, but you should notice that I used a hardcoded tensor declaration with a fixed size to calculate &lt;code&gt;D&lt;/code&gt;.  We’d rather that not be the case, so we can make it generic and create our &lt;code&gt;sigmoid_cdiv&lt;/code&gt; function, in which we construct &lt;code&gt;C&lt;/code&gt; by getting the size of &lt;code&gt;A&lt;/code&gt; and filling it with ones.&lt;/p&gt;
-&lt;h3 id=&quot;performance-testing&quot;&gt;Performance testing&lt;/h3&gt;
+&lt;p&gt;###Performance testing&lt;/p&gt;
 &lt;p&gt;All three functions give the same output, but which is best?  In the world of Machine Learning, we want the fastest solution.  We are also interested in the tradeoff of having the generic &lt;code&gt;sigmoid_cdiv&lt;/code&gt; function versus the &lt;code&gt;sigmoid_cdiv_fixed&lt;/code&gt; function with the fixed-size tensor.  &lt;/p&gt;
 &lt;p&gt;Let’s construct a simple test and run through lots of calculations to see how performance works out.  For the test we will have three scripts.  Each will create a random 4x1 matrix and run one of the respective functions, and do it 100k times.&lt;/p&gt;
-&lt;h4 id=&quot;torch-tensor-apply&quot;&gt;Torch tensor:apply&lt;/h4&gt;
+&lt;p&gt;####Torch tensor:apply&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_apply.lua 
 
 real 0m2.318s
 user 0m2.216s
 sys  0m0.088s
-&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;torch-tensor-cdiv-fixed&quot;&gt;Torch tensor:cdiv fixed&lt;/h4&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;####Torch tensor:cdiv fixed&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_cdiv_fixed.lua 
 
 real 0m2.666s
 user 0m2.516s
 sys  0m0.136s
-&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;torch-tensor-cdiv&quot;&gt;Torch tensor:cdiv&lt;/h4&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;####Torch tensor:cdiv&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time th torch_sigmoid_cdiv.lua 
 
 real 0m2.863s
 user 0m2.740s
 sys  0m0.112s
 &lt;/code&gt;&lt;/pre&gt;&lt;p&gt;And there we have it, apply works the fastest because it doesn’t need any matrix maths - it brute forces it with a loop.  It wasn’t all for naught through, we learned an important lesson that will be very helpful in the future.  We also learned that we lose a little less time than I expected when sizing the &lt;code&gt;C&lt;/code&gt; tensor at runtime.  So when possible it is best to use a fixed tensor for matrix operations, but you won’t be penalized much when you do need a generic solution.  For reference, lets see how Numpy performs with the calculation:&lt;/p&gt;
-&lt;h4 id=&quot;numpy-sigmoid-with-coercion&quot;&gt;Numpy sigmoid with coercion&lt;/h4&gt;
+&lt;p&gt;####Numpy sigmoid with coercion&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ time python python_sigmoid.py 
 
 real 0m2.801s
 user 0m2.788s
 sys  0m0.016s
-&lt;/code&gt;&lt;/pre&gt;&lt;h4 id=&quot;1m-iterations&quot;&gt;1M iterations&lt;/h4&gt;
-&lt;p&gt;Lets run all the tests one more time, increasing the iterations from 100K to 1M.&lt;/p&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;####1M iterations
+Lets run all the tests one more time, increasing the iterations from 100K to 1M.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;max@SOLAR:~/blog/max.io/contents/articles/porting-numpy-to-torch$ ./sigmoid_all.sh 
 
 Torch apply
@@ -277,22 +308,22 @@ Numpy coercion
 real 0m27.625s
 user 0m27.608s
 sys  0m0.012s
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;element-multiplication&quot;&gt;Element Multiplication&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Element Multiplication&lt;/p&gt;
 &lt;p&gt;For the sigmoid derivative, we will need to do an element-wise multiplication of two matrices.&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;def&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_slope&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(x)&lt;/span&gt;:&lt;/span&gt;
     output = x*(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;-x)
     &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; output
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt; &lt;span class=&quot;title&quot;&gt;sigmoid_slope&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(A)&lt;/span&gt;&lt;/span&gt;
     &lt;span class=&quot;keyword&quot;&gt;return&lt;/span&gt; A:cmul(((-A)+&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;))
 &lt;span class=&quot;keyword&quot;&gt;end&lt;/span&gt;
 &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We just introduced some new syntax in the Torch example.  Did you catch it?  The tensor &lt;code&gt;A&lt;/code&gt; has a method call cmul (similar to cdiv, but for element-wise multiplication), that we invoked with a colon &lt;code&gt;:&lt;/code&gt;.  Calling the method in this way, instead of as a torch function, allows the use of the ‘self’.  So we are multiplying &lt;code&gt;A&lt;/code&gt; by &lt;code&gt;(1-A)&lt;/code&gt;.  This is a bit more verbose than the Numpy variant, but should be clear based on previous examples.  Remember that ordering &lt;code&gt;(-A)+1&lt;/code&gt; is important because of type coercion!&lt;/p&gt;
-&lt;h3 id=&quot;transposition&quot;&gt;Transposition&lt;/h3&gt;
+&lt;p&gt;###Transposition&lt;/p&gt;
 &lt;p&gt;Transposing a matrix is fundamental in many operations.  Both libraries provide convenience methods for when the array/tensor is 2 dimensional.&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;K = np.array([
         [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
         [&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;],
@@ -306,7 +337,7 @@ t = K.T
 &lt;pre&gt;&lt;code&gt;[[0 0 1 1]
  [0 1 0 1]
  [1 1 1 1]]
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;K = torch.Tensor({
     {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
     {&lt;span class=&quot;number&quot;&gt;0&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;,&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;},
@@ -322,9 +353,9 @@ t = K:t()
  1  1  1  1
 [torch.DoubleTensor of size 3x4]
 &lt;/code&gt;&lt;/pre&gt;&lt;hr&gt;
-&lt;h2 id=&quot;show-me-the-port-already&quot;&gt;Show me the port already&lt;/h2&gt;
+&lt;p&gt;##Show me the port already&lt;/p&gt;
 &lt;p&gt;Now that we’ve attacked the basics, we have enough knowledge of Torch to do a full port.  I won’t dive into the application line-by-line, since IAmTrask does that much better for us.  Rather I will show the two examples side-by-side for you to scan and grok the differences as a whole.  Thanks for reading!&lt;/p&gt;
-&lt;h3 id=&quot;numpy-&quot;&gt;Numpy:&lt;/h3&gt;
+&lt;p&gt;###Numpy:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-python&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;import&lt;/span&gt; copy, numpy &lt;span class=&quot;keyword&quot;&gt;as&lt;/span&gt; np
 
 np.random.seed(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)
@@ -365,7 +396,7 @@ synapse_0 = np.array([[-&lt;span class=&quot;number&quot;&gt;0.16595599&lt;/span
  [ 0.00367044  0.00367044  0.99775755  0.99775755]
  [ 0.00307474  0.00307474  0.99717866  0.99717866]
  [ 0.00131869  0.00131869  0.99933157  0.99933157]]
-&lt;/code&gt;&lt;/pre&gt;&lt;h3 id=&quot;torch-&quot;&gt;Torch:&lt;/h3&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;###Torch:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-lua&quot;&gt;&lt;span class=&quot;built_in&quot;&gt;require&lt;/span&gt; &lt;span class=&quot;string&quot;&gt;'torch'&lt;/span&gt;
 
 torch.manualSeed(&lt;span class=&quot;number&quot;&gt;1&lt;/span&gt;)
@@ -413,13 +444,13 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
  0.0031  0.0031  0.9972  0.9972
  0.0013  0.0013  0.9993  0.9993
 [torch.DoubleTensor of size 4x4]
-&lt;/code&gt;&lt;/pre&gt;&lt;h2 id=&quot;links&quot;&gt;Links&lt;/h2&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;p&gt;##Links&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;[1] &lt;a href=&quot;https://iamtrask.github.io/2015/07/12/basic-python-network/&quot;&gt;https://iamtrask.github.io/2015/07/12/basic-python-network/&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[2] &lt;a href=&quot;https://karpathy.github.io/2015/05/21/rnn-effectiveness/&quot;&gt;https://karpathy.github.io/2015/05/21/rnn-effectiveness/&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;h2 id=&quot;code&quot;&gt;Code&lt;/h2&gt;
-&lt;p&gt;The code for all of these examples can be found on github here:&lt;/p&gt;
+&lt;p&gt;##Code
+The code for all of these examples can be found on github here:&lt;/p&gt;
 &lt;p&gt;&lt;a href=&quot;https://github.com/binarymax/max.io/tree/master/contents/articles/porting-numpy-to-torch&quot;&gt;https://github.com/binarymax/max.io/tree/master/contents/articles/porting-numpy-to-torch&lt;/a&gt; &lt;/p&gt;
 </description>
     </item>
@@ -431,10 +462,10 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
       <author></author>
       <description>&lt;p&gt;Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an HTML5 canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated guilloches.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id=&quot;a-simple-rosette&quot;&gt;A Simple Rosette&lt;/h2&gt;
+&lt;p&gt;##A Simple Rosette&lt;/p&gt;
 &lt;p&gt;The formula for the basic rosette guilloche is not something you would stumble upon when playing around with graphics.  It is elegant and simple, and if you have a basic understanding of graphing trigonometry equations you can grasp it without difficulty.  In the physical world, a layperson would recognise it as a spirograph[2].&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;    &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau = &lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.tau||(&lt;span class=&quot;built_in&quot;&gt;Math&lt;/span&gt;.PI*&lt;span class=&quot;number&quot;&gt;2&lt;/span&gt;);
-    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rosette = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;&lt;span class=&quot;params&quot;&gt;(image,R,r,p,step)&lt;/span&gt; &lt;/span&gt;{
+    &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rosette = &lt;span class=&quot;function&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;function&lt;/span&gt;(&lt;span class=&quot;params&quot;&gt;image,R,r,p,step&lt;/span&gt;) &lt;/span&gt;{
         &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rr = R+r;
         &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rp = r+p;
         &lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; rrr = (R+r)/r;
@@ -452,22 +483,22 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
 
 &lt;p&gt;A nice benefit of expressing a mathematical construct in code, is that you can iterate the variables over a range to animate.  Clicking on the above starts the animation.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h2 id=&quot;a-knee&quot;&gt;A Knee&lt;/h2&gt;
+&lt;p&gt;##A Knee&lt;/p&gt;
 &lt;p&gt;By changing the formula of the original, we can create new and interesting forms.  This example changes the formula slightly by calculating a tangent in place of a sine.&lt;/p&gt;
 &lt;canvas id=&quot;knee&quot;&gt;&lt;/canvas&gt;
 
 &lt;hr&gt;
-&lt;h2 id=&quot;a-river&quot;&gt;A River&lt;/h2&gt;
+&lt;p&gt;##A River&lt;/p&gt;
 &lt;p&gt;By changing the formula of the original, we can create new and interesting forms.&lt;/p&gt;
 &lt;canvas id=&quot;river&quot;&gt;&lt;/canvas&gt;
 
 &lt;hr&gt;
-&lt;h2 id=&quot;combining-forms&quot;&gt;Combining forms&lt;/h2&gt;
+&lt;p&gt;##Combining forms&lt;/p&gt;
 &lt;p&gt;We can easily combine two or more forms to the same canvas.  Here is ‘Ribbon’, ‘Cross’, and ‘Rosette’ together.&lt;/p&gt;
 &lt;canvas id=&quot;multi1&quot;&gt;&lt;/canvas&gt;
 
 &lt;hr&gt;
-&lt;h2 id=&quot;try-it-out-&quot;&gt;Try it out!&lt;/h2&gt;
+&lt;p&gt;##Try it out!&lt;/p&gt;
 &lt;p&gt;The code is all available here: &lt;a href=&quot;https://github.com/binarymax/guilloche&quot;&gt;https://github.com/binarymax/guilloche&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;If you like this, you can also follow me on twitter &lt;a href=&quot;https://twitter.com/binarymax&quot;&gt;@binarymax&lt;/a&gt;&lt;/p&gt;
 &lt;hr&gt;
@@ -484,19 +515,19 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
       <author></author>
       <description>&lt;p&gt;The mechanisms for storing data in the client are inadequate and unprepared for the next generation of web applications.  A new solution for persistent state management in the client is needed that is based on well understood foundations long prevalent on the desktop and server.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h3 id=&quot;background&quot;&gt;Background&lt;/h3&gt;
-&lt;p&gt;I had the privilege of attending the yearly Edge conference in London the last weekend of June.  It was one of the best conferences I have ever attended.  The topics were well chosen and the format was geared towards discussion instead of lectures.&lt;/p&gt;
+&lt;p&gt;###Background
+I had the privilege of attending the yearly Edge conference in London the last weekend of June.  It was one of the best conferences I have ever attended.  The topics were well chosen and the format was geared towards discussion instead of lectures.&lt;/p&gt;
 &lt;p&gt;One of the topics I felt I had a strong stake in was Front End Data.  There was a panel discussion with audience interaction, and then breakout session for folks interested in talking more directly about the subject.  A goal of each breakout session was to have actions for the market (mostly browser vendors and spec writers), to guide future implementation.&lt;/p&gt;
 &lt;p&gt;I singled out Front End Data for this post which I will elaborate on here, since the vision for ‘Front End Data’ seems narrow and based on limited ambition.  Possibly due to disjointed growth coupled with shortsightedness.  We left the breakout session with no goals in mind, or even any real ideas on what we should be doing to further the technology.  I will point out examples that display this and propose a basic solution.&lt;/p&gt;
-&lt;h3 id=&quot;what-is-front-end-data-&quot;&gt;What is ‘Front End Data’?&lt;/h3&gt;
-&lt;p&gt;This is the single most important question we need to be asking in the web development community.  Because to break from the reactionary and parasitic path of state always being kept in the DOM, the current solutions have not lived up to the task.  ‘Front End Data’ is any state that is kept in the browser, either persistent or transient.  Browser state can be kept in a variety of either too-basic or too-specific implementations.  In fact, the entire availability of state storage in the browser is based on new custom implementations of the concept, and none of the historically valid and well suited ways that computing has taught us over the years.&lt;/p&gt;
+&lt;p&gt;###What is ‘Front End Data’?
+This is the single most important question we need to be asking in the web development community.  Because to break from the reactionary and parasitic path of state always being kept in the DOM, the current solutions have not lived up to the task.  ‘Front End Data’ is any state that is kept in the browser, either persistent or transient.  Browser state can be kept in a variety of either too-basic or too-specific implementations.  In fact, the entire availability of state storage in the browser is based on new custom implementations of the concept, and none of the historically valid and well suited ways that computing has taught us over the years.&lt;/p&gt;
 &lt;p&gt;Persisting state in the browser has always been ill conceived because of the false assumption that the server will eventually be there to keep our data.  What happens when your data becomes huge and your browser application platform becomes more than a toy?&lt;/p&gt;
-&lt;h2 id=&quot;software-and-state&quot;&gt;Software and State&lt;/h2&gt;
-&lt;p&gt;Software is a tool for the manipulation of state.  State being memory or data, and manipulation being a transformation from one form to another.&lt;/p&gt;
+&lt;p&gt;##Software and State
+Software is a tool for the manipulation of state.  State being memory or data, and manipulation being a transformation from one form to another.&lt;/p&gt;
 &lt;p&gt;Some examples of transitions are state being captured through an interface, stored on a disk or in memory, or visually displayed through a GUI.  State can come from a server or other external environment (such as sensors), or be fabricated entirely from procedural code.  The software is the glue that takes the state through these many paths.  Software without state is like pipes without water.&lt;/p&gt;
 &lt;p&gt;In the context of a web page or web app, software has grown not in a traditional sense but rather as a side effect of a content delivery platform (the WWW).  Javascript was created for the most basic of tasks for interacting with the DOM.  The mindset of how to keep browser state has not kept up with the pace of web application development, which is now a mature field and has brilliant minds and innovations pushing it forward.&lt;/p&gt;
-&lt;h3 id=&quot;what-is-missing-&quot;&gt;What is missing?&lt;/h3&gt;
-&lt;p&gt;Imagine, for a moment, you are about to write some software.  You want to keep data for your software, and you want that data to live on for a while, since that is the purpose of the software.  You don’t want to rely on a 3rd party to keep it for you (like a server or peer), and you want it to be reasonably fast.  These are not outrageous demands.  Perhaps the data is private and you don’t want to trust it to 3rd parties, or perhaps it is too large for a transfer over a network in a reasonable time.&lt;/p&gt;
+&lt;p&gt;###What is missing?
+Imagine, for a moment, you are about to write some software.  You want to keep data for your software, and you want that data to live on for a while, since that is the purpose of the software.  You don’t want to rely on a 3rd party to keep it for you (like a server or peer), and you want it to be reasonably fast.  These are not outrageous demands.  Perhaps the data is private and you don’t want to trust it to 3rd parties, or perhaps it is too large for a transfer over a network in a reasonable time.&lt;/p&gt;
 &lt;p&gt;You are now only given three options to store your persistent state: (1) A limited size place for data that was originally meant for state communication over a network (a cookie), (2) a basic synchronous key value store without any obvious way to organize hierarchy or relationships (localStorage), or (3) IndexedDB/WebSQL.&lt;/p&gt;
 &lt;p&gt;What is IndexedDB?&lt;/p&gt;
 &lt;blockquote&gt;
@@ -519,8 +550,8 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
 &lt;p&gt;when you read a 100-megabyte file twice, once after the other, the second access will be quicker, because the file blocks come directly from the page cache in memory and do not have to be read from the hard disk again.&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;It is not possible to port Lucene in a way that works well in a browser context.  I challenge anyone to port Lucene or to write any other reasonably complicated data storage and query device beyond the available KVM/NoSQL with an optional B-Tree index.&lt;/p&gt;
-&lt;h3 id=&quot;file-api&quot;&gt;File API&lt;/h3&gt;
-&lt;p&gt;So what about File API?!  I purposefully left off File API above, because while it currently is on track to support reading of files, the File &lt;em&gt;Writer&lt;/em&gt; API specification is dead[4].  Chrome supports a version that is being used for chrome apps[5], but wider support is not going to happen without a specification.  Additionally, File API is a difficult sell, because Web Apps should be conceptually removed from the file system that is in direct control of the user.  Many mobile devices do not implement the concept of a traditional file system, and web app state should be kept as a construct of the isolated browser sandbox.  Having the user shuffle around files for your web application is an insurmountable barrier.&lt;/p&gt;
+&lt;p&gt;###File API
+So what about File API?!  I purposefully left off File API above, because while it currently is on track to support reading of files, the File &lt;em&gt;Writer&lt;/em&gt; API specification is dead[4].  Chrome supports a version that is being used for chrome apps[5], but wider support is not going to happen without a specification.  Additionally, File API is a difficult sell, because Web Apps should be conceptually removed from the file system that is in direct control of the user.  Many mobile devices do not implement the concept of a traditional file system, and web app state should be kept as a construct of the isolated browser sandbox.  Having the user shuffle around files for your web application is an insurmountable barrier.&lt;/p&gt;
 &lt;p&gt;Let’s ask some more important questions, and give some answers while we’re at it:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;Q: Why does the browser need to encapsulate its own file system?&lt;/strong&gt;&lt;/p&gt;
@@ -530,12 +561,12 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
 &lt;p&gt;&lt;strong&gt;Q: What kind of applications do you think you will need to support?&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;A: Any that are currently made untenable by the existing browser storage options.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3 id=&quot;enter-webassembly&quot;&gt;Enter WebAssembly&lt;/h3&gt;
-&lt;p&gt;Not having a well designed layer for state persistence negates all the benefits of having a mature software stack.&lt;/p&gt;
+&lt;p&gt;###Enter WebAssembly
+Not having a well designed layer for state persistence negates all the benefits of having a mature software stack.&lt;/p&gt;
 &lt;p&gt;WebAssembly is just around the corner.  The answer that vendors have agreed upon to run mature software in a browser, with support for a variety of languages beyond Javascript. &lt;/p&gt;
 &lt;p&gt;We need a sane way to keep application state for WebAssembly applications.&lt;/p&gt;
-&lt;h3 id=&quot;security&quot;&gt;Security&lt;/h3&gt;
-&lt;p&gt;Having any sort of proposal on file storage and interaction with users would be a waste if there were no security considerations involved.  We need to address some basic expectations on security and keep an open conversation going with any implications that will arise.&lt;/p&gt;
+&lt;p&gt;###Security
+Having any sort of proposal on file storage and interaction with users would be a waste if there were no security considerations involved.  We need to address some basic expectations on security and keep an open conversation going with any implications that will arise.&lt;/p&gt;
 &lt;p&gt;The good news is that all of these questions are already addressed in other specifications for both web and desktop.  We can borrow from experience and good existing practices to have a workable solution, when creating a specification.&lt;/p&gt;
 &lt;p&gt;Standards such as CORS and built in protocols and restrictions around MIME types should be used.&lt;/p&gt;
 &lt;p&gt;Considerations:&lt;/p&gt;
@@ -550,26 +581,26 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
 &lt;p&gt;&lt;strong&gt;Q: How to limit the amount of data one application is able to create?&lt;/strong&gt;&lt;/p&gt;
 &lt;p&gt;User experience research should be driving the answer to this question, but in other contexts, the consensus is allowing for a small initial ‘default’ amount without permission from the user.  Allowing the application to exceed that amount should be requested from the user where appropriate.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h3 id=&quot;proposal&quot;&gt;Proposal&lt;/h3&gt;
+&lt;p&gt;###Proposal&lt;/p&gt;
 &lt;p&gt;To avoid the sin of complaining without presenting any solution, I propose a new API named “Application State” or AppState for short.&lt;/p&gt;
 &lt;p&gt;AppState is a sandboxed file space in the persistent filesystem allocated exclusively by the browser.  It has a global object exposed to the scripting layer that allows interaction with the sandboxed files (or ‘blobs’).&lt;/p&gt;
-&lt;h4 id=&quot;structure&quot;&gt;Structure&lt;/h4&gt;
-&lt;p&gt;Each application has access context identified by domain.&lt;/p&gt;
+&lt;p&gt;####Structure
+Each application has access context identified by domain.&lt;/p&gt;
 &lt;p&gt;The structure of the AppState for an application is a hierarchy of nodes, where each node has a key, an optional blob, and zero or more child nodes.  Nodes can be easily accessed by concatenating one or more keys, separated by the delimiter ‘/‘.  Glob syntax[6] can be used to return zero or more nodes.&lt;/p&gt;
 &lt;p&gt;If you think this almost looks like a file system you are right.  The difference being that each node (perhaps analogous to a folder) can also have a blob.  This simplifies things by not needing different concepts for a folder or file.&lt;/p&gt;
-&lt;h4 id=&quot;storage&quot;&gt;Storage&lt;/h4&gt;
-&lt;p&gt;For each node an optional blob of arbitrary length can be allocated and resized.  A blob is an ArrayBuffer object[6].  The difference being that the ArrayBuffer is always persisted to disk.  Writing to the node’s blob via a TypedArray is guaranteed to be persisted.&lt;/p&gt;
+&lt;p&gt;####Storage
+For each node an optional blob of arbitrary length can be allocated and resized.  A blob is an ArrayBuffer object[6].  The difference being that the ArrayBuffer is always persisted to disk.  Writing to the node’s blob via a TypedArray is guaranteed to be persisted.&lt;/p&gt;
 &lt;p&gt;To keep with existing conventions, when new to a browser, the application will only have permission to keep a small size of AppState.  When AppState is first accessed, if the size exceeds this small default, the application must prompt with the amount of storage being requested.  If an application exhausts its allowed storage amount, it must request more.  An initial default of 50MB is proposed.&lt;/p&gt;
 &lt;p&gt;To make use of the benefits and abstractions provided by the OS kernel and userspace, the browser will keep the AppState blobs in a location of its choice on the device’s file system (to which the browser already has access).&lt;/p&gt;
 &lt;p&gt;Arranging and naming individual blobs in the file system, and keeping a map or index of the nodes to their blobs, must be maintained by the browser.&lt;/p&gt;
 &lt;p&gt;Importantly, the browser must not alter the blobs themselves in any way.  For example: compressing, splitting, or concatenating node blobs by the browser in the filesystem must not be allowed.&lt;/p&gt;
-&lt;h4 id=&quot;access&quot;&gt;Access&lt;/h4&gt;
-&lt;p&gt;There must exist the ability for synchronous reading and writing of the ArrayBuffer object through a TypedArray, and asynchronous access via a new abstraction.&lt;/p&gt;
-&lt;h3 id=&quot;example-api&quot;&gt;Example API&lt;/h3&gt;
-&lt;p&gt;This section contains a proposed API for illustration purposes only.  It is minimal and does not cover many details and edge cases that need to be worked out.  Hopefully, at the very least, it begins a discussion for future possibilities.&lt;/p&gt;
+&lt;p&gt;####Access
+There must exist the ability for synchronous reading and writing of the ArrayBuffer object through a TypedArray, and asynchronous access via a new abstraction.&lt;/p&gt;
+&lt;p&gt;###Example API
+This section contains a proposed API for illustration purposes only.  It is minimal and does not cover many details and edge cases that need to be worked out.  Hopefully, at the very least, it begins a discussion for future possibilities.&lt;/p&gt;
 &lt;p&gt;The API below covers the ApplicationState, Node, Blob, and TypedStream objects.&lt;/p&gt;
-&lt;h4 id=&quot;node&quot;&gt;Node&lt;/h4&gt;
-&lt;h5 id=&quot;properties-&quot;&gt;Properties:&lt;/h5&gt;
+&lt;p&gt;####Node&lt;/p&gt;
+&lt;p&gt;#####Properties: &lt;/p&gt;
 &lt;p&gt;All properties are readonly getters, and can only be altered by prototype methods.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;key&lt;/strong&gt; : string&lt;/em&gt;&lt;/p&gt;
@@ -578,16 +609,16 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;childNodes&lt;/strong&gt; : Array&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;path&lt;/em&gt;&lt;/strong&gt; : Returns the full path of the node in the AppState hierarchy, using the root ‘$’ and delimiter ‘/‘ and no trailing slash.  For example: “$/path/to/node”&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h5 id=&quot;methods-&quot;&gt;Methods:&lt;/h5&gt;
+&lt;p&gt;#####Methods:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;getNodes(string glob)&lt;/em&gt;&lt;/strong&gt; : Returns an array of nodes matching the glob syntax, searching the node and all levels of children stemming from the node.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;createNode(string key [, int32 size])&lt;/em&gt;&lt;/strong&gt; : Creates a new child node with name key and an optional blob of size bytes, and appends it to the childNodes array.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;resize(int32 size)&lt;/em&gt;&lt;/strong&gt; : if size is greater than the existing blob size, the blob is grown to the new size with 0’s filling the new space.  if size is less than the existing blob size, the blob is truncated to the new size and the truncated data will be deleted.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;delete()&lt;/em&gt;&lt;/strong&gt; : Deletes the node and all of its child nodes.  This cannot be undone.&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h5 id=&quot;blob-&quot;&gt;Blob:&lt;/h5&gt;
+&lt;p&gt;#####Blob:&lt;/p&gt;
 &lt;p&gt;A blob is a binary ArrayBuffer, but it must be kept synchronous with the persistent storage at all times by the browser.  A node of size 1 has a blob formed of one octet (8 bits).  A node of size 20 has a blob formed of 20 octets (160 bits).&lt;/p&gt;
-&lt;h5 id=&quot;typedstream-&quot;&gt;TypedStream:&lt;/h5&gt;
+&lt;p&gt;#####TypedStream:&lt;/p&gt;
 &lt;p&gt;The TypedStream is based on the familiar TypedArray, that abstracts a sized interactive array over a binary blob.  Its purpose is to enable asynchronous get and set access to the blob.&lt;/p&gt;
 &lt;p&gt;Syntax&lt;/p&gt;
 &lt;blockquote&gt;
@@ -596,14 +627,14 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
 &lt;p&gt;The TypedStream has the same conceptual property, method, and prototypal definitions as the Uint8ClampedArray object.&lt;/p&gt;
 &lt;p&gt;TypedStream, however, when using bracket notation for index read and write, triggers events after the get and set operations.  Subscribing to these events allow for the asynchronous stream nature of working with objects on disk.&lt;/p&gt;
 &lt;p&gt;For synchronous operation with the blob object, a classic TypedArray should be used to wrap the ArrayBuffer blob.&lt;/p&gt;
-&lt;h4 id=&quot;applicationstate&quot;&gt;ApplicationState&lt;/h4&gt;
+&lt;p&gt;####ApplicationState&lt;/p&gt;
 &lt;p&gt;The ApplicationState is a property of the global object (similar to localStorage) and can be accessed as such:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;window.ApplicationState&lt;/p&gt;
 &lt;/blockquote&gt;
 &lt;p&gt;ApplicationState does not allocate any space by default. This applies to when the application has never called the create method in the current session or any past sessions.  To check if any ApplicationState space has been allocated, check the size property.&lt;/p&gt;
 &lt;p&gt;When the application loads in the browser, if any sessions prior had allocated space, then the ApplicationState initializes with all the nodes and blobs previously created.&lt;/p&gt;
-&lt;h5 id=&quot;properties&quot;&gt;Properties&lt;/h5&gt;
+&lt;p&gt;#####Properties&lt;/p&gt;
 &lt;p&gt;All properties are readonly getters, and can only be altered by prototype methods.&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;key&lt;/strong&gt; : string&lt;/em&gt;&lt;/p&gt;
@@ -611,14 +642,14 @@ synapse_0 = torch.repeatTensor(synapse_0,&lt;span class=&quot;number&quot;&gt;1&
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;childNodes&lt;/strong&gt; : Array&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;path&lt;/em&gt;&lt;/strong&gt; : Always returns the string ‘$’*&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h5 id=&quot;methods-&quot;&gt;Methods:&lt;/h5&gt;
+&lt;p&gt;#####Methods:&lt;/p&gt;
 &lt;blockquote&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;create(int32 size)&lt;/em&gt;&lt;/strong&gt;: Creates the AppState with size of length bytes.  If the size given is greater than the default size, it may need to ask permission from the user.  If the ApplicationState has already been created and this method is called, an exception will be thrown.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;getNodes(string glob)&lt;/em&gt;&lt;/strong&gt; : Returns an array of nodes matching the glob syntax, searching all levels of children.&lt;/p&gt;
 &lt;p&gt;&lt;strong&gt;&lt;em&gt;resize(int32 size)&lt;/em&gt;&lt;/strong&gt; : If size is greater than the existing filespace size, the filespace is allowed to fill to the new size with node blobs.  If size is less than the sizes of existing blob size already in the filespace, an exception is thrown.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;&lt;strong&gt;create(int32 size)&lt;/strong&gt;: Creates the AppState with size of length bytes&lt;/em&gt;&lt;/p&gt;
 &lt;/blockquote&gt;
-&lt;h5 id=&quot;examples&quot;&gt;Examples&lt;/h5&gt;
+&lt;p&gt;#####Examples&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;lang-javascript&quot;&gt;&lt;span class=&quot;keyword&quot;&gt;var&lt;/span&gt; AppState = &lt;span class=&quot;built_in&quot;&gt;window&lt;/span&gt;.ApplicationState;
 
 &lt;span class=&quot;comment&quot;&gt;//Allocates 50MB for the entire ApplicationState.  This will not prompt the user.&lt;/span&gt;
@@ -661,11 +692,11 @@ node0.delete();
 &lt;span class=&quot;comment&quot;&gt;//Outputs 200000000&lt;/span&gt;
 &lt;span class=&quot;built_in&quot;&gt;console&lt;/span&gt;.log(AppState.size);
 &lt;/code&gt;&lt;/pre&gt;
-&lt;h3 id=&quot;footnotes&quot;&gt;Footnotes&lt;/h3&gt;
+&lt;p&gt;###Footnotes&lt;/p&gt;
 &lt;p&gt;And there you have it.  Simple, powerful, and a good start for web applications needing to keep data persisted in the client.  I would be more than happy to discuss further details, please feel free to contact me on twitter &lt;a href=&quot;https://twitter.com/binarymax&quot;&gt;@binarymax&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;“AppState” is not to be confused with and has no relation to the deprecated Android AppState interface, nor any other existing construct with the AppState name.&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;-&lt;/p&gt;
-&lt;h3 id=&quot;references&quot;&gt;References&lt;/h3&gt;
+&lt;p&gt;###References&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;[1] &lt;a href=&quot;http://www.w3.org/TR/IndexedDB/#abstract&quot;&gt;http://www.w3.org/TR/IndexedDB/#abstract&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;[2] I’m into search technology at Wolters Kluwer.&lt;/li&gt;
@@ -688,13 +719,13 @@ node0.delete();
 &lt;p&gt;&lt;img src=&quot;yield.gif&quot; border=&quot;0&quot; class=&quot;image-column-left&quot; /&gt; &lt;img src=&quot;rex.gif&quot; border=&quot;0&quot; class=&quot;image-column-right&quot; /&gt;&lt;/p&gt;
 &lt;hr&gt;
 &lt;p&gt;&lt;img src=&quot;firechrome.gif&quot; border=&quot;0&quot; class=&quot;image-column-left&quot; /&gt; &lt;img src=&quot;flowers.gif&quot; border=&quot;0&quot; class=&quot;image-column-right&quot; /&gt;&lt;/p&gt;
-&lt;h3 id=&quot;how-it-works&quot;&gt;How it works&lt;/h3&gt;
+&lt;p&gt;###How it works&lt;/p&gt;
 &lt;p&gt;Take a source set of frames, with a target being each processed frame interspersed with an equal number of transition frames.  For example, if there are 4 raw images and 5 intermediate transition frames, there will be 20 frames for the final result.&lt;/p&gt;
 &lt;p&gt;There are two steps to the process, the mixer and the blender.&lt;/p&gt;
 &lt;p&gt;The mixer preprocesses each frame into circles using a genetic algorithm, as outlined in the post &lt;a href=&quot;http://localhost:5050/articles/hidden-shapes/&quot;&gt;Hidden Shapes&lt;/a&gt;.  The circles are stored in JSON, each with the necessary data of x, y, radius and color.&lt;/p&gt;
 &lt;p&gt;The blender takes each successive processed frame and matches the best pairs of circles from each frame.  By using a KD-Tree for nearest neighbors, each circle from one frame gets a sibling from the next successive frame.&lt;/p&gt;
 &lt;p&gt;After every circle has a sibling in its next frame, the path is animated from one to another.  A simple interpolation formula takes in x, y, and radius.  It returns an array of objects for the transition.  Each transition step becomes a new frame in the target animation.&lt;/p&gt;
-&lt;h3 id=&quot;research&quot;&gt;Research&lt;/h3&gt;
+&lt;p&gt;###Research&lt;/p&gt;
 &lt;p&gt;It took awhile to refine the process, and along the way I discovered many interesting attributes of color spaces and contrast related to the algorithm.  I learned early in the project that linear distance is not a reliable way to differentiate colors, and research took me down the paths to delta-e.  I ended up keeping linear distance, however, since it gives an interesting look to the results.&lt;/p&gt;
 &lt;p&gt;As a side effect, color simplicity and high border contrast become key, for the mixer algorithm to give good representations.  Some would consider this a flaw, but it is indeed purposeful for the art.  A more accurate color difference formula would just give results similar to that of a photoshop filter.  It also forced me to keep constraints on photo style for good consistency.&lt;/p&gt;
 </description>
@@ -707,12 +738,12 @@ node0.delete();
       <author></author>
       <description>&lt;p&gt;I am slowly working on a side-project that makes a video into a mishmash of circles for each frame.  I have an early version running, that manually takes a video, splits it into frames, remixes each frame into the circle mishmash, and recomposes the video with the new remixed frames.  The project is called ‘Harissa’.  The name Harissa comes from an Armenian dish and is made from chicken and a local type of wheat.  It cooks for a long time, until it is a thick porridge.  It is a fitting name because fully rendering a video is a slow process, and the result is an interesting mishmash of the original.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h3 id=&quot;harissa&quot;&gt;Harissa&lt;/h3&gt;
+&lt;p&gt;###Harissa&lt;/p&gt;
 &lt;p&gt;The original idea for the Harissa project came from a competition I entered to recreate Mondriaan’s last unfinished work (the ‘Victory Boogie Woogie’) with code.  My entry used an algorithm to generate a likeness of the work by randomly placing circles on a canvas, and either kept a circle if the resulting image was closer to the painting, or discarded it otherwise.  After thousands of iterations an interesting likeness emerged.  I re-purposed the algorithm for Harissas frame remixer, made use of imagemagick and mencoder for the image and video processing with a node backend, and wrote some glue code to stitch it all together.  It is a fun project and the first resulting video got some good reactions.&lt;/p&gt;
 &lt;p&gt;I want to take Harissa to the next level.  Since it uses javascript for the frame remixer, it is still quite slow (and will always be slow unless I rewrite it in CUDA or similar).  It takes about 30 seconds per frame.  When you want to generate a 5 minute video at 12 frames per second, that ends up being a big number.  I enjoy the challenges this poses.  I use web workers to speed up some operations, and will probably use some sort of websocket connection delegation to allow for multiple machines to browse to the project and each contribute to the video.  Theoretically if I use 3 machines instead of 1, it should only take a third of the time.&lt;/p&gt;
 &lt;p&gt;The main thing I am missing, however, is the choppiness between frames.  If one frame is a bunch of random circles, and the next frame is a different bunch of random circles, the transition from one frame to the next looks jarring.  With the goal of smoothing it out, I want to insert two or more new ‘transition’ frames, that take one frame and smoothly transition the circles to the next adjacent frame.  I have no idea how this will look in the end, and have some hurdles to jump before I can realize the result, but it is worth pursuing just to see what happens.&lt;/p&gt;
-&lt;h3 id=&quot;hidden-shapes&quot;&gt;Hidden Shapes&lt;/h3&gt;
-&lt;p&gt;Today I jumped the first hurdle, and want to share a nice algorithm I wrote in the process.  Before we can start calculating transitions, we need to clean up the circles.  Since lots of circles are haphazardly placed on the canvas for each frame, some of them get covered up entirely and are useless in the final image.  So I needed to know whether a circle is visible when all the other circles have been drawn.  If I can get rid of the unnecessary circles I can save some time when doing later calculations.&lt;/p&gt;
+&lt;p&gt;###Hidden Shapes
+Today I jumped the first hurdle, and want to share a nice algorithm I wrote in the process.  Before we can start calculating transitions, we need to clean up the circles.  Since lots of circles are haphazardly placed on the canvas for each frame, some of them get covered up entirely and are useless in the final image.  So I needed to know whether a circle is visible when all the other circles have been drawn.  If I can get rid of the unnecessary circles I can save some time when doing later calculations.&lt;/p&gt;
 &lt;p&gt;There are at least 2 ways to do this, but probably more.  The first way is to do something called raycasting.  Imagine a beam of light shining down onto our circles - tag the first circle the beam of light hits.  Do this for every pixel on the canvas, and remove all the circles that have not been tagged.  The second way, which I eventually decided to use, is to iterate through all the circles.  For each iteration, draw the current circle with a special color, then draw all the other circles around it.  If the special color is not visible in the final slice, then it is hidden.  Either method would suffice (and there might be a better one).&lt;/p&gt;
 &lt;p&gt;Here is the code that draws the shapes to a canvas.  This code is taken from a larger module, but one can easily see that the shapes are drawn to a canvas that are not hidden, and only in the bounds we specify.  Each shape has at least the following properties: x,y,z,radius,color.  A shape is hidden if it was previously tagged as such, and is therefore ignored.  Since drawing circles is a computationally intensive process, we only want to draw the circles that might be hovering above the circle we are testing.&lt;/p&gt;
 &lt;pre class=&quot;prettyprint lang-javascript&quot;&gt;
@@ -768,7 +799,7 @@ var testvisible = function(context,shapes,index){
 };
 &lt;/pre&gt;
 
-&lt;h3 id=&quot;next-steps&quot;&gt;Next Steps&lt;/h3&gt;
+&lt;p&gt;###Next Steps&lt;/p&gt;
 &lt;p&gt;For an average of 3000 initial circles on the canvas, this handy little algorithm removes about one third of the circles since they are hidden.  That is a great improvement!  When I need to start matching neighbor circles together between adjacent frames, this will shave off a significant amount of time in the calculation.&lt;/p&gt;
 &lt;p&gt;So now I need to jump the next hurdle - taking two adjacent frames, and doing a nearest nearest neighbor search for every circle.  Once we have that mapping we can make our transition frames to insert between the original adjacent frames.  But those will be for another day, and another post!&lt;/p&gt;
 &lt;p&gt;When the code is all done, I will post a video, but for now if you want to see the work in progress, you can view it here: &lt;a href=&quot;https://github.com/binarymax/harissa&quot;&gt;https://github.com/binarymax/harissa&lt;/a&gt;&lt;/p&gt;
@@ -783,7 +814,7 @@ var testvisible = function(context,shapes,index){
       <description>&lt;p&gt;It is hard to write a program that invents original art.  Two of the main reasons that software cannot create original expressive art are lack of context, and lack of experience.&lt;/p&gt;
 &lt;p&gt;Software lacks the ability to derive a human-like context from its surroundings.  Some trivial examples are not knowing whether a flower is beautiful, or whether satire is funny.  Software also does not know how to learn to understand this context, it cannot experience its surroundings in a similar fashion to that of the observer, and therefore cannot relate to the subject nor connect with the observer in any meaningful way.&lt;/p&gt;
 &lt;hr&gt;
-&lt;h3 id=&quot;ae-and-ai&quot;&gt;AE and AI&lt;/h3&gt;
+&lt;p&gt;###AE and AI&lt;/p&gt;
 &lt;p&gt;Artificial Expression(AE) draws a parallel to Artificial Intelligence(AI), in that an artificially expressive program will display sentience relating to creating original subjective aesthetics.  I explore the ideas behind these complexities, as well as techniques in use today to generate art, and set a standard to use in deciding whether a work is an artificial expression.&lt;/p&gt;
 &lt;h3 id=&quot;deriving-meaning-from-an-image&quot;&gt;Deriving Meaning from an Image&lt;/h3&gt;
 &lt;p&gt;Some impressive strides have been made recently in getting software to understand the stuff we throw at it.  Machines were originally built to process numbers, and then text, and then visual and audio media, in that order.  This evolutionary order makes sense because numbers are represented as on/off switches, text is one dimensional and can be represented numerically, and sound and image processing did not come about until more complex algorithms, digital screens and cameras, and digital speakers and microphones were invented.  Machines and programs with the ability to not only operate as complex input/output devices, but to computationally derive meaning, is still in the very early scientific stages of discovery.&lt;/p&gt;
@@ -816,7 +847,7 @@ var testvisible = function(context,shapes,index){
 &lt;p&gt;The differences in complexity are clear, and the subjective nature of the verbs and adjectives derived from the lithograph is obvious.  Not all people find foxes to be cute, and is the fox on the right hiding?  Colors are adjectives, but I noted them separately to show that these are purely representable numerically, and therefore easy for software to parse.&lt;/p&gt;
 &lt;p&gt;Not to fret, this task is being worked on by very smart people.  Since people enjoy photographing and creating and describing things so much, we can use shortcuts to semantically derive meaning from images paired with captions.  See Google image search &lt;sup&gt;&lt;a href=&quot;#cite2&quot;&gt;[2]&lt;/a&gt;&lt;/sup&gt;&lt;sup&gt;&lt;a href=&quot;#cite3&quot;&gt;[3]&lt;/a&gt;&lt;/sup&gt;.  Indeed, as programs become better at deriving contextual meaning from language, all the existing treatise on imagery will be automatically inheritable knowledge to the same programs, even if they are merely referenced and not parsed directly.  A program capable of accurately comprehending the snippet &lt;em&gt;“The following is a picture of a very cute fox &amp;lt;some picture&amp;gt;”&lt;/em&gt;, without delving into the actual content of &lt;em&gt;&amp;lt;some picture&amp;gt;&lt;/em&gt;, can still make the appropriate association for reference.&lt;/p&gt;
 &lt;p&gt;There is also an emerging type of technology, called Reverse Image Search&lt;sup&gt;&lt;a href=&quot;#cite4&quot;&gt;[4]&lt;/a&gt;&lt;/sup&gt;, which is becoming more accurate.  It uses the same methods of semantic association as above, combined with advanced combinations of algorithms, to deduce image similarities.  While the search program does not understand the meaning behind what is being fetched, the trajectory of the technology can be forecast, and beyond improving the search this is the next step.&lt;/p&gt;
-&lt;h3 id=&quot;starting-backwards-learning-from-patterns&quot;&gt;Starting Backwards - Learning from Patterns&lt;/h3&gt;
+&lt;p&gt;###Starting Backwards - Learning from Patterns&lt;/p&gt;
 &lt;p&gt;Before creating original works, AE must be able to appreciate works created by other artists.  Some key aspects of recognizing original and pleasing artwork involve pattern recognition and memory association.&lt;/p&gt;
 &lt;p&gt;People are very creative, and are very good at finding patterns.  Software is not.  A programmer must specifically dictate the patterns software should find in a given text or image.  One of my university professors, Paliath Narendran, wrote a proof&lt;sup&gt;&lt;a href=&quot;#cite5&quot;&gt;[5]&lt;/a&gt;&lt;/sup&gt; that finding arbitrary patterns in sets of numbers is NP-Complete (Mostly meaning it is impossible to solve using known programming techniques).&lt;/p&gt;
 &lt;p&gt;Find the pattern in 2, 4, 8, 16, 32, 64 … (easy).  Find the pattern in 1, 0, 2, -1, 3, -2, 4, -3, 5 … (medium).  Find the pattern in 2, 3, 0, 1, 6, 7, 4, 5, 10 … (hard&lt;sup&gt;&lt;a href=&quot;#cite6&quot;&gt;[6]&lt;/a&gt;&lt;/sup&gt;).  Generating complexity is easy, compared to sorting through it.  Cellular automata is an excellent example of this.  Simple rules can unleash massive complexity.  To take a slice of time out of a cellular automata and matching it to its parameters is no simple task.&lt;/p&gt;
@@ -832,22 +863,22 @@ var testvisible = function(context,shapes,index){
 &lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/ae-patterns.js&quot;&gt;&lt;/script&gt;
 
 &lt;p&gt;The complexities generated by a set of simple rules can quickly grow into seemingly pure abstraction.  A hallmark of expression is to show this complexity, yet still relate to the subject.  If I draw a portrait of a fox, the entropy generated from my amateur pencil strokes may deviate my result significantly from the subject, but another person will still be able to look at the work and say “Oh, a fox”.  That is how we demonstrate our amazing pattern recognition abilities.  Any AE must be able to do the same.&lt;/p&gt;
-&lt;h3 id=&quot;bias-and-randomness&quot;&gt;Bias and Randomness&lt;/h3&gt;
+&lt;p&gt;###Bias and Randomness&lt;/p&gt;
 &lt;p&gt;Think of a random number between one and ten.  Is it really random?  Probably not.  Sorry to tell you, but you are probably not very good at choosing purely random numbers, because (no offense) you are biased and therefore predictable when it comes to picking numbers.  For example, your favorite number might be seven, and maybe you won’t choose seven because you subconsciously don’t consider it random enough, and that is bias. &lt;/p&gt;
 &lt;p&gt;But now, instead of thinking of a random number, flail your arms and wrists around while keeping them loose.  You’ve just created a lot of entropy, even if your motions might be biased.  If we could somehow measure the velocity and direction of all the microscopic particles of dust you just moved around in the air, they would meet the standards of randomness.&lt;/p&gt;
 &lt;p&gt;Computers have another type of bias, they don’t have favorite numbers, but they are predictable.  In fact, being predictable is what made software so appealing in the first place.  You can trust that a computer should always tell you that 237465234 * 127623476234 = 30306138647800248756.  But there is a side effect to absolute predictability.  Since machines are deterministic, it is impossible for software to generate random numbers without using input from an external environment.  Did you know that the way you type and the way you move your mouse cursor helps your computer generate random numbers?  When you wave your mouse around that gives your computer some good entropy to use.  For programs to get randomness when mouse movements are not available, or not reliable enough, they can use a service.  There is a website dedicated to serving guaranteed random numbers by grabbing entropy from atmospheric noise&lt;sup&gt;&lt;a href=&quot;#cite7&quot;&gt;[7]&lt;/a&gt;&lt;/sup&gt;.  Another thing that generates randomness is when lots of people send trillions of 140 byte messages to broadcast their thoughts to each other and the world:&lt;/p&gt;
 &lt;p&gt;&lt;img style=&quot;border:1px solid #333;&quot; src=&quot;http://www.binarymax.com/brownian_2.gif&quot; alt=&quot;A generated work of lines that used messages on twitter as entropy to create random images&quot; title=&quot;Twitter Brownian Motion&quot; /&gt;&lt;br /&gt;&lt;em&gt;“tRand” - Brownian Motion based on Twitter messages - &amp;copy; 2010 Max Irwin&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Understanding true randomness is a precursor to Artificial Expression, because every input based on real-world experience given to a program will be random (even if it may follow a trend).  To understand anything in the world around us and express it through art, vast swaths of randomness pass through the artist and are filtered, associated, and organised into a singular subjective expression.&lt;/p&gt;
 &lt;p&gt;Artists thrive on entropy.  Brush strokes of paint are not calculated and perfected to the molecule.  Colors are mixed and remixed without precise instrumental measurements, and paint is layered emotionally and without dependency on external calculations or instruments.  By the time the subject passes through the eyes of the artist and is slowly laid to a canvas, the representation is unique and original.  Unless a projector&lt;sup&gt;&lt;a href=&quot;#cite8&quot;&gt;[8]&lt;/a&gt;&lt;/sup&gt; is involved, or the artist has some superhuman ability, the work will certainly deviate from the subject in form and substance.  A talented artist captures the subject to match the expressive goal, rather than simply making a verbatim copy.&lt;/p&gt;
-&lt;h3 id=&quot;generating-simple-artistic-forms&quot;&gt;Generating Simple Artistic Forms&lt;/h3&gt;
+&lt;p&gt;###Generating Simple Artistic Forms&lt;/p&gt;
 &lt;p&gt;My first use of computers, in 1985 at Harris Hill Elementary school, was for generating art.  I used the Logo programming language, and naively generated some interesting forms.  Indeed, I still have a dot-matrix printout of one of my first generated works.  I was seven years old, and I gave it a cool tech sounding title:&lt;/p&gt;
 &lt;p&gt;&lt;img style=&quot;border:1px solid #333;&quot; src=&quot;CPU_1985_small.jpg&quot; alt=&quot;A Logo Generated abstract, greyscale dot-matrix printout&quot; title=&quot;C.P.U.&quot; /&gt;&lt;br /&gt;&lt;em&gt;“C.P.U.” - dot-matrix print - &amp;copy; 1985 Max Irwin&lt;/em&gt;&lt;/p&gt;
 &lt;p&gt;Generative Art is as popular as ever.  Countless artists&lt;sup&gt;&lt;a href=&quot;#cite9&quot;&gt;[9]&lt;/a&gt;&lt;/sup&gt;, including myself&lt;sup&gt;&lt;a href=&quot;#cite10&quot;&gt;[10]&lt;/a&gt;&lt;/sup&gt;, are creating works today, many available to see on the internet, and many interactive.  Traditionally shown in galleries through prints and media installations, the explosion of interactive generative art through the web happened mostly via Java Applets in the 1990’s, then Flash in the early to late 2000’s, and now primarily through JavaScript via Canvas, WebGL, and SVG.  Creating a work of Generative Art today is as easy as it was for me when I was only seven, and now it can be instantaneously shared with the entire world.  Just as a child with paints and paper can create a painting, so can a child produce generative art with a computer.&lt;/p&gt;
 &lt;p&gt;I focus on this distinction, that Generative Art and Artificial Expression have similarities, but are fundamentally different.  While Generative Art, even the interactive kind, is a revelation, it does not nearly approach the complexity or necessary ingenuity required for Artificial Expression.  The reasoning here is that a great deal of Generative Art is abstract and, lacking subject matter, is not prone to the pitfalls of representation of a subject in an original form.  Wikipedia cites &lt;em&gt;“Ten Questions Concerning Generative Computer Art”&lt;/em&gt; &lt;sup&gt;&lt;a href=&quot;#cite11&quot;&gt;[11]&lt;/a&gt;&lt;/sup&gt;, but a formal distinction must be made between generative art and artificial expression.  Indeed, spewing out random pieces of poetic looking rhyming pentameter is not considered artificial intelligence, and algorithmic abstract shapes should not be considered artificial expression.&lt;/p&gt;
-&lt;h3 id=&quot;a-thousand-words&quot;&gt;A Thousand Words&lt;/h3&gt;
+&lt;p&gt;###A Thousand Words&lt;/p&gt;
 &lt;p&gt;If I ask a person to “draw a cute fox”, that might be enough information the person needs to draw a fox that most people would consider cute (artistic talent notwithstanding).  This is due to several factors, including but not limited to our experience with the natural world, and our perception of contextual emotion.  “Cute” is loaded with a vast history of experience, not only just a life’s worth, but generations of evolutionary instinct that allow us to subconsciously tell the difference between a cute fox and a ferocious fox.&lt;/p&gt;
 &lt;p&gt;The cliché “A picture is worth a thousand words” is very apt when it comes to artificially expressing a textual description as art.  To ask software to draw a cute fox is an insurmountable request.  We would first need to somehow grant the software with not only the corpus of all of human experience and instinct related to foxes, but also the anatomy of a fox and its context in times of different emotions.  Shortcuts may be taken, as most people capable of drawing a cute fox do not have a complete understanding of the fox anatomy, but they still know that visible teeth probably won’t fit in the picture.&lt;/p&gt;
-&lt;h3 id=&quot;recognizing-artificial-expression&quot;&gt;Recognizing Artificial Expression&lt;/h3&gt;
+&lt;p&gt;###Recognizing Artificial Expression&lt;/p&gt;
 &lt;p&gt;For Artificial Intelligence, the Turing Test is noted as a primary milestone for computational linguistics.  Once a person is able to have a meaningful conversation with a program, and not be able to distinguish its software-companion’s dialog from that of a fellow human, we will have reached the first stage of a breakthrough in AI. &lt;/p&gt;
 &lt;p&gt;Comparatively, when a program is able to experience its environment contextually, and produce a purely original non-abstract thought-provoking artwork, indistinguishable from that of an amateur artist, we will have reached the first stage of a breakthrough in Artificial Expression.  I propose a new type of test, called the &lt;em&gt;Cute Fox Test&lt;/em&gt;, that when passed, meets the following constraints:&lt;/p&gt;
 &lt;p&gt;The work MUST:&lt;/p&gt;
@@ -869,7 +900,7 @@ var testvisible = function(context,shapes,index){
 &lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;These constraints, when met, should reasonably signal that a program shows artificial expressive merit.&lt;/p&gt;
-&lt;h3 id=&quot;a-path-to-realization&quot;&gt;A Path to Realization&lt;/h3&gt;
+&lt;p&gt;###A Path to Realization&lt;/p&gt;
 &lt;p&gt;While I have no formal proof, I postulate that the problem of Artificial Expression is NP-Complete (again, not possible to solve using existing techniques). &lt;/p&gt;
 &lt;p&gt;Therefore, current methods that yield Generative Art is a dead end.  No amount of hand-coded filters, remixers, or cellular automata can achieve the sentience necessary for AE to become a reality.  Some works of Genetic Programming and Machine Learning pass the “MUST” tests, but all fail the “MUST NOT” tests.&lt;/p&gt;
 &lt;p&gt;AI has entire formalized scientific fields, including cognitive science and computational linguistics, devoted to unraveling the Natural Language Processing mystery.  AE is in need of such a field or fields, where dedicated studies by academia can be made to devise plans and experiments to further the prerequisite knowledge needed and push for a breakthrough.&lt;/p&gt;
@@ -927,8 +958,8 @@ var testvisible = function(context,shapes,index){
 &lt;p&gt;The premise was simple - KeepAware would load a Node.js project as a Windows service so it could run in the background, and not as a console application, and send all console output into the Windows Event Log.  Also, similar to nodemon, the service would restart every time a file in the project was changed, to allow seamless editing and previewing.  I thought these were great ideas, and also thought that folks who used Windows were no strangers to paying for stuff.  And, since I’ve never made any money from an independent project (or even tried), maybe I could finally get in on that sweet gravy train.&lt;/p&gt;
 &lt;p&gt;After the project itself was finished, I started work on an ill-conceived website to allow folks to download it under a tiered license - free for non-commerial use, $20 for a commercial license, and $Zillions for an enterprise license.  I eventually ran out of steam late that Sunday and never finished or published the site, and KeepAware grew cobwebs as a private and unused repo in github.  I wasn’t even using it myself, since I had no desire to return to coding on Windows (I had switched to Linux 6 months beforehand and was not interested in turning back).&lt;/p&gt;
 &lt;p&gt;Two months after I wrote KeepAware, I saw a post that someone at Microsoft coded a way for Node.js to play nice with IIS, and that was that.  I regret not just opening it up and posting it on HN the weekend I wrote it.  I was never a fan of IIS (but really enjoyed .NET otherwise).  In arrogant retrospect I still think the approach I had was better, keeping it as a separate service rather than piggy backing on IIS, since Node is much more than just a web app server.  Oh well.  On January 20th 2013, I silently opened up KeepAware and renamed it KeepAware-old, it is mostly useless now, but has some interesting bits in there - like automatically restarting a windows service when a file changes, and sending console output to the EventLog.  I also still have the domain keepaware.com, its always just been a 301 to binarymax.com, and maybe I will use it someday.  I still love the name.&lt;/p&gt;
-&lt;h4 id=&quot;lessons-learned&quot;&gt;Lessons Learned&lt;/h4&gt;
-&lt;p&gt;So back to the original story - Anagramica has a couple hardcore fans, and it averages about 10 plays per week, mostly through those finding it organically (I don’t advertise or market anything I make, other than a facebook or twitter post).  I never planned to make any money from it so I’m not sure why I kept it locked down for so long.  It may have to do with a mild case of imposter sydrome[3], as sometimes I am afraid of people in the outside world seeing my code and being critical.  So I’m trying to get over all that by coding out in the open and learning from those who do the same.  After I left Windows behind, I have been using some of the most amazing software ever written, and its free (as in beer and freedom), and even though my stuff is not nearly as amazing, I hope to give back what I can to the most revolutionary community in the world.  The world today runs on FOSS, and I am deeply grateful.&lt;/p&gt;
+&lt;p&gt;####Lessons Learned
+So back to the original story - Anagramica has a couple hardcore fans, and it averages about 10 plays per week, mostly through those finding it organically (I don’t advertise or market anything I make, other than a facebook or twitter post).  I never planned to make any money from it so I’m not sure why I kept it locked down for so long.  It may have to do with a mild case of imposter sydrome[3], as sometimes I am afraid of people in the outside world seeing my code and being critical.  So I’m trying to get over all that by coding out in the open and learning from those who do the same.  After I left Windows behind, I have been using some of the most amazing software ever written, and its free (as in beer and freedom), and even though my stuff is not nearly as amazing, I hope to give back what I can to the most revolutionary community in the world.  The world today runs on FOSS, and I am deeply grateful.&lt;/p&gt;
 &lt;p&gt;[1] &lt;a href=&quot;https://github.com/binarymax/KeepAware-old&quot;&gt;https://github.com/binarymax/KeepAware-old&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;[2] &lt;a href=&quot;http://blog.nodejs.org/2011/07/06/node-v0-5-0-unstable/&quot;&gt;http://blog.nodejs.org/2011/07/06/node-v0-5-0-unstable/&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;[3] &lt;a href=&quot;https://en.wikipedia.org/wiki/Impostor_syndrome&quot;&gt;https://en.wikipedia.org/wiki/Impostor_syndrome&lt;/a&gt;&lt;/p&gt;
