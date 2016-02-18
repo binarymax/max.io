@@ -18,26 +18,29 @@
 &lt;hr&gt;
 &lt;section&gt;
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; id=&quot;CE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Common Era (CE) &lt;span class=&quot;thai&quot;&gt;คริสต์ศักราช (ค.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;CE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Common Era (CE) &lt;span class=&quot;thai&quot;&gt;คริสต์ศักราช (ค.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; id=&quot;BE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Buddhist Era (BE) &lt;span class=&quot;thai&quot;&gt;พุทธศักราช (พ.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;BE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Buddhist Era (BE) &lt;span class=&quot;thai&quot;&gt;พุทธศักราช (พ.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; id=&quot;JS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Jula Sakarat (JS) &lt;span class=&quot;thai&quot;&gt;จุลศักราช (จ.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;JS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Jula Sakarat (JS) &lt;span class=&quot;thai&quot;&gt;จุลศักราช (จ.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; id=&quot;RS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Ratanakosin Sakarat (RS) &lt;span class=&quot;thai&quot;&gt;รัตนโกสินทร์ศก (ร.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;RS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Ratanakosin Sakarat (RS) &lt;span class=&quot;thai&quot;&gt;รัตนโกสินทร์ศก (ร.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 &lt;/section&gt;
 
 &lt;hr&gt;
-&lt;p&gt;This is for my brother Anthony who, though having mastered Thai as a second language and can read Aramaic and Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead languages.&lt;/p&gt;
+&lt;p&gt;This is for my brother Anthony who, though having mastered Thai as a second language and can read &lt;strike&gt;Aramaic and&lt;/strike&gt;* Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead languages.&lt;/p&gt;
 &lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/jquery-1.12.0.min.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/calendaryear.js&quot;&gt;&lt;/script&gt;</description>
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/calendaryear.js&quot;&gt;&lt;/script&gt;
+
+&lt;p&gt;*UPDATE: Anthony cannot read Aramaic&lt;/p&gt;
+</description>
     </item>
     <item>
       <title>Porting a Numpy neural network to Torch</title>

@@ -1,50 +1,42 @@
 var CalendarYearConverter = (function(){
 
-	/*
-	This is how you find CE from them:
-	BE-543=CE
-	JS+638=CE
-	RS+1781=CE
-	*/
+	var year = function(d) {
+		if(d instanceof Date) return d.getFullYear();
+		if(d>-9999 && d<9999) return d;
+	}
 
 	var eras = {
-		CE:{
-			BE:function(y) {return y+543},
-			JS:function(y) {return y-638},
-			RS:function(y) {return y-1781}
-		},
 		BE:{
-			CE:function(y) {return y-543},
-			JS:function(y) {return eras.CE.JS(eras.BE.CE(y))},
-			RS:function(y) {return eras.CE.RS(eras.BE.CE(y))}
+			getCE: function(date) {return year(date)+543},
+			setCE: function(date) {return year(date)-543}
 		},
 		JS:{
-			CE:function(y) {return y+638},
-			BE:function(y) {return eras.CE.BE(eras.JS.CE(y))},
-			RS:function(y) {return eras.CE.RS(eras.JS.CE(y))}
+			getCE: function(date) {return year(date)-638},
+			setCE: function(date) {return year(date)+638}
 		},
 		RS:{
-			CE:function(y) {return y+1781},
-			BE:function(y) {return eras.CE.BE(eras.RS.CE(y))},
-			JS:function(y) {return eras.CE.JS(eras.RS.CE(y))}
+			getCE: function(date) {return year(date)-1781},
+			setCE: function(date) {return year(date)+1781}
 		}
 	}
 
-	var from = function(era,year) {
-		var source = eras[era];
+	var all = function(source,date) {
 		var output = {};
-		if (source) {
-			for(var target in source) {
-				if (source.hasOwnProperty(target)) {
-					output[target] = source[target](year);
+		if (source==='CE') {
+			for(var era in eras) {
+				if(eras.hasOwnProperty(era)) {
+					output[era] = eras[era].setCE(date);
 				}
 			}
+		} else {
+			output = all('CE',eras[source].getCE(date));
+			output.CE = eras[source].getCE(date);
 		}
 		return output;
 	}
 
 	var display = function(era,year) {
-		var years = from(era,year);
+		var years = all(era,year);
 		for(var target in years) {
 			$("#"+target).val(years[target]);
 		}
