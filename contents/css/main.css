@@ -180,6 +180,11 @@ body.article-detail .logo {
   color:#505fff;
 }
 
+.calendaryear {
+  font-size: 1.6em;
+  width:100px;
+}
+
 /* page footer */
 
 footer {
