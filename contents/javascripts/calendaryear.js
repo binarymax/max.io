@@ -7,16 +7,16 @@ var CalendarYearConverter = (function(){
 
 	var eras = {
 		BE:{
-			getCE: function(date) {return year(date)+543},
-			setCE: function(date) {return year(date)-543}
+			getCE: function(date) {return year(date)-543},
+			setCE: function(date) {return year(date)+543}
 		},
 		JS:{
-			getCE: function(date) {return year(date)-638},
-			setCE: function(date) {return year(date)+638}
+			getCE: function(date) {return year(date)+638},
+			setCE: function(date) {return year(date)-638}
 		},
 		RS:{
-			getCE: function(date) {return year(date)-1781},
-			setCE: function(date) {return year(date)+1781}
+			getCE: function(date) {return year(date)+1781},
+			setCE: function(date) {return year(date)-1781}
 		}
 	}
 
