@@ -14,33 +14,33 @@
       <pubDate>Wed, 17 Feb 2016 00:00:00 +0000</pubDate>
       <guid isPermaLink="true">http://localhost:5050/articles/calendar-year-converter/</guid>
       <author></author>
-      <description>&lt;p&gt;This tool converts a calendar year between Gregorian Common Era (CE) คริสต์ศักราช (ค.ศ.), Jula Sakarat (JS) จุลศักราช (จ.ศ.), Buddhist Era (BE) พุทธศักราช (พ.ศ.), and Ratanakosin Sakarat (RS) รัตนโกสินทร์ศก (ร.ศ.)&lt;/p&gt;
+      <description>&lt;p&gt;This tool converts a calendar year between Gregorian Common Era (CE) คริสต์ศักราช (ค.ศ.), Buddhist Era (BE) พุทธศักราช (พ.ศ.), Jula Sakarat (JS) จุลศักราช (จ.ศ.), and Ratanakosin Sakarat (RS) รัตนโกสินทร์ศก (ร.ศ.)&lt;/p&gt;
 &lt;hr&gt;
 &lt;section&gt;
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;CE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Common Era (CE) &lt;span class=&quot;thai&quot;&gt;คริสต์ศักราช (ค.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;label&gt;Common Era (CE)&lt;br /&gt;
+        &lt;input type=&quot;number&quot; id=&quot;CE&quot; class=&quot;calendaryear&quot; /&gt; &lt;span class=&quot;thai&quot;&gt;คริสต์ศักราช (ค.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;BE&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Buddhist Era (BE) &lt;span class=&quot;thai&quot;&gt;พุทธศักราช (พ.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;label&gt;Buddhist Era (BE)&lt;br /&gt;
+        &lt;input type=&quot;number&quot; id=&quot;BE&quot; class=&quot;calendaryear&quot; /&gt; &lt;span class=&quot;thai&quot;&gt;พุทธศักราช (พ.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;JS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Jula Sakarat (JS) &lt;span class=&quot;thai&quot;&gt;จุลศักราช (จ.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;label&gt;Jula Sakarat (JS)&lt;br /&gt;
+        &lt;input type=&quot;number&quot; id=&quot;JS&quot; class=&quot;calendaryear&quot; /&gt; &lt;span class=&quot;thai&quot;&gt;จุลศักราช (จ.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 
     &lt;p&gt;
-        &lt;input type=&quot;number&quot; pattern=&quot;\d*&quot; id=&quot;RS&quot; class=&quot;calendaryear&quot; /&gt; &lt;label&gt;Ratanakosin Sakarat (RS) &lt;span class=&quot;thai&quot;&gt;รัตนโกสินทร์ศก (ร.ศ.)&lt;/span&gt;&lt;/label&gt;
+        &lt;label&gt;Ratanakosin Sakarat (RS)&lt;br /&gt;
+        &lt;input type=&quot;number&quot; id=&quot;RS&quot; class=&quot;calendaryear&quot; /&gt; &lt;span class=&quot;thai&quot;&gt;รัตนโกสินทร์ศก (ร.ศ.)&lt;/span&gt;&lt;/label&gt;
     &lt;/p&gt;
 &lt;/section&gt;
 
 &lt;hr&gt;
-&lt;p&gt;This is for my brother Anthony who, though having mastered Thai as a second language and can read &lt;strike&gt;Aramaic and&lt;/strike&gt;* Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead languages.&lt;/p&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/jquery-1.12.0.min.js&quot;&gt;&lt;/script&gt;
-&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/calendaryear.js&quot;&gt;&lt;/script&gt;
-
-&lt;p&gt;*UPDATE: Anthony cannot read Aramaic&lt;/p&gt;
-</description>
+&lt;p&gt;This is for my brother Anthony who, though having mastered Thai as a second language and can read Aramaic and Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead languages.&lt;/p&gt;
+&lt;script type=&quot;text/javascript&quot; src=&quot;/javascripts/calendaryear.js&quot;&gt;&lt;/script&gt;</description>
     </item>
     <item>
       <title>Porting a Numpy neural network to Torch</title>

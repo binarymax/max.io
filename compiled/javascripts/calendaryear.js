@@ -1,3 +1,6 @@
+//min.js
+$=function(t,n,e){var i=Node.prototype,r=NodeList.prototype,o="forEach",u="trigger",c=[][o],s=t.createElement("i");return r[o]=c,n.on=i.on=function(t,n){return this.addEventListener(t,n,!1),this},r.on=function(t,n){return this[o](function(e){e.on(t,n)}),this},n[u]=i[u]=function(n,e){var i=t.createEvent("HTMLEvents");return i.initEvent(n,!0,!0),i.data=e||{},i.eventName=n,i.target=this,this.dispatchEvent(i),this},r[u]=function(t){return this[o](function(n){n[u](t)}),this},e=function(n){var e=t.querySelectorAll(n||"☺"),i=e.length;return 1==i?e[0]:e},e.on=i.on.bind(s),e[u]=i[u].bind(s),e}(document,this);
+
 var CalendarYearConverter = (function(){
 
 	var year = function(d) {
@@ -38,25 +41,22 @@ var CalendarYearConverter = (function(){
 	var display = function(era,year) {
 		var years = all(era,year);
 		for(var target in years) {
-			$("#"+target).val(years[target]);
+			$("#"+target).value = years[target];
 		}
 	}
 
 	var change = function(e) {
 		e.stopPropagation();
-		var txt = $(this);
-		var era = txt.attr("id");
-		var val = parseInt(txt.val());
+		var txt = this;
+		var era = txt.getAttribute("id");
+		var val = parseInt(txt.value);
 		display(era,val);
 		return false;
 	}
 
 	$(".calendaryear").on("change",change);
 
-	$(function(){
-		var year = (new Date()).getFullYear();
-		$("#CE").val(year);
-		$("#CE").trigger("change");
-	});
-
+	$("#CE").value = (new Date()).getFullYear();
+	$("#CE").trigger("change");
+	
 })();
