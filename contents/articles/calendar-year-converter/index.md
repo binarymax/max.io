@@ -34,6 +34,6 @@ This tool converts a calendar year between Gregorian Common Era (CE) คริ�
 
 ---
 
-This is for my brother Anthony who, though having mastered Thai as a second language and can read Aramaic and Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead languages.
+This is for my brother Anthony who, though having mastered Thai as a second language and can read Sanskrit, is still mystified by Excel formulae and Javascript.  Presumably since they are not yet dead languages.
 
 <script type="text/javascript" src="/javascripts/calendaryear.js"></script>
