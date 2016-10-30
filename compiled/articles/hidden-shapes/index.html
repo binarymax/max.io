@@ -6,22 +6,22 @@
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="The blog of Max Irwin">
     <meta name="author" content="Max Irwin">
-    <meta name="canonical" content="http://max.io">
+    <meta name="canonical" content="https://max.io">
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0">
-    <meta property="og:image" content="http://binarymax.com/star200.png">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta property="og:image" content="https://max.io/star200.png">
     <meta property="og:title" content="max.io">
     <meta property="og:type" content="website">
     <meta property="og:description" content="The blog of Max Irwin">
-    <meta property="og:url" content="http://max.io/">
+    <meta property="og:url" content="https://max.io/">
     <meta property="og:site_name" content="max.io">
     <meta property="twitter:card" content="summary">
     <meta property="twitter:site:id" content="binarymax">
     <meta property="twitter:title" content="Hidden Shapes">
-    <meta property="twitter:image" content="http://binarymax.com/star200.png">
+    <meta property="twitter:image" content="https://max.io/star200.png">
     <meta property="twitter:description" content="code + art + philosophy">
-    <link rel="shortcut icon" href="http://binarymax.com/star200.png" type="image/png">
-    <link rel="image_src" href="http://binarymax.com/star200.png">
+    <link rel="shortcut icon" href="https://max.io/star200.png" type="image/png">
+    <link rel="image_src" href="https://max.io/star200.png">
     <title>Hidden Shapes - Max Irwin
     </title>
     <link rel="alternate" href="http://localhost:5050/feed.xml" type="application/rss+xml" title="code + art + philosophy">
@@ -48,12 +48,12 @@
         <article class="article">
           <section class="content"><p>I am slowly working on a side-project that makes a video into a mishmash of circles for each frame.  I have an early version running, that manually takes a video, splits it into frames, remixes each frame into the circle mishmash, and recomposes the video with the new remixed frames.  The project is called ‘Harissa’.  The name Harissa comes from an Armenian dish and is made from chicken and a local type of wheat.  It cooks for a long time, until it is a thick porridge.  It is a fitting name because fully rendering a video is a slow process, and the result is an interesting mishmash of the&nbsp;original.</p>
 <hr>
-<p>###Harissa</p>
+<h3 id="harissa">Harissa</h3>
 <p>The original idea for the Harissa project came from a competition I entered to recreate Mondriaan’s last unfinished work (the ‘Victory Boogie Woogie’) with code.  My entry used an algorithm to generate a likeness of the work by randomly placing circles on a canvas, and either kept a circle if the resulting image was closer to the painting, or discarded it otherwise.  After thousands of iterations an interesting likeness emerged.  I re-purposed the algorithm for Harissas frame remixer, made use of imagemagick and mencoder for the image and video processing with a node backend, and wrote some glue code to stitch it all together.  It is a fun project and the first resulting video got some good&nbsp;reactions.</p>
 <p>I want to take Harissa to the next level.  Since it uses javascript for the frame remixer, it is still quite slow (and will always be slow unless I rewrite it in <span class="caps">CUDA</span> or similar).  It takes about 30 seconds per frame.  When you want to generate a 5 minute video at 12 frames per second, that ends up being a big number.  I enjoy the challenges this poses.  I use web workers to speed up some operations, and will probably use some sort of websocket connection delegation to allow for multiple machines to browse to the project and each contribute to the video.  Theoretically if I use 3 machines instead of 1, it should only take a third of the&nbsp;time.</p>
 <p>The main thing I am missing, however, is the choppiness between frames.  If one frame is a bunch of random circles, and the next frame is a different bunch of random circles, the transition from one frame to the next looks jarring.  With the goal of smoothing it out, I want to insert two or more new ‘transition’ frames, that take one frame and smoothly transition the circles to the next adjacent frame.  I have no idea how this will look in the end, and have some hurdles to jump before I can realize the result, but it is worth pursuing just to see what&nbsp;happens.</p>
-<p>###Hidden Shapes
-Today I jumped the first hurdle, and want to share a nice algorithm I wrote in the process.  Before we can start calculating transitions, we need to clean up the circles.  Since lots of circles are haphazardly placed on the canvas for each frame, some of them get covered up entirely and are useless in the final image.  So I needed to know whether a circle is visible when all the other circles have been drawn.  If I can get rid of the unnecessary circles I can save some time when doing later&nbsp;calculations.</p>
+<h3 id="hidden-shapes">Hidden&nbsp;Shapes</h3>
+<p>Today I jumped the first hurdle, and want to share a nice algorithm I wrote in the process.  Before we can start calculating transitions, we need to clean up the circles.  Since lots of circles are haphazardly placed on the canvas for each frame, some of them get covered up entirely and are useless in the final image.  So I needed to know whether a circle is visible when all the other circles have been drawn.  If I can get rid of the unnecessary circles I can save some time when doing later&nbsp;calculations.</p>
 <p>There are at least 2 ways to do this, but probably more.  The first way is to do something called raycasting.  Imagine a beam of light shining down onto our circles - tag the first circle the beam of light hits.  Do this for every pixel on the canvas, and remove all the circles that have not been tagged.  The second way, which I eventually decided to use, is to iterate through all the circles.  For each iteration, draw the current circle with a special color, then draw all the other circles around it.  If the special color is not visible in the final slice, then it is hidden.  Either method would suffice (and there might be a better&nbsp;one).</p>
 <p>Here is the code that draws the shapes to a canvas.  This code is taken from a larger module, but one can easily see that the shapes are drawn to a canvas that are not hidden, and only in the bounds we specify.  Each shape has at least the following properties: x,y,z,radius,color.  A shape is hidden if it was previously tagged as such, and is therefore ignored.  Since drawing circles is a computationally intensive process, we only want to draw the circles that might be hovering above the circle we are&nbsp;testing.</p>
 <pre class="prettyprint lang-javascript">
@@ -109,7 +109,7 @@ var testvisible = function(context,shapes,index){
 };
 </pre>
 
-<p>###Next&nbsp;Steps</p>
+<h3 id="next-steps">Next&nbsp;Steps</h3>
 <p>For an average of 3000 initial circles on the canvas, this handy little algorithm removes about one third of the circles since they are hidden.  That is a great improvement!  When I need to start matching neighbor circles together between adjacent frames, this will shave off a significant amount of time in the&nbsp;calculation.</p>
 <p>So now I need to jump the next hurdle - taking two adjacent frames, and doing a nearest nearest neighbor search for every circle.  Once we have that mapping we can make our transition frames to insert between the original adjacent frames.  But those will be for another day, and another&nbsp;post!</p>
 <p>When the code is all done, I will post a video, but for now if you want to see the work in progress, you can view it here: <a href="https://github.com/binarymax/harissa">https://github.com/binarymax/harissa</a></p>
@@ -129,8 +129,6 @@ var testvisible = function(context,shapes,index){
         </section>
       </div>
     </footer>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
-    <script src="/javascripts/prettyprint.js"></script>
-    <script src="/javascripts/analytics.js"></script>
+    <script src="/javascripts/site.js"></script>
   </body>
 </html>

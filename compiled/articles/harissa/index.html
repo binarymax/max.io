@@ -6,22 +6,22 @@
     <meta name="viewport" content="width=device-width">
     <meta name="description" content="The blog of Max Irwin">
     <meta name="author" content="Max Irwin">
-    <meta name="canonical" content="http://max.io">
+    <meta name="canonical" content="https://max.io">
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-    <meta name="viewport" content="width=device-width; initial-scale=1.0">
-    <meta property="og:image" content="http://binarymax.com/star200.png">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta property="og:image" content="https://max.io/star200.png">
     <meta property="og:title" content="max.io">
     <meta property="og:type" content="website">
     <meta property="og:description" content="The blog of Max Irwin">
-    <meta property="og:url" content="http://max.io/">
+    <meta property="og:url" content="https://max.io/">
     <meta property="og:site_name" content="max.io">
     <meta property="twitter:card" content="summary">
     <meta property="twitter:site:id" content="binarymax">
     <meta property="twitter:title" content="Harissa">
-    <meta property="twitter:image" content="http://binarymax.com/star200.png">
+    <meta property="twitter:image" content="https://max.io/star200.png">
     <meta property="twitter:description" content="code + art + philosophy">
-    <link rel="shortcut icon" href="http://binarymax.com/star200.png" type="image/png">
-    <link rel="image_src" href="http://binarymax.com/star200.png">
+    <link rel="shortcut icon" href="https://max.io/star200.png" type="image/png">
+    <link rel="image_src" href="https://max.io/star200.png">
     <title>Harissa - Max Irwin
     </title>
     <link rel="alternate" href="http://localhost:5050/feed.xml" type="application/rss+xml" title="code + art + philosophy">
@@ -51,13 +51,13 @@
 <p><img src="yield.gif" border="0" class="image-column-left" /> <img src="rex.gif" border="0" class="image-column-right" /></p>
 <hr>
 <p><img src="firechrome.gif" border="0" class="image-column-left" /> <img src="flowers.gif" border="0" class="image-column-right" /></p>
-<p>###How it&nbsp;works</p>
+<h3 id="how-it-works">How it&nbsp;works</h3>
 <p>Take a source set of frames, with a target being each processed frame interspersed with an equal number of transition frames.  For example, if there are 4 raw images and 5 intermediate transition frames, there will be 20 frames for the final&nbsp;result.</p>
 <p>There are two steps to the process, the mixer and the&nbsp;blender.</p>
 <p>The mixer preprocesses each frame into circles using a genetic algorithm, as outlined in the post <a href="/articles/hidden-shapes/">Hidden Shapes</a>.  The circles are stored in <span class="caps">JSON</span>, each with the necessary data of x, y, radius and&nbsp;color.</p>
 <p>The blender takes each successive processed frame and matches the best pairs of circles from each frame.  By using a <span class="caps">KD</span>-Tree for nearest neighbors, each circle from one frame gets a sibling from the next successive&nbsp;frame.</p>
 <p>After every circle has a sibling in its next frame, the path is animated from one to another.  A simple interpolation formula takes in x, y, and radius.  It returns an array of objects for the transition.  Each transition step becomes a new frame in the target&nbsp;animation.</p>
-<p>###Research</p>
+<h3 id="research">Research</h3>
 <p>It took awhile to refine the process, and along the way I discovered many interesting attributes of color spaces and contrast related to the algorithm.  I learned early in the project that linear distance is not a reliable way to differentiate colors, and research took me down the paths to delta-e.  I ended up keeping linear distance, however, since it gives an interesting look to the&nbsp;results.</p>
 <p>As a side effect, color simplicity and high border contrast become key, for the mixer algorithm to give good representations.  Some would consider this a flaw, but it is indeed purposeful for the art.  A more accurate color difference formula would just give results similar to that of a photoshop filter.  It also forced me to keep constraints on photo style for good&nbsp;consistency.</p>
 </section>
@@ -76,8 +76,6 @@
         </section>
       </div>
     </footer>
-    <script src="http://cdnjs.cloudflare.com/ajax/libs/prettify/188.0.0/prettify.js"></script>
-    <script src="/javascripts/prettyprint.js"></script>
-    <script src="/javascripts/analytics.js"></script>
+    <script src="/javascripts/site.js"></script>
   </body>
 </html>

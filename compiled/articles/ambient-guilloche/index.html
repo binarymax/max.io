@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width">
+    <meta name="description" content="The blog of Max Irwin">
+    <meta name="author" content="Max Irwin">
+    <meta name="canonical" content="https://max.io">
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta property="og:image" content="https://max.io/star200.png">
+    <meta property="og:title" content="max.io">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="The blog of Max Irwin">
+    <meta property="og:url" content="https://max.io/">
+    <meta property="og:site_name" content="max.io">
+    <meta property="twitter:card" content="summary">
+    <meta property="twitter:site:id" content="binarymax">
+    <meta property="twitter:title" content="Ambient Guilloché">
+    <meta property="twitter:image" content="https://max.io/star200.png">
+    <meta property="twitter:description" content="code + art + philosophy">
+    <link rel="shortcut icon" href="https://max.io/star200.png" type="image/png">
+    <link rel="image_src" href="https://max.io/star200.png">
+    <title>Ambient Guilloché - Max Irwin
+    </title>
+    <link rel="alternate" href="http://localhost:5050/feed.xml" type="application/rss+xml" title="code + art + philosophy">
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/sonsofobsidian.css">
+  </head>
+  <body class="article-detail">
+    <header class="header">
+      <div class="content-wrap">
+        <div class="logo">
+          <h1 class="author"><a href="/">Max Irwin</a></h1>
+          <h2>2016-10-30</h2>
+        </div>
+        <h1>Ambient Guilloché</h1>
+      </div>
+      <hr class="bow sky">
+      <hr class="bow blue">
+      <hr class="bow viored">
+      <hr class="bow red">
+      <hr class="bow yellow">
+    </header>
+    <div id="content">
+      <div class="content-wrap">
+        <article class="article">
+          <section class="content"><p>A year ago, I created a small demo of animating guilloches as two dimensional graphics on an <span class="caps">HTML5</span> canvas.  In this post I revisit the beautiful and elegant patterns as 3d constructs that resonate with sounds from the physical&nbsp;world.</p>
+<hr>
+<p><span class="caps">TL</span>;DR - The post below describes how to build an audio visualization using WebGL (via three.js), GLSL shaders, and the Web Audio&nbsp;API.</p>
+<p>The <a href="/articles/ambient-guilloche/#demo">demo</a> is at the bottom of this&nbsp;post.</p>
+<p>The code is available at <a href="https://github.com/binarymax/guilloche">https://github.com/binarymax/guilloche</a></p>
+<hr>
+<style>
+            .player { 
+                z-index:5; 
+                position:relative; 
+                top:-20px;
+            }
+            .player-button { 
+                float:right;
+                background-color: rgba(0,0,0,0.5);
+                color:#eee;
+                border:0;
+                width:20px;
+                height:20px;
+            }
+            .full { 
+                font-size:1.5em;
+                line-height:0.8em;
+                font-weight:bold;
+                position:relative;
+            }
+</style>
+
+<h2 id="3d-guilloch-">3d&nbsp;Guilloché</h2>
+<p>When I built the 2d animated guilloches, I had planned on eventually experimenting and growing it into a 3d version.  A whole year might seem like a long time to wait for another dimension, but that’s nothing in the greater context of&nbsp;spacetime.</p>
+<p>From an equation perspective, adding another dimension to an otherwise flat guilloche is trivial.  We only need add a formula to get ‘z’ in addition to x and y. The complicated part is the difference in displaying and animating three dimensions instead of two in the&nbsp;browser.</p>
+<p>For example, By adding a third dimension, we will go from this 2d&nbsp;construct:</p>
+<p><img src="./river2d.jpg" width=100% /></p>
+<p>To this 3d&nbsp;construct:</p>
+<div>
+    <div id="guilloche1"></div>
+    <div class="player">
+        <div id="guilloche1_play" class="player-button play" data-target="guilloche1" data-toggle="&#9724;">&#x25B6;</div>
+        <div id="guilloche1_full" class="player-button full" data-target="guilloche1" data-toggle="-">+</div>
+    </div>
+</div>
+
+<p>The basic core formulae for the two images above are as&nbsp;follows:</p>
+<pre><code class="lang-javascript"><span class="comment">//2D</span>
+x : ((rr*<span class="built_in">Math</span>.tan(theta)) + (rp*<span class="built_in">Math</span>.tan(rrr*theta))) * zoom,
+y : ((rr*<span class="built_in">Math</span>.sin(theta)) - (rp*<span class="built_in">Math</span>.sin(rrr*theta))) * zoom
+</code></pre>
+<pre><code class="lang-javascript"><span class="comment">//3D</span>
+x : ((rr*<span class="built_in">Math</span>.tan(theta)) + (rp*<span class="built_in">Math</span>.tan(rrr*theta))) * zoom,
+y : ((rr*<span class="built_in">Math</span>.sin(theta)) - (rp*<span class="built_in">Math</span>.sin(rrr*theta))) * zoom,
+z : ((rr*<span class="built_in">Math</span>.tan(theta)) + (rp*<span class="built_in">Math</span>.cos(rrr*theta))) * zoom
+</code></pre>
+<p>As you can see, the x and y formulae are the same, and the z formula was added only for the 3d&nbsp;version.</p>
+<p>So what’s the big deal, and why is this complicated?  Well, to animate the 2d version, we only need loop and draw pixels to a typed array, before displaying on a canvas.  But to render the 3d version, we need to allocate a vertex for each point and animate them in a vertex shader.  This is not difficult once you’ve done it (or know how to do it), but getting to 3d from 2d requires a leap in knowledge into WebGL and <span class="caps">GLSL</span>&nbsp;shaders.</p>
+<p>The best part however, is that the 3d version is <em>fast</em>.  The 2d render is slow since it is javascript running on the <span class="caps">CPU</span> in series for each point.  The GLSL shader runs in the GPU, using the parallel operations across the vertices.  This opens up lots of opportunities for experimentation, and led to the ultimate goal of the post, which is listening to the microphone and resonating the equations for a nice 90’s retro style&nbsp;visualisation.</p>
+<h3 id="webgl">WebGL</h3>
+<p>I usually like to write everything without using 3<span class="ord">rd</span> party libraries, but I cheated this time and used the magnificent&nbsp;three.js.</p>
+<p>I won’t give an exhaustive introduction into WebGL nor three.js, there are plenty of introductions and tutorials out there already.  I will just get right to the point and dive into the buffer geometry setup for the vertices of a&nbsp;guilloche.</p>
+<p>Since we are interested in individual points, and not continuous objects like spheres or polygons, we use vertices in a geometry object.  To make use of <span class="caps">GLSL</span> shader attributes so we can animate (more on this later), we need to use the buffer geometry.  The buffer geometry lets us specify an arbitrary number of arrays to store information that can be rendered by the GPU.  In our case we will be storing the starting position of each point (represented as a vertex), and the core parameter used for calculation&nbsp;(theta).</p>
+<p>For our x,y,z equations above we will loop through space and create lots of vertices for small increments over the theta param.  We start at 0 and loop through Tau at a step of some small number and, using the additional configurations of the guilloche, we end up with a gorgeous distribution of points in a 3d&nbsp;space.</p>
+<p>Here is the code for the ‘river’ guilloche shown above.  I hard-coded the parameters for&nbsp;clarity:</p>
+<pre><code class="lang-javascript"><span class="built_in">Math</span>.tau = <span class="built_in">Math</span>.<span class="caps">PI</span> * <span class="number">2</span>; <span class="comment">//I wish this came as standard ;)</span>
+
+<span class="keyword">var</span> river = <span class="function"><span class="keyword">function</span><span class="params">(R,r,p,step,zoom)</span></span>{
+    <span class="keyword">var</span> size = <span class="built_in">Math</span>.floor(<span class="built_in">Math</span>.tau/step);
+    <span class="keyword">var</span> geometry = <span class="keyword">new</span> <span class="caps">THREE</span>.BufferGeometry();
+    <span class="keyword">var</span> positions = <span class="keyword">new</span> <span class="built_in">Float32Array</span>(size * <span class="number">3</span>);
+    <span class="keyword">var</span> thetas = <span class="keyword">new</span> <span class="built_in">Float32Array</span>(size);
+    <span class="keyword">var</span> rr = R+r;
+    <span class="keyword">var</span> rp = r+p;
+    <span class="keyword">var</span> rrr = (R+r)/r;
+    <span class="keyword">for</span>(<span class="keyword">var</span> theta=<span class="number">0</span>,x=<span class="number">0</span>,y=<span class="number">0</span>,i=<span class="number">0</span>; i &lt; size; i++) {            
+        thetas[i] = theta;
+        positions[i+<span class="number">0</span>] = ((rr*<span class="built_in">Math</span>.tan(theta)) + (rp*<span class="built_in">Math</span>.tan(rrr*theta))) * zoom;
+        positions[i+<span class="number">1</span>] = ((rr*<span class="built_in">Math</span>.sin(theta)) - (rp*<span class="built_in">Math</span>.sin(rrr*theta))) * zoom;
+        positions[i+<span class="number">2</span>] = ((rr*<span class="built_in">Math</span>.tan(theta)) + (rp*<span class="built_in">Math</span>.cos(rrr*theta))) * zoom;
+        theta+=step;
+    }
+    geometry.addAttribute(<span class="string">'position'</span>,<span class="keyword">new</span> <span class="caps">THREE</span>.BufferAttribute(positions,<span class="number">3</span>));
+    geometry.addAttribute(<span class="string">'theta'</span>,<span class="keyword">new</span> <span class="caps">THREE</span>.BufferAttribute(thetas,<span class="number">1</span>));
+    <span class="keyword">return</span> geometry;
+}
+<span class="keyword">var</span> geo = river( <span class="number">70</span> , -<span class="number">0.25</span> , <span class="number">25</span> , <span class="number">0.0001</span> , <span class="number">20</span> );
+</code></pre>
+<p>So what are R, r, p, step, and zoom?  R, r, and p alter the shape of the guilloche. Step is the increment in which we increase a counter for the number of points (related to Tau, the lower the step increases the number of vertices). Zoom is the spacing between the vertices.  I probably could have come up with better names, but naming things is the second hardest problem in computer&nbsp;science.</p>
+<p>There are other important aspects of the river method above.  Namely we are adding the position and theta typed arrays as attributes to the buffer geometry.  This allows us to pass the attributes into the <span class="caps">GLSL</span> vertex shader and use them there during calculations for our&nbsp;animation.</p>
+<h3 id="animating-a-sine-wave">Animating a Sine&nbsp;Wave</h3>
+<p>Now that we have the construct rendered to the screen, we want to animate it in a similar way to our older 2d versions.  I didn’t spend any time describing how the guilloche was animated for the 2d version, so I thought I would take the time and explain it here.  We animate each equation by incrementing the <code>theta</code> parameter for each vertex calculation.  How does this animate though?  Think of a simple sine wave, that is drawn with spaced points rather than a continuous curve.  Each point is a segment of Tau along a full cycle of the wave.  If we have a step of 0.001, then we are rendering the sin wave with 6283 points.  As that is stretched across the screen we see gaps between those points.  Changing the parameter by a small amount will move the points to a new position along the wave, all relative to each&nbsp;other.</p>
+<p>Here is a small demonstration.  We will only show the sine wave, with 6283 points, and animate theta by incrementing one hundred thousandth of Tau (Math.tau/100000) for each frame.  This may seem like too small an amount, but at 60 frames per second, the effect is&nbsp;clear:</p>
+<p><img src="./sinewave1.gif" width=100% /></p>
+<p>Look closely at the animation above and focus on one point.  Notice how it is only moving up and down, as we cycle through theta.  Stepping back and looking at the image as a whole gives an illusion of the wave moving from right to&nbsp;left.</p>
+<p>When we do this for our more complicated guilloche equations, the effect is super awesome.  So how can we do this with our vertices in a 3d space?  With <span class="caps">GLSL</span>&nbsp;shaders…</p>
+<h3 id="vertex-shaders">Vertex&nbsp;Shaders</h3>
+<p>The graphics pipeline has several different stages.  A shader is a stage that transforms either the position or the appearance of data in the <span class="caps">GPU</span>.  Since shaders are run in the GPU, and the GPU is built to parallelize calculations across their many cores, they effectively scale across the processing of the data.  In other words, they process large amounts of data more quickly than a single process on a&nbsp;CPU.</p>
+<p>We will keep things simple and only cover the vertex shader stage.  Just by names alone, this should be clear - we have lots of vertices, and we need to animate them, so we use the vertex shader.  Each vertex will be processed in parallel, and it will be much faster than trying to do it all in&nbsp;javascript.</p>
+<p>The shader only requires some basic setup, and then we can use the same formulae for our guilloche with only one syntax change and some&nbsp;boilerplate.</p>
+<pre><code class="lang-c"><span class="keyword">const</span> <span class="keyword">float</span> pi = <span class="number">3.141592653589793</span>;
+attribute <span class="keyword">float</span> theta;
+uniform <span class="keyword">float</span> amplitude,zoom,R,Rs,r,rs,p,ps;
+varying vec3 vNormal;
+<span class="function"><span class="keyword">void</span> <span class="title">main</span><span class="params">()</span> </span>{
+    <span class="keyword">float</span> rr = (R+r) + amplitude;
+    <span class="keyword">float</span> rp = (r+p) + <span class="built_in">sin</span>(amplitude)/(pi*<span class="number">10.0</span>);
+    <span class="keyword">float</span> rrr = (R+r)/r;
+    vec3 nwPosition = vec3(
+        rr*<span class="built_in">tan</span>(theta) + rp*<span class="built_in">tan</span>(rrr*theta) * zoom,
+        rr*<span class="built_in">sin</span>(theta) - rp*<span class="built_in">sin</span>(rrr*theta) * zoom,
+        rr*<span class="built_in">tan</span>(theta) + rp*<span class="built_in">cos</span>(rrr*theta) * zoom
+    );
+    vec4 mvPosition = modelViewMatrix * vec4( nwPosition, <span class="number">1.0</span> );
+    gl_PointSize = <span class="number">1.0</span>;
+    gl_Position = projectionMatrix * mvPosition;
+}
+</code></pre>
+<p>Ok, so there’s a lot going on in there.  Let’s walk through&nbsp;it.</p>
+<p><span class="caps">PI</span> isn’t defined in GLSL, so we need to declare it ourselves.  I am using a <code>const</code> but some prefer to define the value to be used in a&nbsp;preprocessor.</p>
+<p>Attibutes are the static values that we created in our buffer geometry.  As you recall we added the positions and the theta for our vertices.  These will be used in our calculation for&nbsp;animation.</p>
+<p>Uniforms are dynamic values that we can change upstream in JavaScript and pass in to the shader for each frame render.  All the variables here, aside from amplitude, are part of our core guilloche calculation that we’ve always been using.  Amplitude will be covered later, when we add the audio&nbsp;detection!</p>
+<p>Varyings are values that are passed to all the stages and can be changed in the vertex shader for use in the fragment shader.  The line <code>varying vec3 vNormal</code> is required by the vertex shader for internal use.  It can be used during shader calculation, but we don’t need it ourselves, and we don’t do anything special with the fragment shader, so we won’t cover it in&nbsp;detail.</p>
+<p>Inside of the main entry method for the shader, the same equations are used to calculate the new position of the vertex, declared as vec3 (a three dimensional vector for x,y,z).  With the new position calculated, it is aligned with the global view matrix, the size of the points set, and projected to the point on our 2d&nbsp;screen.</p>
+<p>The shader code isn’t javascript, so we separately place it in the <span class="caps">HTML</span> document wrapped in a <code>&lt;script type=&quot;x-shader/x-vertex&quot; id=&quot;riververtexshader&quot;&gt;...&lt;/script&gt;</code> tag for retrieval&nbsp;later.</p>
+<h3 id="setup-and-rendering">Setup and&nbsp;Rendering</h3>
+<p>With our base algorithms in place to draw the guilloche, we can use the standard scene, camera, and renderer from three.js to animate our construct.  We also need to pass in the baseline parameters for the guilloche including R,r, and p, and their minimums and maximums.  For the animation we rotate through the values and pass them in as uniforms to the&nbsp;shader.</p>
+<p>All that looks like&nbsp;this:</p>
+<pre><code class="lang-javascript"><span class="keyword">var</span> width = <span class="built_in">window</span>.innerWidth;
+<span class="keyword">var</span> height = <span class="built_in">window</span>.innerHeight;
+<span class="keyword">var</span> scene = <span class="keyword">new</span> <span class="caps">THREE</span>.Scene();
+<span class="comment">//Parameter settings and buffer geometry for the river guilloche</span>
+<span class="keyword">var</span> inc = <span class="built_in">Math</span>.tau/<span class="number">10000000</span>;
+<span class="keyword">var</span> set = { R:<span class="number">70</span>, Rs:inc, Rmin:<span class="number">60</span>, Rmax:<span class="number">80</span>, r:-<span class="number">0.25</span>, rs:inc, rmin:-<span class="number">0.50</span>, rmax:-<span class="number">0.01</span>, p:<span class="number">25</span>, ps:inc, pmin:<span class="number">4</span>, pmax:<span class="number">20</span>, zoom:<span class="number">12</span>, step:<span class="number">0.0001</span> };
+<span class="keyword">var</span> geo = river(set.R, set.r, set.p, set.step, set.zoom);
+<span class="keyword">var</span> uniforms = {
+    amplitude:{value:    <span class="number">1.0</span>},
+    zoom:{value:set.zoom*<span class="number">1.0</span>},
+    R:   {value:set.R   *<span class="number">1.0</span>},
+    Rs:  {value:set.Rs  *<span class="number">1.0</span>},
+    r:   {value:set.r   *<span class="number">1.0</span>},
+    rs:  {value:set.rs  *<span class="number">1.0</span>},
+    p:   {value:set.p   *<span class="number">1.0</span>},
+    ps:  {value:set.ps  *<span class="number">1.0</span>}
+};
+<span class="keyword">var</span> vertexshader = <span class="built_in">document</span>.getElementById(<span class="string">"riververtexshader"</span>).innerText;
+<span class="keyword">var</span> fragmentshader = <span class="built_in">document</span>.getElementById(<span class="string">"riverfragmentshader"</span>).innerText;
+<span class="keyword">var</span> shaders = <span class="keyword">new</span> <span class="caps">THREE</span>.ShaderMaterial({
+    uniforms: uniforms,
+    vertexShader: vertexshader,
+    fragmentShader: fragmentshader
+});
+<span class="keyword">var</span> points = <span class="keyword">new</span> <span class="caps">THREE</span>.Points( geo, shaders );
+scene.add( points );
+<span class="keyword">var</span> camera = <span class="keyword">new</span> <span class="caps">THREE</span>.PerspectiveCamera( <span class="number">75</span>, width / height, <span class="number">1</span>, <span class="number">3000</span> );
+camera.position.z = <span class="number">1000</span>;
+<span class="keyword">var</span> renderer = <span class="keyword">new</span> <span class="caps">THREE</span>.WebGLRenderer();
+renderer.setPixelRatio( <span class="built_in">window</span>.devicePixelRatio );
+renderer.setSize( width, height );
+<span class="built_in">document</span>.getElementById(<span class="string">"guilloche"</span>).appendChild( renderer.domElement );
+</code></pre>
+<p>Lets break it&nbsp;down…</p>
+<p>First we set some constants and initialize the scene.  The scene is responsible for holding the geometries so they can be seen by a camera and rendered into view on the&nbsp;screen.</p>
+<p>We get some parameters for our river guilloche and get the geometry by calling the river function we defined earlier.  The parameters in <code>set</code> are chosen somewhat arbitrarily, and I spent a little time tweaking them to get a visual that I was happy&nbsp;with.</p>
+<p>The uniforms will be used in our shader, and we need to declare them as such.  Note that since they are all float values in <span class="caps">GLSL</span> we coerce them into floats in javascript by multiplying by <code>1.0</code>.  This is a hint so three.js will know the type.  The shader code is actually embedded in our document as noted above, so we get it from the <span class="caps">DOM</span>.  With our geometry, uniforms and shader code ready, we create the <code>shaders</code> object and add it as points to our&nbsp;scene.</p>
+<p>We then create and position the camera and renderer for a nice scenic view and add it to the <span class="caps">DOM</span> to be shown on the page in the element we&nbsp;want.</p>
+<p>Now that everything is initialized, the scene needs to be&nbsp;rendered…</p>
+<pre><code class="lang-javascript"><span class="keyword">var</span> render = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    set.R = (uniforms.R.value += set.Rs);
+    <span class="keyword">if</span>(set.R&lt;=set.Rmin || set.R&gt;=set.Rmax) set.Rs*=-<span class="number">1</span>;
+    set.r = (uniforms.r.value += set.rs);
+    <span class="keyword">if</span>(set.r&lt;=set.rmin || set.r&gt;=set.rmax) set.rs*=-<span class="number">1</span>;
+    set.p = (uniforms.p.value += set.ps);
+    <span class="keyword">if</span>(set.p&lt;=set.pmin || set.p&gt;=set.rmax) set.ps*=-<span class="number">1</span>;
+    camera.lookAt( scene.position );
+    renderer.render( scene, camera );
+    requestAnimationFrame(render);
+};
+
+render();
+</code></pre>
+<p>During the render operation, we increment the uniform values.  Since we passed the uniform data into the shaders, and they are kept as reference objects, changing the value will automatically update them in the shader pipeline.  I added a little trick of oscillating the uniform parameters between min and max values, to keep it flowing nicely.  Once the uniforms are set, we render the scene, and the visual is displayed on the page.  We continuously render the scene by calling requestAnimationFrame to get a nice smooth&nbsp;animation.</p>
+<h3 id="multiple-geometries">Multiple&nbsp;Geometries</h3>
+<p>With the foundations in place, layering geometries together is quite easy.  We can easily alter our code to render multiple geometries in the scene.  Each geometry needs their own equations, settings, uniforms, and&nbsp;shader.</p>
+<p>In the github code I have already created many guilloche functions that you can start with, as well as a playground to make it easy to add and remove them to a scene and tweak the settings.  Feel free to have a look now, or continue reading to see how we can make our mathematics dance to some ambient noise from a&nbsp;microphone…</p>
+<h2 id="audio">Audio</h2>
+<p>When I first created the 3d guilloche, I was pleased but not fully satisfied.  I felt that with the computational power of shaders I could do more, and I wanted the visuals to be interactive beyond the basic fly-through controls we are used to seeing in three.js demos.  I reached deep back to the 1990’s and pulled out a task of audio interaction, but I didn’t want to just load in some music and make it react, I wanted to be able to control these things with my own sounds live from a microphone.  Enter the web audio&nbsp;<span class="caps">API</span>.</p>
+<h3 id="web-audio-api">Web Audio&nbsp;<span class="caps">API</span></h3>
+<p>I had first learned of audio processing in the browser from a great talk by Soledad Penadés at Full Frontal Conference in 2014.  I knew that with the web audio <span class="caps">API</span> I could get some sound as an input and make it alter the appearance of the guilloche somehow.  But, when I started, I didn’t really know how it worked except for some very basic theory on frequencies and amplitude.  To get a better grasp on the subject I spent several hours doing research to better learn the fundamentals of audio processing, and how it worked in the browser.  I started with some basic theory that I found on a tutorial[0] and also, as usual, MDN[1] proved to be an amazing resource with clear explanations and excellent&nbsp;examples.</p>
+<p>It’s been several years since Web Audio <span class="caps">API</span> first became available in browser builds, but to access it you still need to use prefixed objects.  To start, you need an audio context and the getUserMedia permissions (as we need to politely ask the user to use their&nbsp;microphone).</p>
+<p>The strategy will be to allow our guilloche to give a callback that listens to the microphone time domain data.  This is surprisingly easy and requires very little code.  The entire microphone listener is shown below.  I won’t dive into all the pieces, rather if you are interested I recommend you read the <span class="caps">MDN</span> documentation and tutorials, which do a much better job explaining it than I can in the scope of this&nbsp;post.</p>
+<pre><code class="lang-javascript">navigator.getUserMedia =navigator.getUserMedia       ||
+                        navigator.webkitGetUserMedia ||
+                        navigator.mozGetUserMedia    ||
+                        navigator.msGetUserMedia;
+<span class="keyword">var</span> audiocontext = <span class="built_in">window</span>.AudioContext||<span class="built_in">window</span>.webkitAudioContext;
+<span class="keyword">var</span> microphone, analyser, listener;
+<span class="keyword">var</span> onStream = <span class="function"><span class="keyword">function</span><span class="params">(stream)</span> </span>{
+    microphone = context.createMediaStreamSource(stream);
+    analyser = context.createAnalyser();
+    microphone.connect(analyser);
+    requestAnimationFrame(analyze);
+};
+<span class="keyword">var</span> onError = <span class="function"><span class="keyword">function</span><span class="params">(e)</span> </span>{
+    <span class="built_in">console</span>.error(<span class="string">'No microphone!'</span>);
+};
+<span class="keyword">var</span> analyze = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    <span class="keyword">var</span> data = <span class="keyword">new</span> <span class="built_in">Uint8Array</span>(analyser.frequencyBinCount);
+    analyser.getByteTimeDomainData(data);
+    <span class="keyword">for</span>(<span class="keyword">var</span> i = <span class="number">0</span>; i &lt; data.length; i++) {
+        listener(data[i]);
+    }
+    requestAnimationFrame(analyze);
+};
+<span class="keyword">var</span> listen = <span class="function"><span class="keyword">function</span><span class="params">(callback)</span> </span>{
+    listener = callback;
+    context = <span class="keyword">new</span> audiocontext();
+    context.createGain = context.createGainNode;
+    context.createDelay = context.createDelayNode;
+    context.createScriptProcessor = context.createJavaScriptNode;
+    navigator.getUserMedia( {audio: <span class="literal">true</span>}, onStream, onError);
+};
+</code></pre>
+<h3 id="feeding-the-guilloche">Feeding the&nbsp;guilloche</h3>
+<p>You may note that for the demo I used the time domain, rather than the frequency domain.  I experimented with both and for this instance decided on the&nbsp;former.</p>
+<p>The only thing that we need to do now is call the <code>listen</code> function with a callback that can change the amplitude.  Since everything is asynchronous, we will push the microphone values to an array as they come in, and pop them out one at a time per frame&nbsp;render.</p>
+<p>Here is the simple code that adds the time domain values to the&nbsp;array:</p>
+<pre><code class="lang-javascript"><span class="keyword">var</span> ambient = [];
+listen(<span class="function"><span class="keyword">function</span><span class="params">(val)</span></span>{ambient.push(val)});
+</code></pre>
+<p>Here is some code that I spent some time tweaking to get the effect right.  But as you can see in the first line of the <code>react</code> function, we are taking the most recent ambient data value and, if no values exist, defaulting to 0.  The other code was experimented with to rotate the guilloche on the y axis, and to feed the amplitude into the&nbsp;shader.</p>
+<pre><code class="lang-javascript"><span class="keyword">var</span> def = <span class="built_in">Math</span>.tau/(<span class="number">360</span>*<span class="number">12</span>);
+<span class="keyword">var</span> dep = <span class="built_in">Math</span>.<span class="caps">PI</span>*<span class="number">100</span>-<span class="built_in">Math</span>.<span class="caps">PI</span>*<span class="number">50</span>;
+<span class="keyword">var</span> react = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    <span class="keyword">var</span> amb = ambient.pop()||<span class="number">0</span>;
+    <span class="keyword">var</span> amp = <span class="built_in">Math</span>.max(amb/<span class="number">2</span>,<span class="number">0</span>);
+    <span class="keyword">var</span> rot = (amp||<span class="number">1</span>)/dep;
+    points.rotation.y += (rot&gt;<span class="number">0</span>?<span class="built_in">Math</span>.max(rot,def):<span class="built_in">Math</span>.min(rot,-def));
+    uniforms.amplitude.value = amp;
+};
+</code></pre>
+<p>The only thing left is to add the <code>react</code> call to the render function.  Everything else remains the same for our render as it was&nbsp;above:</p>
+<pre><code class="lang-javascript"><span class="keyword">var</span> render = <span class="function"><span class="keyword">function</span><span class="params">()</span> </span>{
+    set.R = (uniforms.R.value += set.Rs);
+    <span class="keyword">if</span>(set.R&lt;=set.Rmin || set.R&gt;=set.Rmax) set.Rs*=-<span class="number">1</span>;
+    set.r = (uniforms.r.value += set.rs);
+    <span class="keyword">if</span>(set.r&lt;=set.rmin || set.r&gt;=set.rmax) set.rs*=-<span class="number">1</span>;
+    set.p = (uniforms.p.value += set.ps);
+    <span class="keyword">if</span>(set.p&lt;=set.pmin || set.p&gt;=set.rmax) set.ps*=-<span class="number">1</span>;
+    react();
+    camera.lookAt( scene.position );
+    renderer.render( scene, camera );
+    requestAnimationFrame(render);
+};
+</code></pre>
+<p>And that’s it!  Lets see it in action, shall&nbsp;we?</p>
+<p><a name="demo"></a></p>
+<h2 id="demo">Demo</h2>
+<p>Be sure to make some noise, like whistling or shouting or playing some music on your speakers, to see the effect.  If you declined to share your microphone when you first loaded the page, you can refresh to be prompted&nbsp;again.</p>
+<div>
+    <div id="guilloche2"></div>
+    <div class="player">
+        <div id="guilloche2_play" class="player-button play" data-target="guilloche2" data-toggle="&#9724;">&#x25B6;</div>
+        <div id="guilloche2_full" class="player-button full" data-target="guilloche2" data-toggle="-">+</div>
+    </div>
+</div>
+
+<p>The full code for the demo and others is available on <a href="https://github.com/binarymax/guilloche">github</a>.&nbsp;Enjoy!</p>
+<p>—</p>
+<h2 id="links">Links</h2>
+<ul>
+<li>[0] <a href="http://www.asel.udel.edu/speech/tutorials/">http://www.asel.udel.edu/speech/tutorials/</a></li>
+<li>[1] <a href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API">https://developer.mozilla.org/en-<span class="caps">US</span>/docs/Web/API/Web_Audio_API/Using_Web_Audio_API</a></li>
+</ul>
+<script type="x-shader/x-vertex" id="vertextemplate">
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+
+        const float pi = 3.141592653589793;
+
+        attribute float theta;
+        uniform float amplitude,zoom,R,Rs,r,rs,p,ps;
+        varying vec3 vNormal;
+
+        void main() {
+
+            float rr = (R+r) + amplitude;
+            float rp = (r+p) + sin(amplitude)/(pi*10.0);
+            float rrr = (R+r)/r;
+            vec3 nwPosition = vec3({{model}});
+
+            vec4 mvPosition = modelViewMatrix * vec4( nwPosition, 1.0 );
+            gl_PointSize = 1.0;
+            gl_Position = projectionMatrix * mvPosition;
+        }
+</script>
+
+<script type="x-shader/x-fragment" id="fragmentshader">
+        #ifdef GL_ES
+        precision highp float;
+        #endif
+
+        uniform sampler2D texture;
+        varying vec3 vNormal;
+
+        void main() {
+            vec3 fNormal = vNormal;
+            gl_FragColor = vec4(1.0 , 1.0 , 1.0 , 1.0);
+        }
+</script>
+
+
+<script type="text/javascript" src="/javascripts/three.js"></script>
+<script type="text/javascript" src="/javascripts/ease.js"></script>
+<script type="text/javascript" src="/javascripts/mic.js"></script>
+<script type="text/javascript" src="/javascripts/guilloche3d.js"></script>
+<script type="text/javascript" src="/javascripts/animate3d.js"></script>
+<script type="text/javascript" src="/javascripts/ambient-guilloche.js"></script>
+
+
+</section>
+        </article>
+      </div>
+    </div>
+    <footer>
+      <div class="content-wrap">
+        <div class="nav"><a href="/">« Full blog</a></div>
+        <section class="about">
+        </section>
+        <section class="copy">
+          <p>&copy; 2016 Max Irwin &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
+          </p>
+          <p>Please treat people the same way you want them to treat you</p>
+        </section>
+      </div>
+    </footer>
+    <script src="/javascripts/site.js"></script>
+  </body>
+</html>
