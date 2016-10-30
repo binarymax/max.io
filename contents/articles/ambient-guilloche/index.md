@@ -4,6 +4,7 @@ date: '2016-10-30'
 author: binarymax
 template: article.jade
 tags: [art,javascript]
+image: https://max.io/articles/ambient-guilloche/capture.jpg
 ---
 
 A year ago, I created a small demo of animating guilloches as two dimensional graphics on an HTML5 canvas.  In this post I revisit the beautiful and elegant patterns as 3d constructs that resonate with sounds from the physical world.
