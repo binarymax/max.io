@@ -3,6 +3,22 @@ extends layout
 block content
   include author
   each article in articles
+
+    if article.type == 'external'
+      header
+        p.date
+          span= moment.utc(article.date).format('DD. MMMM YYYY')
+        h2
+          a(href=article.url,target=_blank)= article.title 
+        h3
+          a(href=article.url,target=_blank)= article.url 
+      section.content
+        if article.intro.length > 0
+          != typogr(article.intro).typogrify()
+        if article.hasMore
+          p.more
+            a(href=article.url) more
+
     article.article.intro
       header
         p.date

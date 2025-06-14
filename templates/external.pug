@@ -1,0 +1,30 @@
+
+extends layout
+
+block append vars
+  - bodyclass = 'article-detail'
+
+block prepend title
+  | #{ page.title + " - "}
+
+block twitter
+  meta(property="twitter:title", content=page.title)
+  meta(property="twitter:image", content=tools.image(page.metadata.image))
+  meta(property="twitter:description", content=tools.description(page.metadata.description))
+
+block header
+  div.logo
+    h1.author
+        a(href="/")= locals.name
+    h2= page.metadata.date
+  h1= page.title
+
+block content
+  article.article
+    section.content!= typogr(page.html).typogrify()
+
+block prepend footer
+  div.nav
+    a(href=contents.index.url) « Full blog
+
+
