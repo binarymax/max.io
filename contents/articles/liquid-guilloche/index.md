@@ -2,7 +2,7 @@
 title: Liquid Guilloché
 date: '2015-07-22'
 author: binarymax
-template: article.jade
+template: article.pug
 tags: [art,javascript]
 ---
 
@@ -10,7 +10,7 @@ Having recently read a blog post on guilloches[1], I became intrigued and the po
 
 ---
 
-##A Simple Rosette
+## A Simple Rosette
 
 The formula for the basic rosette guilloche is not something you would stumble upon when playing around with graphics.  It is elegant and simple, and if you have a basic understanding of graphing trigonometry equations you can grasp it without difficulty.  In the physical world, a layperson would recognise it as a spirograph[2].
 
@@ -38,7 +38,7 @@ A nice benefit of expressing a mathematical construct in code, is that you can i
 
 ---
 
-##A Knee
+## A Knee
 
 By changing the formula of the original, we can create new and interesting forms.  This example changes the formula slightly by calculating a tangent in place of a sine.
 
@@ -46,14 +46,14 @@ By changing the formula of the original, we can create new and interesting forms
 
 ---
 
-##A River
+## A River
 
 By changing the formula of the original, we can create new and interesting forms.
 <canvas id="river"></canvas>
 
 ---
 
-##Combining forms
+## Combining forms
 
 We can easily combine two or more forms to the same canvas.  Here is 'Ribbon', 'Cross', and 'Rosette' together.
 
@@ -61,7 +61,7 @@ We can easily combine two or more forms to the same canvas.  Here is 'Ribbon', '
 
 ---
 
-##Try it out!
+## Try it out!
 
 The code is all available here: https://github.com/binarymax/guilloche
 

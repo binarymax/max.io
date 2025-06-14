@@ -15,7 +15,7 @@
     "typogr": "typogr",
     "tools": "./tools"
   },
-  "jade": {
+  "pug": {
     "pretty": true
   },
   "markdown": {

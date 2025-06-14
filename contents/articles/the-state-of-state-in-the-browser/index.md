@@ -2,7 +2,7 @@
 title: The State of State in the Browser
 date: '2015-07-12'
 author: binarymax
-template: article.jade
+template: article.pug
 tags: [state,javascript]
 ---
 
@@ -10,26 +10,26 @@ The mechanisms for storing data in the client are inadequate and unprepared for 
 
 ---
 
-###Background
+### Background
 I had the privilege of attending the yearly Edge conference in London the last weekend of June.  It was one of the best conferences I have ever attended.  The topics were well chosen and the format was geared towards discussion instead of lectures.
 
 One of the topics I felt I had a strong stake in was Front End Data.  There was a panel discussion with audience interaction, and then breakout session for folks interested in talking more directly about the subject.  A goal of each breakout session was to have actions for the market (mostly browser vendors and spec writers), to guide future implementation.
 
 I singled out Front End Data for this post which I will elaborate on here, since the vision for 'Front End Data' seems narrow and based on limited ambition.  Possibly due to disjointed growth coupled with shortsightedness.  We left the breakout session with no goals in mind, or even any real ideas on what we should be doing to further the technology.  I will point out examples that display this and propose a basic solution.
 
-###What is 'Front End Data'?
+### What is 'Front End Data'?
 This is the single most important question we need to be asking in the web development community.  Because to break from the reactionary and parasitic path of state always being kept in the DOM, the current solutions have not lived up to the task.  'Front End Data' is any state that is kept in the browser, either persistent or transient.  Browser state can be kept in a variety of either too-basic or too-specific implementations.  In fact, the entire availability of state storage in the browser is based on new custom implementations of the concept, and none of the historically valid and well suited ways that computing has taught us over the years.
 
 Persisting state in the browser has always been ill conceived because of the false assumption that the server will eventually be there to keep our data.  What happens when your data becomes huge and your browser application platform becomes more than a toy?
 
-##Software and State
+## Software and State
 Software is a tool for the manipulation of state.  State being memory or data, and manipulation being a transformation from one form to another.
 
 Some examples of transitions are state being captured through an interface, stored on a disk or in memory, or visually displayed through a GUI.  State can come from a server or other external environment (such as sensors), or be fabricated entirely from procedural code.  The software is the glue that takes the state through these many paths.  Software without state is like pipes without water.
 
 In the context of a web page or web app, software has grown not in a traditional sense but rather as a side effect of a content delivery platform (the WWW).  Javascript was created for the most basic of tasks for interacting with the DOM.  The mindset of how to keep browser state has not kept up with the pace of web application development, which is now a mature field and has brilliant minds and innovations pushing it forward.
 
-###What is missing?
+### What is missing?
 Imagine, for a moment, you are about to write some software.  You want to keep data for your software, and you want that data to live on for a while, since that is the purpose of the software.  You don't want to rely on a 3rd party to keep it for you (like a server or peer), and you want it to be reasonably fast.  These are not outrageous demands.  Perhaps the data is private and you don't want to trust it to 3rd parties, or perhaps it is too large for a transfer over a network in a reasonable time.
 
 You are now only given three options to store your persistent state: (1) A limited size place for data that was originally meant for state communication over a network (a cookie), (2) a basic synchronous key value store without any obvious way to organize hierarchy or relationships (localStorage), or (3) IndexedDB/WebSQL.
@@ -58,7 +58,7 @@ As a good example I will single out Lucene, because I have a professional stake 
 
 It is not possible to port Lucene in a way that works well in a browser context.  I challenge anyone to port Lucene or to write any other reasonably complicated data storage and query device beyond the available KVM/NoSQL with an optional B-Tree index.
 
-###File API
+### File API
 So what about File API?!  I purposefully left off File API above, because while it currently is on track to support reading of files, the File *Writer* API specification is dead[4].  Chrome supports a version that is being used for chrome apps[5], but wider support is not going to happen without a specification.  Additionally, File API is a difficult sell, because Web Apps should be conceptually removed from the file system that is in direct control of the user.  Many mobile devices do not implement the concept of a traditional file system, and web app state should be kept as a construct of the isolated browser sandbox.  Having the user shuffle around files for your web application is an insurmountable barrier.
 
 Let's ask some more important questions, and give some answers while we're at it:
@@ -75,14 +75,14 @@ Let's ask some more important questions, and give some answers while we're at it
  
 > A: Any that are currently made untenable by the existing browser storage options.
 
-###Enter WebAssembly
+### Enter WebAssembly
 Not having a well designed layer for state persistence negates all the benefits of having a mature software stack.
 
 WebAssembly is just around the corner.  The answer that vendors have agreed upon to run mature software in a browser, with support for a variety of languages beyond Javascript. 
 
 We need a sane way to keep application state for WebAssembly applications.
 
-###Security
+### Security
 Having any sort of proposal on file storage and interaction with users would be a waste if there were no security considerations involved.  We need to address some basic expectations on security and keep an open conversation going with any implications that will arise.
 
 The good news is that all of these questions are already addressed in other specifications for both web and desktop.  We can borrow from experience and good existing practices to have a workable solution, when creating a specification.
@@ -108,21 +108,21 @@ Considerations:
 
 > User experience research should be driving the answer to this question, but in other contexts, the consensus is allowing for a small initial 'default' amount without permission from the user.  Allowing the application to exceed that amount should be requested from the user where appropriate.
 
-###Proposal
+### Proposal
 
 To avoid the sin of complaining without presenting any solution, I propose a new API named "Application State" or AppState for short.
 
 AppState is a sandboxed file space in the persistent filesystem allocated exclusively by the browser.  It has a global object exposed to the scripting layer that allows interaction with the sandboxed files (or 'blobs').
 
 
-####Structure
+#### Structure
 Each application has access context identified by domain.
 
 The structure of the AppState for an application is a hierarchy of nodes, where each node has a key, an optional blob, and zero or more child nodes.  Nodes can be easily accessed by concatenating one or more keys, separated by the delimiter '/'.  Glob syntax[6] can be used to return zero or more nodes.
 
 If you think this almost looks like a file system you are right.  The difference being that each node (perhaps analogous to a folder) can also have a blob.  This simplifies things by not needing different concepts for a folder or file.
 
-####Storage
+#### Storage
 For each node an optional blob of arbitrary length can be allocated and resized.  A blob is an ArrayBuffer object[6].  The difference being that the ArrayBuffer is always persisted to disk.  Writing to the node's blob via a TypedArray is guaranteed to be persisted.
 
 To keep with existing conventions, when new to a browser, the application will only have permission to keep a small size of AppState.  When AppState is first accessed, if the size exceeds this small default, the application must prompt with the amount of storage being requested.  If an application exhausts its allowed storage amount, it must request more.  An initial default of 50MB is proposed.
@@ -133,17 +133,17 @@ Arranging and naming individual blobs in the file system, and keeping a map or i
 
 Importantly, the browser must not alter the blobs themselves in any way.  For example: compressing, splitting, or concatenating node blobs by the browser in the filesystem must not be allowed.
 
-####Access
+#### Access
 There must exist the ability for synchronous reading and writing of the ArrayBuffer object through a TypedArray, and asynchronous access via a new abstraction.
 
-###Example API
+### Example API
 This section contains a proposed API for illustration purposes only.  It is minimal and does not cover many details and edge cases that need to be worked out.  Hopefully, at the very least, it begins a discussion for future possibilities.
 
 The API below covers the ApplicationState, Node, Blob, and TypedStream objects.
 
-####Node
+#### Node
 
-#####Properties: 
+##### Properties: 
 
 All properties are readonly getters, and can only be altered by prototype methods.
 
@@ -158,7 +158,7 @@ All properties are readonly getters, and can only be altered by prototype method
 ><strong>*path*</strong> : Returns the full path of the node in the AppState hierarchy, using the root '$' and delimiter '/' and no trailing slash.  For example: "$/path/to/node"
 
 
-#####Methods:
+##### Methods:
 
 ><strong>*getNodes(string glob)*</strong> : Returns an array of nodes matching the glob syntax, searching the node and all levels of children stemming from the node.
 
@@ -168,11 +168,11 @@ All properties are readonly getters, and can only be altered by prototype method
 
 ><strong>*delete()*</strong> : Deletes the node and all of its child nodes.  This cannot be undone.
 
-#####Blob:
+##### Blob:
 
 A blob is a binary ArrayBuffer, but it must be kept synchronous with the persistent storage at all times by the browser.  A node of size 1 has a blob formed of one octet (8 bits).  A node of size 20 has a blob formed of 20 octets (160 bits).
 
-#####TypedStream:
+##### TypedStream:
 
 The TypedStream is based on the familiar TypedArray, that abstracts a sized interactive array over a binary blob.  Its purpose is to enable asynchronous get and set access to the blob.
 
@@ -186,7 +186,7 @@ TypedStream, however, when using bracket notation for index read and write, trig
 
 For synchronous operation with the blob object, a classic TypedArray should be used to wrap the ArrayBuffer blob.
 
-####ApplicationState
+#### ApplicationState
 
 The ApplicationState is a property of the global object (similar to localStorage) and can be accessed as such:
 
@@ -197,7 +197,7 @@ ApplicationState does not allocate any space by default. This applies to when th
 When the application loads in the browser, if any sessions prior had allocated space, then the ApplicationState initializes with all the nodes and blobs previously created.
 
 
-#####Properties
+##### Properties
 
 All properties are readonly getters, and can only be altered by prototype methods.
 
@@ -209,7 +209,7 @@ All properties are readonly getters, and can only be altered by prototype method
 
 ><strong>*path*</strong> : Always returns the string '$'*
 
-#####Methods:
+##### Methods:
 ><strong>*create(int32 size)*</strong>: Creates the AppState with size of length bytes.  If the size given is greater than the default size, it may need to ask permission from the user.  If the ApplicationState has already been created and this method is called, an exception will be thrown.
 
 ><strong>*getNodes(string glob)*</strong> : Returns an array of nodes matching the glob syntax, searching all levels of children.
@@ -219,7 +219,7 @@ All properties are readonly getters, and can only be altered by prototype method
 >*<strong>create(int32 size)</strong>: Creates the AppState with size of length bytes*
 
 
-#####Examples
+##### Examples
 ```javascript
 var AppState = window.ApplicationState;
 
@@ -264,7 +264,7 @@ node0.delete();
 console.log(AppState.size);
 ```
 
-###Footnotes
+### Footnotes
 
 And there you have it.  Simple, powerful, and a good start for web applications needing to keep data persisted in the client.  I would be more than happy to discuss further details, please feel free to contact me on twitter [@binarymax][10]
 
@@ -273,7 +273,7 @@ And there you have it.  Simple, powerful, and a good start for web applications 
 
 -
 
-###References
+### References
 - [1] http://www.w3.org/TR/IndexedDB/#abstract
 - [2] I'm into search technology at Wolters Kluwer.
 - [3] http://blog.parsely.com/post/1691/lucene/

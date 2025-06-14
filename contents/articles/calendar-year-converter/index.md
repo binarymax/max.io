@@ -2,7 +2,7 @@
 title: Calendar Year Converter
 date: '2016-02-17'
 author: binarymax
-template: article.jade
+template: article.pug
 tags: [time,tool]
 ---
 

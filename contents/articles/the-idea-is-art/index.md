@@ -2,7 +2,7 @@
 title: The Idea Is Art
 date: '2013-07-28'
 author: binarymax
-template: article.jade
+template: article.pug
 tags: [art,technology]
 ---
 

@@ -2,7 +2,7 @@
 title: Ambient Guilloché
 date: '2016-10-30'
 author: binarymax
-template: article.jade
+template: article.pug
 tags: [art,javascript]
 image: https://max.io/articles/ambient-guilloche/capture.jpg
 ---
@@ -40,7 +40,7 @@ The code is available at [https://github.com/binarymax/guilloche](https://github
 			}
 </style>
 
-##3d Guilloché
+## 3d Guilloché
 
 When I built the 2d animated guilloches, I had planned on eventually experimenting and growing it into a 3d version.  A whole year might seem like a long time to wait for another dimension, but that's nothing in the greater context of spacetime.
 
@@ -81,7 +81,7 @@ So what's the big deal, and why is this complicated?  Well, to animate the 2d ve
 
 The best part however, is that the 3d version is *fast*.  The 2d render is slow since it is javascript running on the CPU in series for each point.  The GLSL shader runs in the GPU, using the parallel operations across the vertices.  This opens up lots of opportunities for experimentation, and led to the ultimate goal of the post, which is listening to the microphone and resonating the equations for a nice 90's retro style visualisation.
 
-###WebGL
+### WebGL
 
 I usually like to write everything without using 3rd party libraries, but I cheated this time and used the magnificent three.js.
 
@@ -122,7 +122,7 @@ So what are R, r, p, step, and zoom?  R, r, and p alter the shape of the guilloc
 
 There are other important aspects of the river method above.  Namely we are adding the position and theta typed arrays as attributes to the buffer geometry.  This allows us to pass the attributes into the GLSL vertex shader and use them there during calculations for our animation.
 
-###Animating a Sine Wave
+### Animating a Sine Wave
 
 Now that we have the construct rendered to the screen, we want to animate it in a similar way to our older 2d versions.  I didn't spend any time describing how the guilloche was animated for the 2d version, so I thought I would take the time and explain it here.  We animate each equation by incrementing the ```theta``` parameter for each vertex calculation.  How does this animate though?  Think of a simple sine wave, that is drawn with spaced points rather than a continuous curve.  Each point is a segment of Tau along a full cycle of the wave.  If we have a step of 0.001, then we are rendering the sin wave with 6283 points.  As that is stretched across the screen we see gaps between those points.  Changing the parameter by a small amount will move the points to a new position along the wave, all relative to each other.
 
@@ -134,7 +134,7 @@ Look closely at the animation above and focus on one point.  Notice how it is on
 
 When we do this for our more complicated guilloche equations, the effect is super awesome.  So how can we do this with our vertices in a 3d space?  With GLSL shaders...
 
-###Vertex Shaders
+### Vertex Shaders
 
 The graphics pipeline has several different stages.  A shader is a stage that transforms either the position or the appearance of data in the GPU.  Since shaders are run in the GPU, and the GPU is built to parallelize calculations across their many cores, they effectively scale across the processing of the data.  In other words, they process large amounts of data more quickly than a single process on a CPU.
 
@@ -176,7 +176,7 @@ Inside of the main entry method for the shader, the same equations are used to c
 
 The shader code isn't javascript, so we separately place it in the HTML document wrapped in a ```<script type="x-shader/x-vertex" id="riververtexshader">...</script>``` tag for retrieval later.
 
-###Setup and Rendering
+### Setup and Rendering
 
 With our base algorithms in place to draw the guilloche, we can use the standard scene, camera, and renderer from three.js to animate our construct.  We also need to pass in the baseline parameters for the guilloche including R,r, and p, and their minimums and maximums.  For the animation we rotate through the values and pass them in as uniforms to the shader.
 
@@ -248,17 +248,17 @@ render();
 During the render operation, we increment the uniform values.  Since we passed the uniform data into the shaders, and they are kept as reference objects, changing the value will automatically update them in the shader pipeline.  I added a little trick of oscillating the uniform parameters between min and max values, to keep it flowing nicely.  Once the uniforms are set, we render the scene, and the visual is displayed on the page.  We continuously render the scene by calling requestAnimationFrame to get a nice smooth animation.
 
 
-###Multiple Geometries
+### Multiple Geometries
 
 With the foundations in place, layering geometries together is quite easy.  We can easily alter our code to render multiple geometries in the scene.  Each geometry needs their own equations, settings, uniforms, and shader.
 
 In the github code I have already created many guilloche functions that you can start with, as well as a playground to make it easy to add and remove them to a scene and tweak the settings.  Feel free to have a look now, or continue reading to see how we can make our mathematics dance to some ambient noise from a microphone...
 
-##Audio
+## Audio
 
 When I first created the 3d guilloche, I was pleased but not fully satisfied.  I felt that with the computational power of shaders I could do more, and I wanted the visuals to be interactive beyond the basic fly-through controls we are used to seeing in three.js demos.  I reached deep back to the 1990's and pulled out a task of audio interaction, but I didn't want to just load in some music and make it react, I wanted to be able to control these things with my own sounds live from a microphone.  Enter the web audio API.
 
-###Web Audio API
+### Web Audio API
 
 I had first learned of audio processing in the browser from a great talk by Soledad Penadés at Full Frontal Conference in 2014.  I knew that with the web audio API I could get some sound as an input and make it alter the appearance of the guilloche somehow.  But, when I started, I didn't really know how it worked except for some very basic theory on frequencies and amplitude.  To get a better grasp on the subject I spent several hours doing research to better learn the fundamentals of audio processing, and how it worked in the browser.  I started with some basic theory that I found on a tutorial[0] and also, as usual, MDN[1] proved to be an amazing resource with clear explanations and excellent examples.
 
@@ -300,7 +300,7 @@ var listen = function(callback) {
 };
 ```
 
-###Feeding the guilloche
+### Feeding the guilloche
 
 You may note that for the demo I used the time domain, rather than the frequency domain.  I experimented with both and for this instance decided on the former.
 
@@ -346,7 +346,7 @@ var render = function() {
 And that's it!  Lets see it in action, shall we?
 
 <a name="demo"></a>
-##Demo
+## Demo
 
 Be sure to make some noise, like whistling or shouting or playing some music on your speakers, to see the effect.  If you declined to share your microphone when you first loaded the page, you can refresh to be prompted again.
 
@@ -362,7 +362,7 @@ The full code for the demo and others is available on [github](https://github.co
 
 --
 
-##Links
+## Links
 - [0] http://www.asel.udel.edu/speech/tutorials/
 - [1] https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Using_Web_Audio_API
 

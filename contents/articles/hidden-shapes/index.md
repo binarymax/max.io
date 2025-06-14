@@ -2,7 +2,7 @@
 title: Hidden Shapes
 date: '2013-08-25'
 author: binarymax
-template: article.jade
+template: article.pug
 tags: [code,projects]
 ---
 
@@ -10,7 +10,7 @@ I am slowly working on a side-project that makes a video into a mishmash of circ
 
 ---
 
-###Harissa
+### Harissa
 
 The original idea for the Harissa project came from a competition I entered to recreate Mondriaan's last unfinished work (the 'Victory Boogie Woogie') with code.  My entry used an algorithm to generate a likeness of the work by randomly placing circles on a canvas, and either kept a circle if the resulting image was closer to the painting, or discarded it otherwise.  After thousands of iterations an interesting likeness emerged.  I re-purposed the algorithm for Harissas frame remixer, made use of imagemagick and mencoder for the image and video processing with a node backend, and wrote some glue code to stitch it all together.  It is a fun project and the first resulting video got some good reactions.
 
@@ -18,7 +18,7 @@ I want to take Harissa to the next level.  Since it uses javascript for the fram
 
 The main thing I am missing, however, is the choppiness between frames.  If one frame is a bunch of random circles, and the next frame is a different bunch of random circles, the transition from one frame to the next looks jarring.  With the goal of smoothing it out, I want to insert two or more new 'transition' frames, that take one frame and smoothly transition the circles to the next adjacent frame.  I have no idea how this will look in the end, and have some hurdles to jump before I can realize the result, but it is worth pursuing just to see what happens.
 
-###Hidden Shapes
+### Hidden Shapes
 Today I jumped the first hurdle, and want to share a nice algorithm I wrote in the process.  Before we can start calculating transitions, we need to clean up the circles.  Since lots of circles are haphazardly placed on the canvas for each frame, some of them get covered up entirely and are useless in the final image.  So I needed to know whether a circle is visible when all the other circles have been drawn.  If I can get rid of the unnecessary circles I can save some time when doing later calculations.
 
 There are at least 2 ways to do this, but probably more.  The first way is to do something called raycasting.  Imagine a beam of light shining down onto our circles - tag the first circle the beam of light hits.  Do this for every pixel on the canvas, and remove all the circles that have not been tagged.  The second way, which I eventually decided to use, is to iterate through all the circles.  For each iteration, draw the current circle with a special color, then draw all the other circles around it.  If the special color is not visible in the final slice, then it is hidden.  Either method would suffice (and there might be a better one).
@@ -78,7 +78,7 @@ var testvisible = function(context,shapes,index){
 };
 </pre>
 
-###Next Steps
+### Next Steps
 
 For an average of 3000 initial circles on the canvas, this handy little algorithm removes about one third of the circles since they are hidden.  That is a great improvement!  When I need to start matching neighbor circles together between adjacent frames, this will shave off a significant amount of time in the calculation.
 

@@ -2,7 +2,7 @@
 title: Anagramica is now FOSS
 author: binarymax
 date: '2013-08-03'
-template: article.jade
+template: article.pug
 tags: [FOSS,games,projects]
 ---
 
@@ -23,7 +23,7 @@ After the project itself was finished, I started work on an ill-conceived websit
 
 Two months after I wrote KeepAware, I saw a post that someone at Microsoft coded a way for Node.js to play nice with IIS, and that was that.  I regret not just opening it up and posting it on HN the weekend I wrote it.  I was never a fan of IIS (but really enjoyed .NET otherwise).  In arrogant retrospect I still think the approach I had was better, keeping it as a separate service rather than piggy backing on IIS, since Node is much more than just a web app server.  Oh well.  On January 20th 2013, I silently opened up KeepAware and renamed it KeepAware-old, it is mostly useless now, but has some interesting bits in there - like automatically restarting a windows service when a file changes, and sending console output to the EventLog.  I also still have the domain keepaware.com, its always just been a 301 to binarymax.com, and maybe I will use it someday.  I still love the name.
 
-####Lessons Learned
+#### Lessons Learned
 So back to the original story - Anagramica has a couple hardcore fans, and it averages about 10 plays per week, mostly through those finding it organically (I don't advertise or market anything I make, other than a facebook or twitter post).  I never planned to make any money from it so I'm not sure why I kept it locked down for so long.  It may have to do with a mild case of imposter sydrome[3], as sometimes I am afraid of people in the outside world seeing my code and being critical.  So I'm trying to get over all that by coding out in the open and learning from those who do the same.  After I left Windows behind, I have been using some of the most amazing software ever written, and its free (as in beer and freedom), and even though my stuff is not nearly as amazing, I hope to give back what I can to the most revolutionary community in the world.  The world today runs on FOSS, and I am deeply grateful.
 
 [1] https://github.com/binarymax/KeepAware-old

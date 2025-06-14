@@ -2,7 +2,7 @@
 title: Harissa
 date: '2015-07-10'
 author: binarymax
-template: article.jade
+template: article.pug
 tags: [code,projects]
 ---
 
@@ -17,7 +17,7 @@ After some hammock driven development, Harissa is mature enough to release some 
 <img src="firechrome.gif" border="0" class="image-column-left" /> <img src="flowers.gif" border="0" class="image-column-right" />
 
 
-###How it works
+### How it works
 
 Take a source set of frames, with a target being each processed frame interspersed with an equal number of transition frames.  For example, if there are 4 raw images and 5 intermediate transition frames, there will be 20 frames for the final result.
 
@@ -30,7 +30,7 @@ The blender takes each successive processed frame and matches the best pairs of 
 
 After every circle has a sibling in its next frame, the path is animated from one to another.  A simple interpolation formula takes in x, y, and radius.  It returns an array of objects for the transition.  Each transition step becomes a new frame in the target animation.
 
-###Research
+### Research
 
 It took awhile to refine the process, and along the way I discovered many interesting attributes of color spaces and contrast related to the algorithm.  I learned early in the project that linear distance is not a reliable way to differentiate colors, and research took me down the paths to delta-e.  I ended up keeping linear distance, however, since it gives an interesting look to the results.
 
