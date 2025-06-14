@@ -1,12 +1,16 @@
 ---
-type: external
+type: "external"
 title: "What is the difference between generative AI and general AI?"
 template: "external.pug"
 external_url: "https://www.wxxinews.org/show/connections/2023-05-03/what-is-the-difference-between-generative-ai-and-general-ai"
 author: "Evan Dawson, Megan Mack"
 description: "In the second hour of \"Connections with Evan Dawson\" on Wednesday, May 3, 2023, our guest explains the difference between different types of artificial intelligence and what he expects for the future of AI."
 image: "https://npr.brightspotcdn.com/dims4/default/fca5f79/2147483647/strip/true/crop/800x420+0+0/resize/1200x630!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F78%2F18%2F2a6670ee4ac39d92a4d12c903b27%2F3569f0ea-56bb-442d-94d7-ec691b905259.jpg"
-published: "2023-05-03T14:52:05Z"
+date: "2023-05-03T14:52:05Z"
+---
+
+In the second hour of "Connections with Evan Dawson" on Wednesday, May 3, 2023, our guest explains the difference between different types of artificial intelligence and what he expects for the future of AI.
+
 ---
 
 What is the difference between generative AI and general AI?

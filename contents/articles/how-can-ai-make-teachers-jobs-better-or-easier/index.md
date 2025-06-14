@@ -1,12 +1,16 @@
 ---
-type: external
+type: "external"
 title: "How can AI make teachers' jobs better or easier?"
 template: "external.pug"
 external_url: "https://www.wxxinews.org/show/connections/2023-08-01/how-can-ai-make-teachers-jobs-better-or-easier"
 author: "Evan Dawson, Megan Mack"
 description: "In the first hour of \"Connections with Evan Dawson\" on Tuesday, August 1, 2023, we discuss how AI can make teachers' jobs better or easier."
 image: "https://npr.brightspotcdn.com/dims4/default/89acf37/2147483647/strip/true/crop/800x420+0+36/resize/1200x630!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fc5%2F98%2F74a34a3643bcb109112728549971%2Fe2b710cb-e8fc-4593-b701-920d6ea3f887.jpg"
-published: "2023-08-01T14:39:46Z"
+date: "2023-08-01T14:39:46Z"
+---
+
+In the first hour of "Connections with Evan Dawson" on Tuesday, August 1, 2023, we discuss how AI can make teachers' jobs better or easier.
+
 ---
 
 How can AI make teachers' jobs better or easier?

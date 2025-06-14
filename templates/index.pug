@@ -3,34 +3,32 @@ extends layout
 block content
   include author
   each article in articles
-
-    if article.type == 'external'
-      header
-        p.date
-          span= moment.utc(article.date).format('DD. MMMM YYYY')
-        h2
-          a(href=article.url,target=_blank)= article.title 
-        h3
-          a(href=article.url,target=_blank)= article.url 
-      section.content
-        if article.intro.length > 0
-          != typogr(article.intro).typogrify()
-        if article.hasMore
-          p.more
-            a(href=article.url) more
-
+    // - var keys = Object.keys(article)
+    // each key in keys
+    //   div= key
     article.article.intro
-      header
-        p.date
-          span= moment.utc(article.date).format('DD. MMMM YYYY')
-        h2
-          a(href=article.url)= article.title
-      section.content
-        if article.intro.length > 0
-          != typogr(article.intro).typogrify()
-        if article.hasMore
-          p.more
-            a(href=article.url) more
+      if article.metadata.type=='external'
+        header
+          p.date
+            span= moment.utc(article.date).format('DD. MMMM YYYY')
+          h2
+            a(href=article.metadata.external_url,target=_blank)= article.title 
+              img(src='/images/external-link.svg',style='width:20px;height:20px;margin-top:5px;margin-left:5px;')
+        section.content
+          if article.intro.length > 0
+            != typogr(article.intro).typogrify()
+      else
+        header
+          p.date
+            span= moment.utc(article.date).format('DD. MMMM YYYY')
+          h2
+            a(href=article.url)= article.title
+        section.content
+          if article.intro.length > 0
+            != typogr(article.intro).typogrify()
+          if article.hasMore
+            p.more
+              a(href=article.url) more
 
 block prepend footer
   div.nav

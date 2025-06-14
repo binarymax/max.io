@@ -8,6 +8,7 @@
   "dependencies": {
     "@mozilla/readability": "^0.6.0",
     "axios": "^1.10.0",
+    "favicon-fetch": "^1.0.0",
     "file-system-cache": "^2.4.7",
     "front-matter": "^4.0.2",
     "jsdom": "^26.1.0",

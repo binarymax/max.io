@@ -1,12 +1,16 @@
 ---
-type: external
+type: "external"
 title: "What you need to know about phone scams"
 template: "external.pug"
 external_url: "https://www.wxxinews.org/show/connections/2023-09-08/what-you-need-to-know-about-phone-scams"
 author: "Evan Dawson, Megan Mack"
 description: "In the first hour of \"Connections with Evan Dawson\" on Friday, September 8, 2023, our guests discuss current phone scams involving humans and AI, and what community members need to know."
 image: "https://npr.brightspotcdn.com/dims4/default/d34ec75/2147483647/strip/true/crop/800x420+0+31/resize/1200x630!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F6e%2F05%2F62d8dbc74d3ab68aba6dc9e09bc0%2F5677df46-8a35-475b-9e0b-b7171bb85c90.jpg"
-published: "2023-09-08T14:27:39Z"
+date: "2023-09-08T14:27:39Z"
+---
+
+In the first hour of "Connections with Evan Dawson" on Friday, September 8, 2023, our guests discuss current phone scams involving humans and AI, and what community members need to know.
+
 ---
 
 What you need to know about phone scams

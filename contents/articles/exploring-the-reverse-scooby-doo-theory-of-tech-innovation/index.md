@@ -1,12 +1,16 @@
 ---
-type: external
+type: "external"
 title: "Exploring the \"reverse Scooby-Doo\" theory of tech innovation"
 template: "external.pug"
 external_url: "https://www.wxxinews.org/show/connections/2023-03-22/exploring-the-reverse-scooby-doo-theory-of-tech-innovation"
 author: "Evan Dawson, Megan Mack"
 description: "In the second hour of \"Connections with Evan Dawson\" on Wednesday, March 22, 2023, our guests discuss perceptions of new technology like artificial intelligence (AI), and the theory of \"reverse Scooby-Doos.\""
 image: "https://npr.brightspotcdn.com/dims4/default/bcae8f5/2147483647/strip/true/crop/800x420+0+90/resize/1200x630!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fe7%2F29%2Fa23d2f6242bda06b7021a92f0573%2F9f162b7f-0bf2-4bd7-a1a6-96c02ce0bb40.jpg"
-published: "2023-03-22T15:50:06Z"
+date: "2023-03-22T15:50:06Z"
+---
+
+In the second hour of "Connections with Evan Dawson" on Wednesday, March 22, 2023, our guests discuss perceptions of new technology like artificial intelligence (AI), and the theory of "reverse Scooby-Doos."
+
 ---
 
 Exploring the "reverse Scooby-Doo" theory of tech innovation

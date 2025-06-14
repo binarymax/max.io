@@ -2,12 +2,16 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const mkdirp = require('mkdirp');
+const {transform} = require('./lib/transform');
 const Browser = require('./lib/browser');
 
 const browser = new Browser();
 
 // Load external URLs
 const urls = JSON.parse(fs.readFileSync('external.json', 'utf-8'));
+const manual = fs.readdirSync(path.join(__dirname,'manual'))
+  .filter(f=>f.indexOf('.html')>0?1:0)
+  .map(f=>path.join(__dirname,'manual',f));
 
 // Base output directory
 const baseDir = path.join(__dirname, 'contents', 'articles');
@@ -25,16 +29,12 @@ function escapeYaml(str) {
   return String(str || '').replace(/"/g, '\\"');
 }
 
-async function processUrl(url) {
+///
+/// Makes an article from an HTML source
+///
+async function makeArticle(url,article,type) {
+
   try {
-    const article = await browser.download(url,true);
-
-    if (!article || !article.title) {
-      console.warn(`Readability failed to parse ${url}`);
-      return;
-    }
-
-    console.log(article);
 
     const {
       title,
@@ -49,28 +49,25 @@ async function processUrl(url) {
     const articleDir = path.join(baseDir, slug);
     const outputFile = path.join(articleDir, 'index.md');
 
-    // Skip if already exists
-    //if (fs.existsSync(outputFile)) {
-    //  console.log(`↪ Skipped (already exists): ${outputFile}`);
-    //  return;
-    //}
-
-    // Ensure directory exists
     mkdirp.sync(articleDir);
 
     const metadata = [
-      `type: external`,
+      `type: "${escapeYaml(type)}"`,
       `title: "${escapeYaml(title)}"`,
       `template: "external.pug"`,
       `external_url: "${escapeYaml(url)}"`,
       author ? `author: "${escapeYaml(author)}"` : '',
       description ? `description: "${escapeYaml(description)}"` : '',
       image ? `image: "${escapeYaml(image)}"` : '',
-      published ? `published: "${escapeYaml(published)}"` : ''
+      published ? `date: "${escapeYaml(published)}"` : ''
     ].filter(Boolean).join('\n');
 
     const pageContent = `---
 ${metadata}
+---
+
+${description}
+
 ---
 
 ${text}
@@ -79,12 +76,44 @@ ${text}
     fs.writeFileSync(outputFile, pageContent);
     console.log(`✓ Created: ${outputFile}`);
   } catch (err) {
+    console.error(`Error processing article`, err);
+    return false;
+  }
+
+  return true;
+
+}
+
+async function processFile(url,filename) {
+  const html = fs.readFileSync(path.join(__dirname,'manual',filename));
+  const {error,data} = transform(url,html);
+  return await makeArticle(url,data,'external');
+}
+
+async function processUrl(url) {
+  try {
+    const article = await browser.download(url,true);
+
+    if (!article || !article.title) {
+      console.warn(`Readability failed to parse ${url}`);
+      return;
+    }
+
+    return await makeArticle(url,article,'external');
+  } catch (ex) {
     console.error(`Error processing ${url}`, err);
   }
+
 }
 
 (async function () {
-  for (const url of urls) {
-    await processUrl(url);
+  for (const item of urls) {
+    if(item.url && item.filename) {
+      const res = await processFile(item.url,item.filename);
+    } else {
+      const res = await processUrl(item);
+    }
   }
+
+  process.exit(0);
 })();

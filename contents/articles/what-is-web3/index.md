@@ -1,12 +1,16 @@
 ---
-type: external
+type: "external"
 title: "What is Web3?"
 template: "external.pug"
 external_url: "https://www.wxxinews.org/show/connections/2022-02-07/what-is-web3"
 author: "Evan Dawson, Megan Mack, Emmarae Stein"
 description: "This is the second hour of \"Connections with Evan Dawson\" on Monday, February 7, 2022."
 image: "https://npr.brightspotcdn.com/dims4/default/e8b67fb/2147483647/strip/true/crop/1024x538+0+0/resize/1200x630!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F22%2Fee%2F1780df0a4de2828e7d191daede6f%2Fmicrosoftteams-image-20.png"
-published: "2022-02-07T14:17:01Z"
+date: "2022-02-07T14:17:01Z"
+---
+
+This is the second hour of "Connections with Evan Dawson" on Monday, February 7, 2022.
+
 ---
 
 What is Web3?

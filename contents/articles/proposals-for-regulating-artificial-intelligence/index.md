@@ -1,12 +1,16 @@
 ---
-type: external
+type: "external"
 title: "Proposals for regulating artificial intelligence"
 template: "external.pug"
 external_url: "https://www.wxxinews.org/show/connections/2025-05-14/proposals-for-regulating-artificial-intelligence"
 author: "Evan Dawson, Megan Mack, Julie Williams"
 description: "In the second hour of \"Connections with Evan Dawson\" on May 14, 2025, we're joined by an AI expert and a member of the New York State Assembly for a discussion about legislation that would regulate AI."
 image: "https://npr.brightspotcdn.com/dims4/default/275db34/2147483647/strip/true/crop/1024x538+0+0/resize/1200x630!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2Fcd%2F8e%2Fcb478b264a3f92d293cbbac024c7%2Fimage-2025-05-14t163244-197.jpg"
-published: "2025-05-14T17:52:49Z"
+date: "2025-05-14T17:52:49Z"
+---
+
+In the second hour of "Connections with Evan Dawson" on May 14, 2025, we're joined by an AI expert and a member of the New York State Assembly for a discussion about legislation that would regulate AI.
+
 ---
 
 Proposals for regulating artificial intelligence

@@ -1,12 +1,16 @@
 ---
-type: external
+type: "external"
 title: "Human-cyborg relations: how movies portray AI, robots, and human love"
 template: "external.pug"
 external_url: "https://www.wxxinews.org/show/connections/2025-02-07/human-cyborg-relations-how-movies-portray-ai-robots-and-human-love"
 author: "Megan Mack, Julie Williams"
 description: "In the second hour of \"Connections with Evan Dawson\" on Feb. 7, 2025, guest host Matt DeTurck and his guests explore the role of AI in movie relationships."
 image: "https://npr.brightspotcdn.com/dims4/default/67b8c17/2147483647/strip/true/crop/1024x538+0+0/resize/1200x630!/quality/90/?url=http%3A%2F%2Fnpr-brightspot.s3.amazonaws.com%2F78%2F30%2F5e92a73d4083a093f9d2c7c0c8fd%2Fimage-9.jpg"
-published: "2025-02-07T15:53:42Z"
+date: "2025-02-07T15:53:42Z"
+---
+
+In the second hour of "Connections with Evan Dawson" on Feb. 7, 2025, guest host Matt DeTurck and his guests explore the role of AI in movie relationships.
+
 ---
 
 Human-cyborg relations: how movies portray AI, robots, and human love
