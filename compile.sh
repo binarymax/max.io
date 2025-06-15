@@ -6,4 +6,4 @@ suffix=$(date +%s)
 commitname=static$suffix
 git commit -m $commitname
 git push origin master
-#ssh ubuntu@max.io "./gitblog.sh"
+ssh -i ~/aws/RSVP.pem ubuntu@maxirwin.com "./gitblog.sh"
