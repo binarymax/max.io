@@ -1,4 +1,9 @@
+# max.io blog!
 
-# Blog
+Made with [wintersmith](https://github.com/jnordberg/wintersmith).
 
-The default [wintersmith](https://github.com/jnordberg/wintersmith) template
+Add markdown files to /articles
+
+Add linkes to external.json
+
+Run ./preview.sh

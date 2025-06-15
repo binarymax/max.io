@@ -1,4 +1,5 @@
 {
+  "baseUrl": "/blog/",
   "locals": {
     "url": "https://max.io",
     "name": "Max Irwin",

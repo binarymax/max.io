@@ -16,9 +16,6 @@ block content
             a(href=article.metadata.external_url,target=_blank)
               img(src=ico,style="height:24px")
               =article.title 
-          // h3
-          //  div= article.metadata.external_hostname 
-          //    img(src='/images/external-link.svg',style='width:20px;height:20px;margin-top:5px;margin-left:5px;')
         section.content
           if article.intro.length > 0
             != typogr(article.intro).typogrify()

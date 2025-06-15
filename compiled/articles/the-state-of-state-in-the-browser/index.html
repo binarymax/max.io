@@ -19,14 +19,14 @@
     <meta property="twitter:site:id" content="binarymax">
     <meta property="twitter:title" content="The State of State in the Browser">
     <meta property="twitter:image" content="https://max.io/star200.png">
-    <meta property="twitter:description" content="code + art + philosophy">
+    <meta property="twitter:description" content="">
     <link rel="shortcut icon" href="https://max.io/star200.png" type="image/png">
     <link rel="image_src" href="https://max.io/star200.png">
     <title>The State of State in the Browser - Max Irwin
     </title>
-    <link rel="alternate" href="http://localhost:5050/feed.xml" type="application/rss+xml" title="code + art + philosophy">
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/sonsofobsidian.css">
+    <link rel="alternate" href="https://max.io/feed.xml" type="application/rss+xml" title="">
+    <link rel="stylesheet" href="/blog/css/main.css">
+    <link rel="stylesheet" href="/blog/css/sonsofobsidian.css">
   </head>
   <body class="article-detail">
     <header class="header">
@@ -79,7 +79,11 @@
 <p>As a good example I will single out Lucene, because I have a professional stake in making sure people can find things easily [2].  There is a great post by the folks at Parse.ly on how Lucene works [3], and there is a good section on how state is covered.  The most important points&nbsp;being:</p>
 <blockquote>
 <p>We store all the document values in a simple format on-disk. Basically, in flat&nbsp;files.</p>
+</blockquote>
+<blockquote>
 <p>…</p>
+</blockquote>
+<blockquote>
 <p>when you read a 100-megabyte file twice, once after the other, the second access will be quicker, because the file blocks come directly from the page cache in memory and do not have to be read from the hard disk&nbsp;again.</p>
 </blockquote>
 <p>It is not possible to port Lucene in a way that works well in a browser context.  I challenge anyone to port Lucene or to write any other reasonably complicated data storage and query device beyond the available <span class="caps">KVM</span>/NoSQL with an optional B-Tree&nbsp;index.</p>
@@ -88,10 +92,20 @@
 <p>Let’s ask some more important questions, and give some answers while we’re at&nbsp;it:</p>
 <blockquote>
 <p><strong>Q: Why does the browser need to encapsulate its own file&nbsp;system?</strong></p>
+</blockquote>
+<blockquote>
 <p>A: To maintain the same standards and ideals of historically successful application&nbsp;development.</p>
+</blockquote>
+<blockquote>
 <p><strong>Q: Are you really going to use files as big as <span class="caps">100MB</span> in a&nbsp;browser? </strong></p>
+</blockquote>
+<blockquote>
 <p>A:&nbsp;yes.</p>
+</blockquote>
+<blockquote>
 <p><strong>Q: What kind of applications do you think you will need to&nbsp;support?</strong></p>
+</blockquote>
+<blockquote>
 <p>A: Any that are currently made untenable by the existing browser storage&nbsp;options.</p>
 </blockquote>
 <h3 id="enter-webassembly">Enter&nbsp;WebAssembly</h3>
@@ -105,13 +119,29 @@
 <p>Considerations:</p>
 <blockquote>
 <p><strong>Q: Who should be able to access the data for an application?  This includes users and other local web&nbsp;applications.</strong></p>
+</blockquote>
+<blockquote>
 <p>In the context of the application, the data can be abstracted from the user any way the application deems appropriate.  Using a hostname restricted approach and <span class="caps">CORS</span> should dictate how other local web applications can access the&nbsp;data.</p>
+</blockquote>
+<blockquote>
 <p>Local non-web applications separate from the browser, should be able to access the data while in the filesystem, constrained by userspace&nbsp;permissions.</p>
+</blockquote>
+<blockquote>
 <p><strong>Q: Who can transfer data between the browser and the local filesystem, for example by ‘save-as’&nbsp;functionality?</strong></p>
+</blockquote>
+<blockquote>
 <p>An authorised device user, and only an authorised device user, should be able to transfer data from the browser to the local filesystem.  Browsers should rely on <span class="caps">MIME</span>-types to trigger appropriate applications for any ‘open with’&nbsp;operations.</p>
+</blockquote>
+<blockquote>
 <p><strong>Q: How to trust the data generated in the&nbsp;browser?</strong></p>
+</blockquote>
+<blockquote>
 <p>Entire fields have been created in the search for trust between data and machine.  The browser should use existing trust mechanisms that would normally be associated with data coming from a server for a specific&nbsp;domain.</p>
+</blockquote>
+<blockquote>
 <p><strong>Q: How to limit the amount of data one application is able to&nbsp;create?</strong></p>
+</blockquote>
+<blockquote>
 <p>User experience research should be driving the answer to this question, but in other contexts, the consensus is allowing for a small initial ‘default’ amount without permission from the user.  Allowing the application to exceed that amount should be requested from the user where&nbsp;appropriate.</p>
 </blockquote>
 <h3 id="proposal">Proposal</h3>
@@ -136,17 +166,31 @@
 <h5 id="properties-">Properties:</h5>
 <p>All properties are readonly getters, and can only be altered by prototype&nbsp;methods.</p>
 <blockquote>
-<p><em><strong>key</strong> :&nbsp;string</em></p>
-<p><em><strong>size</strong> :&nbsp;int32</em></p>
-<p><em><strong>blob</strong> :&nbsp;ArrayBuffer</em></p>
-<p><em><strong>childNodes</strong> :&nbsp;Array</em></p>
+<p>*<strong>key</strong> :&nbsp;string*</p>
+</blockquote>
+<blockquote>
+<p>*<strong>size</strong> :&nbsp;int32*</p>
+</blockquote>
+<blockquote>
+<p>*<strong>blob</strong> :&nbsp;ArrayBuffer*</p>
+</blockquote>
+<blockquote>
+<p>*<strong>childNodes</strong> :&nbsp;Array*</p>
+</blockquote>
+<blockquote>
 <p><strong><em>path</em></strong> : Returns the full path of the node in the AppState hierarchy, using the root ‘$’ and delimiter ‘/‘ and no trailing slash.  For example:&nbsp;“$/path/to/node”</p>
 </blockquote>
 <h5 id="methods-">Methods:</h5>
 <blockquote>
 <p><strong><em>getNodes(string glob)</em></strong> : Returns an array of nodes matching the glob syntax, searching the node and all levels of children stemming from the&nbsp;node.</p>
+</blockquote>
+<blockquote>
 <p><strong><em>createNode(string key [, int32 size])</em></strong> : Creates a new child node with name key and an optional blob of size bytes, and appends it to the childNodes&nbsp;array.</p>
+</blockquote>
+<blockquote>
 <p><strong><em>resize(int32 size)</em></strong> : if size is greater than the existing blob size, the blob is grown to the new size with 0’s filling the new space.  if size is less than the existing blob size, the blob is truncated to the new size and the truncated data will be&nbsp;deleted.</p>
+</blockquote>
+<blockquote>
 <p><strong><em>delete()</em></strong> : Deletes the node and all of its child nodes.  This cannot be&nbsp;undone.</p>
 </blockquote>
 <h5 id="blob-">Blob:</h5>
@@ -170,20 +214,32 @@
 <h5 id="properties">Properties</h5>
 <p>All properties are readonly getters, and can only be altered by prototype&nbsp;methods.</p>
 <blockquote>
-<p><em><strong>key</strong> :&nbsp;string</em></p>
-<p><em><strong>size</strong> :&nbsp;int32</em></p>
-<p><em><strong>childNodes</strong> :&nbsp;Array</em></p>
+<p>*<strong>key</strong> :&nbsp;string*</p>
+</blockquote>
+<blockquote>
+<p>*<strong>size</strong> :&nbsp;int32*</p>
+</blockquote>
+<blockquote>
+<p>*<strong>childNodes</strong> :&nbsp;Array*</p>
+</blockquote>
+<blockquote>
 <p><strong><em>path</em></strong> : Always returns the string&nbsp;‘$’*</p>
 </blockquote>
 <h5 id="methods-">Methods:</h5>
 <blockquote>
 <p><strong><em>create(int32 size)</em></strong>: Creates the AppState with size of length bytes.  If the size given is greater than the default size, it may need to ask permission from the user.  If the ApplicationState has already been created and this method is called, an exception will be&nbsp;thrown.</p>
+</blockquote>
+<blockquote>
 <p><strong><em>getNodes(string glob)</em></strong> : Returns an array of nodes matching the glob syntax, searching all levels of&nbsp;children.</p>
+</blockquote>
+<blockquote>
 <p><strong><em>resize(int32 size)</em></strong> : If size is greater than the existing filespace size, the filespace is allowed to fill to the new size with node blobs.  If size is less than the sizes of existing blob size already in the filespace, an exception is&nbsp;thrown.</p>
-<p><em><strong>create(int32 size)</strong>: Creates the AppState with size of length&nbsp;bytes</em></p>
+</blockquote>
+<blockquote>
+<p>*<strong>create(int32 size)</strong>: Creates the AppState with size of length&nbsp;bytes*</p>
 </blockquote>
 <h5 id="examples">Examples</h5>
-<pre><code class="lang-javascript"><span class="keyword">var</span> AppState = <span class="built_in">window</span>.ApplicationState;
+<pre><code class="language-javascript"><span class="keyword">var</span> AppState = <span class="built_in">window</span>.ApplicationState;
 
 <span class="comment">//Allocates <span class="caps">50MB</span> for the entire ApplicationState.  This will not prompt the user.</span>
 <span class="keyword">if</span>(!AppState.size) AppState.create(<span class="number">50000000</span>);
@@ -223,11 +279,10 @@ child50.resize(<span class="number">30000</span>);
 node0.delete();
 
 <span class="comment">//Outputs 200000000</span>
-<span class="built_in">console</span>.log(AppState.size);
-</code></pre>
+<span class="built_in">console</span>.log(AppState.size);</code></pre>
 <h3 id="footnotes">Footnotes</h3>
 <p>And there you have it.  Simple, powerful, and a good start for web applications needing to keep data persisted in the client.  I would be more than happy to discuss further details, please feel free to contact me on twitter <a href="https://twitter.com/binarymax">@binarymax</a></p>
-<p><em>“AppState” is not to be confused with and has no relation to the deprecated Android AppState interface, nor any other existing construct with the AppState&nbsp;name.</em></p>
+<p>*”AppState” is not to be confused with and has no relation to the deprecated Android AppState interface, nor any other existing construct with the AppState&nbsp;name.*</p>
 <p>-</p>
 <h3 id="references">References</h3>
 <ul>
@@ -245,12 +300,11 @@ node0.delete();
     </div>
     <footer>
       <div class="content-wrap">
-        <div class="nav"><a href="/">« Full blog</a></div>
+        <div class="nav"><a href="/blog/">« Full blog</a></div>
         <section class="about">
         </section>
         <section class="copy">
-          <p>&copy; 2016 Max Irwin &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a>
-          </p>
+          <p>&copy; 2025 Max Irwin &mdash; powered by&nbsp;<a href="https://github.com/jnordberg/wintersmith">Wintersmith</a></p>
           <p>Please treat people the same way you want them to treat you</p>
         </section>
       </div>
