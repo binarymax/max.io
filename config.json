@@ -1,9 +1,9 @@
 {
   "locals": {
-    "url": "http://localhost:5050",
+    "url": "https://max.io",
     "name": "Max Irwin",
     "owner": "Max Irwin",
-    "description": "code + art + philosophy",
+    "description": "",
     "scripts": "/javascripts/"
   },
   "plugins": [

@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const axios = require('axios');
 const mkdirp = require('mkdirp');
+const favicon = require('./lib/favicon');
 const {transform} = require('./lib/transform');
 const Browser = require('./lib/browser');
 
@@ -36,7 +37,7 @@ async function makeArticle(item,article) {
 
   try {
 
-    const {
+    let {
       title,
       author,
       text,
@@ -45,11 +46,16 @@ async function makeArticle(item,article) {
       published
     } = article;
 
+    //Override the date if present in the JSON
+    published = item.date || published;
+
     const slug = slugify(title);
     const articleDir = path.join(baseDir, slug);
     const outputFile = path.join(articleDir, 'index.md');
 
     mkdirp.sync(articleDir);
+
+    const icon = await favicon.get(item.url);
 
     const metadata = [
       `source: "external"`,
@@ -57,6 +63,8 @@ async function makeArticle(item,article) {
       `template: "external.pug"`,
       `type: "${escapeYaml(item.type)}"`,
       `external_url: "${escapeYaml(item.url)}"`,
+      `external_favicon: "${escapeYaml(icon.filename)}"`,
+      `external_hostname: "${escapeYaml(icon.hostname)}"`,
       author ? `author: "${escapeYaml(author)}"` : '',
       description ? `description: "${escapeYaml(description)}"` : '',
       image ? `image: "${escapeYaml(image)}"` : '',

@@ -4,6 +4,8 @@ title: "Surviving the AI Mandate | LinkedIn"
 template: "external.pug"
 type: "blog"
 external_url: "https://www.linkedin.com/pulse/surviving-ai-mandate-max-irwin-ll2xc/"
+external_favicon: "www.linkedin.com.ico"
+external_hostname: "www.linkedin.com"
 author: "Edit article"
 description: "It happened.  The decision was made, and the directive has 
 come.  You have to ship “AI” in the next quarter or two, and you have to

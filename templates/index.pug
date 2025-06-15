@@ -8,15 +8,24 @@ block content
     //   div= key
     article.article.intro
       if article.metadata.source=='external'
+        - var ico = '/images/icons/'+article.metadata.external_favicon
         header
           p.date
             span= moment.utc(article.date).format('DD. MMMM YYYY')
           h2
-            a(href=article.metadata.external_url,target=_blank)= article.title 
-              img(src='/images/external-link.svg',style='width:20px;height:20px;margin-top:5px;margin-left:5px;')
+            a(href=article.metadata.external_url,target=_blank)
+              img(src=ico,style="height:24px")
+              =article.title 
+          // h3
+          //  div= article.metadata.external_hostname 
+          //    img(src='/images/external-link.svg',style='width:20px;height:20px;margin-top:5px;margin-left:5px;')
         section.content
           if article.intro.length > 0
             != typogr(article.intro).typogrify()
+        p.more
+          a(href=article.metadata.external_url,target=_blank)
+            =article.metadata.external_hostname
+            img(src='/images/external-link-2.svg',style='width:12px;height:12px;margin-top:2px;margin-left:5px;display:inline-block;')
       else
         header
           p.date
