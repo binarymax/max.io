@@ -1,11 +1,30 @@
 extends layout
 
+block append vars
+  - bodyclass = 'article-detail'
+
+block header
+  div.logo
+    h1.nav
+      ul.nav-list
+        li 
+          a(href="https://max.io") MAX.IO
+        li 
+          a(href="https://flowercity.ai") flowercity.ai
+        li 
+          a(href="https://lumi.re") Lumi.RE
+        li 
+          a(href="https://linkedin.com/in/maxirwin") LinkedIn
+        li 
+          a(href="mailto:contact@max.io") Email
+        li 
+          a(href="https://github/binarymax") Github
+
+  h1 Max Irwin
+
 block content
   include author
   each article in articles
-    // - var keys = Object.keys(article)
-    // each key in keys
-    //   div= key
     article.article.intro
       if article.metadata.source=='external'
         - var ico = '/images/icons/'+article.metadata.external_favicon
