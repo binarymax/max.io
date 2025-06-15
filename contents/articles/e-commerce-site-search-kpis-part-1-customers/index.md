@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "E-commerce Site-Search KPIs – Part 1 – Customers"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2020/08/28/e-commerce-site-search-kpis/"
 author: "Max Irwin"
 description: "We will outline all the things you need to know about measuring the quality and effectiveness of your store’s site-search."

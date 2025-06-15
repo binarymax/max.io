@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Surviving the AI Mandate | LinkedIn"
 template: "external.pug"
+type: "blog"
 external_url: "https://www.linkedin.com/pulse/surviving-ai-mandate-max-irwin-ll2xc/"
 author: "Edit article"
 description: "It happened.  The decision was made, and the directive has 

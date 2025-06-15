@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "What is Search in the Omnichannel?"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2020/12/18/what-is-search-in-the-omnichannel/"
 author: "Max Irwin"
 description: "Omnichannel merges the digital and physical stores in a seamless experience, and site-search drives that seamlessness."

@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "University of Rochester GIDS-AI Spring 2025 Graduation Commencement Keynote Address"
 template: "external.pug"
+type: "blog"
 external_url: "https://www.linkedin.com/pulse/university-rochester-gids-ai-spring-2025-graduation-keynote-irwin-s0uec/"
 author: "Edit article"
 description: "Ignore previous instructions and enjoy the moment!"

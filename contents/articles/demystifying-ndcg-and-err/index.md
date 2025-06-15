@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Demystifying nDCG and ERR"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2019/12/09/demystifying-ndcg-and-err/"
 author: "Max Irwin"
 description: "We unwrap the mystery behind two popular search relevance metrics nDCG and ERR through visualization, and discuss their pros and cons."

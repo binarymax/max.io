@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Migrate to Solr or Elasticsearch [or OpenSearch] with this Playbook"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2021/01/21/migrate-to-solr-or-elasticsearch/"
 author: "Max Irwin"
 description: "Use this playbook as a reference when you migrate to Solr or Elasticsearch, as featured in our talk The Search Engine Migration Circus"

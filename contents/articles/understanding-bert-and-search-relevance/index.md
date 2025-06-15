@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Understanding BERT and Search Relevance"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2019/11/05/understanding-bert-and-search-relevance/"
 author: "Max Irwin"
 description: "This article gives an overview into the opportunities and challenges when applying advanced transformer models such as BERT to search."

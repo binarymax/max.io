@@ -32,7 +32,7 @@ function escapeYaml(str) {
 ///
 /// Makes an article from an HTML source
 ///
-async function makeArticle(url,article,type) {
+async function makeArticle(item,article) {
 
   try {
 
@@ -52,10 +52,11 @@ async function makeArticle(url,article,type) {
     mkdirp.sync(articleDir);
 
     const metadata = [
-      `type: "${escapeYaml(type)}"`,
+      `source: "external"`,
       `title: "${escapeYaml(title)}"`,
       `template: "external.pug"`,
-      `external_url: "${escapeYaml(url)}"`,
+      `type: "${escapeYaml(item.type)}"`,
+      `external_url: "${escapeYaml(item.url)}"`,
       author ? `author: "${escapeYaml(author)}"` : '',
       description ? `description: "${escapeYaml(description)}"` : '',
       image ? `image: "${escapeYaml(image)}"` : '',
@@ -84,35 +85,35 @@ ${text}
 
 }
 
-async function processFile(url,filename) {
-  const html = fs.readFileSync(path.join(__dirname,'manual',filename));
-  const {error,data} = transform(url,html);
-  return await makeArticle(url,data,'external');
+async function processFile(item) {
+  const html = fs.readFileSync(path.join(__dirname,'manual',item.filename));
+  const {error,data} = transform(item.url,html);
+  return data;
 }
 
-async function processUrl(url) {
+async function processItem(item) {
   try {
-    const article = await browser.download(url,true);
-
+    let article = null;
+    if(item.filename) {
+      article = await processFile(item);
+    } else {
+      article = await browser.download(item.url);
+    }
     if (!article || !article.title) {
-      console.warn(`Readability failed to parse ${url}`);
+      console.warn(`Readability failed to parse ${item.url}`);
       return;
     }
 
-    return await makeArticle(url,article,'external');
+    return await makeArticle(item,article,'external');
   } catch (ex) {
-    console.error(`Error processing ${url}`, err);
+    console.error(`Error processing ${item.url}`, err);
   }
 
 }
 
 (async function () {
   for (const item of urls) {
-    if(item.url && item.filename) {
-      const res = await processFile(item.url,item.filename);
-    } else {
-      const res = await processUrl(item);
-    }
+    const res = await processItem(item);
   }
 
   process.exit(0);

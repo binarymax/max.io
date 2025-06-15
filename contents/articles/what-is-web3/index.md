@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "What is Web3?"
 template: "external.pug"
+type: "radio"
 external_url: "https://www.wxxinews.org/show/connections/2022-02-07/what-is-web3"
 author: "Evan Dawson, Megan Mack, Emmarae Stein"
 description: "This is the second hour of \"Connections with Evan Dawson\" on Monday, February 7, 2022."

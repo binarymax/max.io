@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "How can AI make teachers' jobs better or easier?"
 template: "external.pug"
+type: "radio"
 external_url: "https://www.wxxinews.org/show/connections/2023-08-01/how-can-ai-make-teachers-jobs-better-or-easier"
 author: "Evan Dawson, Megan Mack"
 description: "In the first hour of \"Connections with Evan Dawson\" on Tuesday, August 1, 2023, we discuss how AI can make teachers' jobs better or easier."

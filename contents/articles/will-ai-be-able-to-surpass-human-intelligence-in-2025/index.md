@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Will AI be able to surpass human intelligence in 2025?"
 template: "external.pug"
+type: "radio"
 external_url: "https://www.wxxinews.org/show/connections/2024-12-23/will-ai-be-able-to-surpass-human-intelligence-in-2025"
 author: "Evan Dawson, Megan Mack, Julie Williams"
 description: "In the second hour of \"Connections with Evan Dawson\" on Dec. 23, 2024, we discuss if OpenAI's o3 and other new forms of artificial intelligence can go beyond the limits of human intelligence."

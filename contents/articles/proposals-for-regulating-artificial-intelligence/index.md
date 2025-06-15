@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Proposals for regulating artificial intelligence"
 template: "external.pug"
+type: "radio"
 external_url: "https://www.wxxinews.org/show/connections/2025-05-14/proposals-for-regulating-artificial-intelligence"
 author: "Evan Dawson, Megan Mack, Julie Williams"
 description: "In the second hour of \"Connections with Evan Dawson\" on May 14, 2025, we're joined by an AI expert and a member of the New York State Assembly for a discussion about legislation that would regulate AI."

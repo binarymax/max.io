@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "E-Commerce Site-Search KPIs – Part 3 – Queries"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2020/09/24/e-commerce-site-search-kpis-part-3-queries/"
 author: "Max Irwin"
 description: "How much money are you losing or gaining, depending on a site-search query? You need to be able to know if search is working, and you can with these KPIs!"

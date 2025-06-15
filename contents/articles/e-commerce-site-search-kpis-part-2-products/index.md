@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "E-commerce Site-Search KPIs – Part 2 – Products"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2020/09/10/e-commerce-site-search-kpis-part-2/"
 author: "Max Irwin"
 description: "Today we’ll discuss KPIs for the actual product items that are presented to a buyer when they use your site-search."

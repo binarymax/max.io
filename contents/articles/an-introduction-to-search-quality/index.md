@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "An Introduction to Search Quality"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2018/11/19/an-introduction-to-search-quality/"
 author: "Max Irwin"
 description: "Welcome, dear reader, to my first OSC blog post. Let’s dive in! While search relevance is often equated with ensuring customers find what they need, that is only part..."

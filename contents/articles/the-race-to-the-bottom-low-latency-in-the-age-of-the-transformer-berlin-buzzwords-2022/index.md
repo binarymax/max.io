@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "The Race to the Bottom - Low Latency in the age of the Transformer Berlin Buzzwords 2022"
 template: "external.pug"
+type: "conference"
 external_url: "https://pretalx.com/bbuzz22/talk/SXZTDG/"
 description: "So you want to deploy a large language model, and keep your latency SLA?  NLP adds enormous value to customers, but getting it to work efficiently is fraught with uncertainty and high cost.  As transformers and other big neural network architectures make their way into your platform, you may be finding it difficult to get the speed and throughput you need within your budget, or even understand why it is so expensive.
 

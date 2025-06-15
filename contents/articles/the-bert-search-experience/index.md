@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "The BERT Search Experience"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2021/09/01/the-bert-search-experience/"
 author: "Max Irwin"
 description: "All the areas of a complete search experience that are being improved, and sometimes even replaced, by solutions using large-language models."

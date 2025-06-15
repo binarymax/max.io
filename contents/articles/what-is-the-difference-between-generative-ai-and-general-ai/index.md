@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "What is the difference between generative AI and general AI?"
 template: "external.pug"
+type: "radio"
 external_url: "https://www.wxxinews.org/show/connections/2023-05-03/what-is-the-difference-between-generative-ai-and-general-ai"
 author: "Evan Dawson, Megan Mack"
 description: "In the second hour of \"Connections with Evan Dawson\" on Wednesday, May 3, 2023, our guest explains the difference between different types of artificial intelligence and what he expects for the future of AI."

@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "How to really do autocomplete"
 template: "external.pug"
+type: "blog"
 external_url: "https://bonsai.io/blog/how-to-really-do-autocomplete/"
 author: "OpenSearch Docs"
 description: "The first and only straightforward guide for implementing a good autocomplete solution in pure Elasticsearch or Opensearch, because all the other guides are terrible and don't work."

@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Falsehoods Programmers Believe About Search"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2019/05/29/falsehoods-programmers-believe-about-search/"
 author: "Max Irwin"
 description: "105 falsehoods programmers believe about search, a complex field where competence is hard-won through training, practice, and experience."

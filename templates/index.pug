@@ -7,7 +7,7 @@ block content
     // each key in keys
     //   div= key
     article.article.intro
-      if article.metadata.type=='external'
+      if article.metadata.source=='external'
         header
           p.date
             span= moment.utc(article.date).format('DD. MMMM YYYY')

@@ -1,7 +1,8 @@
 ---
-type: "external"
+source: "external"
 title: "Leveling Up with Natural Language Search!"
 template: "external.pug"
+type: "blog"
 external_url: "https://opensourceconnections.com/blog/2020/07/08/leveling-up-with-natural-language-search/"
 author: "Max Irwin"
 description: "You have a search platform installed and working, you're measuring, experimenting, and improving search quality, but you're still having difficulty fixing some complicated and annoying problems you still have. In short, you need to level up - do it with Natural Language Search training!"
