@@ -20,33 +20,31 @@
 &lt;p&gt;This all started for me when I needed to accept a customer prompt to generate an excel spreadsheet. It was an experiment at the time to see if AI could do a good job at this. While AI can’t generate an excel spreadsheet directly, it can generate the code that will produce a spreadsheet. So I created a basic app in under a day to see how well it performed. In short: not great. I found that I had preconceptions of what I wanted, but when I typed my request into my app, it was vague and underspecified. For example, one of the prompts I tried was “Make a budget spreadsheet for a medical office building”.&lt;/p&gt;
 &lt;p&gt;The root of the problem was that the context was lacking.  Why do I need a budget? Who will use it? In what scenarios will it apply? What data should be captured? Is the person asking it a doctor, a property manager, an office assistant?  All of these might have different requirements.&lt;/p&gt;
 &lt;p&gt;Strides have been made since late 2023 with chain-of-thought prompting.  In essence, in order to improve the outcome of a prompt, you instruct the model to “think step-by-step” before generating the output you require.  This will result in the model generating better instructions for itself, making the task more clear when the final answer is produced. This has shown success in improving outcomes for complex problems, and is the basis for “reasoning models” such as OpenAI’s “o” series, DeepSeek R1, and others. The difference being the reasoning models have been trained to use this technique without explicit prompting and have special token generation layers.&lt;/p&gt;
-&lt;p&gt;But while this technique is good, it is generalized and not always fit for your purpose in a highly contextual business specific task.  PEP further clarifies the task and improves outcomes for problems where the domain is not well understood ahead of time.&lt;/p&gt;
+&lt;p&gt;Additionally, while &lt;a href=&quot;https://www.youtube.com/watch?v=44--JTG0aMg&quot;&gt;pre-defined persona based prompting&lt;/a&gt; has shown success , this technique works well even if the personas are not identified beforehand.&lt;/p&gt;
 &lt;h2 id=&quot;example&quot;&gt;Example&lt;/h2&gt;
-&lt;p&gt;The following two contrasting outcomes are from the same prompt to generate an excel template. The request for both results is &lt;code&gt;I need an HVAC buildout quote template for a strip mall.&lt;/code&gt;  The model used is &lt;code&gt;o1-mini&lt;/code&gt; with effort set to &lt;code&gt;high&lt;/code&gt; for maximum pseudoreasoning.&lt;/p&gt;
+&lt;p&gt;The following two contrasting outcomes are from the same prompt to generate an excel template. The request for both results is *”I need an HVAC buildout quote template for a strip mall.”*  The model used is &lt;code&gt;o1-mini&lt;/code&gt; with effort set to &lt;code&gt;high&lt;/code&gt; for maximum pseudoreasoning.&lt;/p&gt;
 &lt;p&gt;The difference between the two results is that the outcome without PEP took the user request directly as the specification, and the outcome with PEP first generated the domain, persona, and information needs, and then used those as the specification.&lt;/p&gt;
 &lt;h3 id=&quot;without-pep&quot;&gt;Without PEP&lt;/h3&gt;
 &lt;p&gt;The spreadsheet generated is highly generic, lacking detail, and is not useful to the end-user who initiated the request.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/no-pep.png&quot; alt=&quot;No PEP&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/articles/persona-enriched-prompting/hvac-excel-without-pep.xlsx&quot;&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/no-pep.png&quot; alt=&quot;HVAC quote template without PEP&quot;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Figure 1: The generic spreadsheet generated for the user request directly.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;There is just one tab, without much detail.&lt;/p&gt;
 &lt;h3 id=&quot;with-pep&quot;&gt;With PEP&lt;/h3&gt;
-&lt;p&gt;Figures 2 through 9 are the different tabs of the same spreadsheet generated with PEP for the one request, each tab has contextual detail applicable to the inferred requirements.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-1.png&quot; alt=&quot;pep-tab-1&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 2: Building &amp;amp; Materials&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-2.png&quot; alt=&quot;pep-tab-2&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 3: Labor &amp;amp; Markup&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-3.png&quot; alt=&quot;pep-tab-3&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 4: Permit, Taxes, &amp;amp; Unit Cost&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-4.png&quot; alt=&quot;pep-tab-4&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 5: Dashboard&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-5.png&quot; alt=&quot;pep-tab-5&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 6: Timeline &amp;amp; Budget&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-6.png&quot; alt=&quot;pep-tab-6&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 7: Client Proposal&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-7.png&quot; alt=&quot;pep-tab-7&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 8: Executive Summary&lt;/em&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-8.png&quot; alt=&quot;pep-tab-8&quot;&gt;&lt;/p&gt;
-&lt;p&gt;&lt;em&gt;Figure 9: Financial Analysis&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&quot;/articles/persona-enriched-prompting/hvac-excel-with-pep.xlsx&quot;&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/yes-pep.png&quot; alt=&quot;HVAC quote template with PEP&quot;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Figure 2 shows all the different tabs of the same spreadsheet generated with PEP for the one request, each tab has contextual detail applicable to the inferred requirements.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;The tabs generated are:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Building &amp;amp; Materials&lt;/li&gt;
+&lt;li&gt;Labor &amp;amp; Markup&lt;/li&gt;
+&lt;li&gt;Permit, Taxes, &amp;amp; Unit Cost&lt;/li&gt;
+&lt;li&gt;Dashboard&lt;/li&gt;
+&lt;li&gt;Timeline &amp;amp; Budget&lt;/li&gt;
+&lt;li&gt;Client Proposal&lt;/li&gt;
+&lt;li&gt;Executive Summary&lt;/li&gt;
+&lt;li&gt;Financial Analysis&lt;/li&gt;
+&lt;/ul&gt;
 &lt;p&gt;As you can see, PEP altered the outcome drastically, providing a much more useful and thorough spreadsheet.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;You can download both spreadsheets to compare by clicking on the images&lt;/em&gt;&lt;/p&gt;
 &lt;h2 id=&quot;why-pep-works&quot;&gt;Why PEP works&lt;/h2&gt;
 &lt;p&gt;My expertise lies in information retrieval (aka “search”), and I have worked on improving many many retrieval systems since I started this journey back in 2011.  One of the first things you learn when approaching search is that people type vague queries in search bars.  One of the first techniques you apply to improving outcomes is to map out information needs.  Info needs can (and usually should) be tied to a persona - an example customer profile that describes the motivations behind the search.  This helps us define ways to take the vagueness away from the query.  Let’s illustrate an example.  The query is: “patient injury”&lt;/p&gt;
 &lt;p&gt;Now what do you think that query means?  It could be lots of things.  So take into account where the query is found:&lt;/p&gt;
@@ -145,6 +143,533 @@ The following is the user request for the excel workbook
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The above template and schema were tailored specifically for the excel generator tool in the application context, but you can easily adapt them to your own needs.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Note, that since I was using an o-series pseudoreasoning model, I do not need to explicitly request chain-of-thought as this is already covered by the model internals.&lt;/em&gt;&lt;/p&gt;
+&lt;h3 id=&quot;example-output&quot;&gt;Example output&lt;/h3&gt;
+&lt;p&gt;This is the output example using the the above templates for the user query *”I need an HVAC buildout quote template for a strip mall.”*&lt;/p&gt;
+&lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;{
+  &quot;name&quot;: &quot;HVAC Buildout Quote Template for Strip Mall&quot;,
+  &quot;domain&quot;: &quot;Construction/Commercial HVAC | This template is designed for creating detailed buildout quotes for HVAC systems in strip malls. It encompasses comprehensive cost estimations including labor, materials, permits, equipment, and inspections required for the setup, and provides interactive tools to support detailed financial analysis and project management.&quot;,
+  &quot;personas&quot;: [
+    {
+      &quot;name&quot;: &quot;HVAC Estimator&quot;,
+      &quot;background&quot;: &quot;An experienced HVAC professional specializing in cost estimation and technical planning.&quot;,
+      &quot;role&quot;: &quot;Cost Estimator&quot;,
+      &quot;responsibilities&quot;: &quot;Accurately calculate detailed costs for both materials and labor, and ensure all technical specifications are met in line with project requirements.&quot;,
+      &quot;goals&quot;: &quot;Deliver highly accurate estimates that reflect all cost variables to secure profitable project bids.&quot;,
+      &quot;motivation&quot;: &quot;Efficient and accurate quoting minimizes rework and enhances competitiveness in bidding processes.&quot;,
+      &quot;pain_points&quot;: &quot;Struggles with consolidating various cost data, potential oversight of hidden costs, and keeping estimations up-to-date with market price changes.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Building Information Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;Include fields for property dimensions, location specifics, and building layout details to inform overall project requirements.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Material Cost Breakdown&quot;,
+          &quot;implementation_details&quot;: &quot;Separate sections for HVAC equipment, ductwork, controls, and refrigerants with dynamic lookup tables for material prices.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Labor Cost Estimator&quot;,
+          &quot;implementation_details&quot;: &quot;Calculation modules for on-site labor costs, installation durations, and overtime rates, integrating local wage data.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Installation &amp;amp; Equipment Markup&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to apply adjustable percentage markups on labor and material costs with real-time calculation updates.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Permit and Inspection Fees&quot;,
+          &quot;implementation_details&quot;: &quot;Dedicated fields to input and calculate municipal permitting, inspection, and licensing fees.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Contingency Reserve Calculation&quot;,
+          &quot;implementation_details&quot;: &quot;Section that allows entry of a contingency percentage to cover unforeseen expenses based on project size.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Tax and Insurance Calculations&quot;,
+          &quot;implementation_details&quot;: &quot;Automatic formulas for computing local taxes and insurance premiums related to the buildout.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Unit Cost Analysis&quot;,
+          &quot;implementation_details&quot;: &quot;Breakdowns of costs per unit (e.g., per square foot or per duct length) to assist with scalability of estimates.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Dynamic Cost Summary Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive charts and summary tables that update automatically to reflect changes in cost inputs.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Historical Data Reference&quot;,
+          &quot;implementation_details&quot;: &quot;Section for comparing current estimates with past project data to improve forecast accuracy.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Project Manager&quot;,
+      &quot;background&quot;: &quot;An experienced professional in overseeing large-scale construction and HVAC projects ensuring timelines and budgets are met.&quot;,
+      &quot;role&quot;: &quot;Project Manager&quot;,
+      &quot;responsibilities&quot;: &quot;Coordinate project timelines, budgets, and resources while maintaining communication between stakeholders and ensuring compliance with established milestones.&quot;,
+      &quot;goals&quot;: &quot;Maintain projects on schedule and within budget while effectively managing and mitigating risks.&quot;,
+      &quot;motivation&quot;: &quot;Efficient project tracking and budgeting ensure smoother project execution and higher stakeholder satisfaction.&quot;,
+      &quot;pain_points&quot;: &quot;Difficulty in tracking simultaneous cost updates, managing change orders, and integrating various data sources into coherent progress reports.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Timeline &amp;amp; Milestone Tracker&quot;,
+          &quot;implementation_details&quot;: &quot;A dedicated sheet to capture project phases, key dates, milestones, and task dependencies with automated date alerts.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Budget Overview Summary&quot;,
+          &quot;implementation_details&quot;: &quot;An aggregated dashboard that provides a consolidated view of all cost components and compares actual versus planned budgets.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Vendor and Supplier Database&quot;,
+          &quot;implementation_details&quot;: &quot;A section to store and track vendor details, contact information, and contractual terms for easy reference.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Change Order Log&quot;,
+          &quot;implementation_details&quot;: &quot;A log that captures every change request along with cost implications and approval statuses.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Risk and Issue Register&quot;,
+          &quot;implementation_details&quot;: &quot;A register to record potential risks, current issues, impact assessments, and mitigation plans.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Interactive Project Status Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Visual summaries with charts showing progress, cost burn rate, and schedule adherence updated in real-time.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Resource Allocation Table&quot;,
+          &quot;implementation_details&quot;: &quot;A detailed grid to assign labor, track man-hours and monitor subcontractor engagements.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Reporting and Export Features&quot;,
+          &quot;implementation_details&quot;: &quot;Preformatted report templates that can be exported as PDF or printed for stakeholder update meetings.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Milestone Cost Tracking&quot;,
+          &quot;implementation_details&quot;: &quot;Link specific budget entries to project milestones to track expenditure distribution over time.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;What-if Scenario Simulation&quot;,
+          &quot;implementation_details&quot;: &quot;Tool to simulate changes in cost or schedule variables to assess potential project impacts.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Sales Engineer&quot;,
+      &quot;background&quot;: &quot;Technically proficient with a strong sales orientation, adept at communicating product value and technical details to clients.&quot;,
+      &quot;role&quot;: &quot;Sales Engineer&quot;,
+      &quot;responsibilities&quot;: &quot;Develop persuasive and client-customized quotes that align technical specifications with clear financial breakdowns.&quot;,
+      &quot;goals&quot;: &quot;Convert leads into contracts by providing clear, detailed, and client-friendly HVAC buildout quotes.&quot;,
+      &quot;motivation&quot;: &quot;Enhanced ability to tailor quotes to client needs drives higher conversion rates and customer satisfaction.&quot;,
+      &quot;pain_points&quot;: &quot;Balancing the level of technical detail with ease of understanding for clients and rapidly adjusting pricing during negotiations.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Client Information Section&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to capture client name, contact details, project location, and specific client requirements for personalized quoting.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Quote Customization Options&quot;,
+          &quot;implementation_details&quot;: &quot;Features that allow adding company branding elements, adjustable color schemes, and formatting options for client presentations.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Technical Specifications Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;A detailed section outlining technical requirements, system specifications, and compliance standards.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Pricing Modification Module&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive fields that allow on-the-fly adjustments of labor and material costs to reflect negotiated discounts or value-adds.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Interactive Quoting Tool&quot;,
+          &quot;implementation_details&quot;: &quot;Real-time calculator that updates quotes as clients choose different options and configurations.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Standardized Proposal Format&quot;,
+          &quot;implementation_details&quot;: &quot;A pre-designed layout that integrates detailed quotes with professional design for ease of printing or digital delivery.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Alternative Proposal Templates&quot;,
+          &quot;implementation_details&quot;: &quot;Ability to generate multiple versions of quotes that highlight different configurations or cost-saving options.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Revision and Commentary Log&quot;,
+          &quot;implementation_details&quot;: &quot;A section for tracking revisions, client feedback, and internal notes to maintain a history of changes.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Pricing Assumptions Documentation&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to document assumptions behind cost estimates, including labor rates, material prices, and market factors.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Visual Cost Distribution Charts&quot;,
+          &quot;implementation_details&quot;: &quot;Integrated charts and graphs that visually represent the cost breakdown and highlight key pricing drivers.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Business Owner / Developer&quot;,
+      &quot;background&quot;: &quot;Senior decision-maker responsible for overall project feasibility, strategic investments, and final approvals.&quot;,
+      &quot;role&quot;: &quot;Business Owner / Developer&quot;,
+      &quot;responsibilities&quot;: &quot;Evaluate the financial and operational viability of projects, monitor overall project expenditures, and make high-level strategic decisions.&quot;,
+      &quot;goals&quot;: &quot;Quickly assess project viability through clear, summarized financial information and strategic risk insights.&quot;,
+      &quot;motivation&quot;: &quot;Clear, consolidated data allows for faster, more informed decision-making which can lead to improved project outcomes.&quot;,
+      &quot;pain_points&quot;: &quot;Overly technical details can be overwhelming, and inconsistent summary data may lead to decision delays.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Executive Summary Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;A one-page comprehensive overview covering total estimated costs, ROI, project duration and risk assessments.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Integrated Financial Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Visual dashboard with key metrics such as total cost, cost breakdown, margins, and profitability analysis.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Cost Category Breakdown&quot;,
+          &quot;implementation_details&quot;: &quot;Distinct visualization of labor, material, permit, and contingency costs for rapid assessment.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;ROI and Profitability Calculator&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive tool to calculate profit margins, return on investment and breakeven analysis based on current estimates.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Historical Comparison Feature&quot;,
+          &quot;implementation_details&quot;: &quot;Option to compare current estimates with historical projects to evaluate pricing trends and performance.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Risk Assessment Overview&quot;,
+          &quot;implementation_details&quot;: &quot;A dedicated section summarizing potential project risks alongside mitigation strategies and financial impact.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Exportable Reports&quot;,
+          &quot;implementation_details&quot;: &quot;Ability to export high-level dashboards and summaries into PDF or other presentation formats for board meetings.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Scenario Analysis Tools&quot;,
+          &quot;implementation_details&quot;: &quot;Modules that allow tweaking of key parameters (like markups and contingencies) to forecast different financial outcomes.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;User-Friendly Navigation&quot;,
+          &quot;implementation_details&quot;: &quot;Intuitive tab-based layout with clear labeling for quick navigation across detailed and summary sheets.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Automated Alert System&quot;,
+          &quot;implementation_details&quot;: &quot;Conditional formatting and notifications for cost deviations or significant changes in project estimates.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Financial Analyst&quot;,
+      &quot;background&quot;: &quot;Specializes in detailed financial modeling, forecasting, and performing sensitivity analyses for cost-efficiency and profitability.&quot;,
+      &quot;role&quot;: &quot;Financial Analyst&quot;,
+      &quot;responsibilities&quot;: &quot;Analyze detailed cost data, prepare financial projections, and provide insights on cost drivers and overall project viability.&quot;,
+      &quot;goals&quot;: &quot;Ensure the project’s financial viability by presenting data-backed forecasts and performing in-depth cost analyses.&quot;,
+      &quot;motivation&quot;: &quot;Accurate models and detailed breakdowns allow for precise financial forecasting and risk-adjusted decision making, optimizing investment returns.&quot;,
+      &quot;pain_points&quot;: &quot;Inconsistencies in data and a lack of integrated financial models hinder comprehensive financial analysis leading to forecasting errors.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Detailed Cost Analysis Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;Section dedicated to drilling down into individual cost components with detailed formulas and breakdowns.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;What-if Scenario Analysis&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive module to test different variables such as cost increases, labor fluctuations, and delays to forecast financial impacts.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Historical Data Integration&quot;,
+          &quot;implementation_details&quot;: &quot;Import and compare past project data with current estimates to identify trends and validate assumptions.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Dynamic Cost Update Mechanism&quot;,
+          &quot;implementation_details&quot;: &quot;Linked formula system that updates cost components across all sheets when input data is modified.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Profit Margin and NPV Calculations&quot;,
+          &quot;implementation_details&quot;: &quot;Modules to compute profit margins, net present value, and other financial metrics based on input assumptions.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Sensitivity Analysis Reports&quot;,
+          &quot;implementation_details&quot;: &quot;Preformatted reports that identify which variables have the highest impact on overall project costs.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Graphical Data Visualization&quot;,
+          &quot;implementation_details&quot;: &quot;Integrated charts and graphs such as line graphs, bar charts, and pie charts to visualize spending trends and cost distributions.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Data Import/Export Functionality&quot;,
+          &quot;implementation_details&quot;: &quot;Allow users to seamlessly import external data sets and export processed data for further analysis.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Customizable Cost Categories&quot;,
+          &quot;implementation_details&quot;: &quot;Fields that allow the addition or modification of cost categories in line with evolving project needs.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Audit Trail for Data Changes&quot;,
+          &quot;implementation_details&quot;: &quot;Implement a logging feature that records and timestamps changes in key financial figures for accuracy and compliance.&quot;
+        }
+      ]
+    }
+  ],
+  &quot;request&quot;: &quot;I need an HVAC buildout quote template for a strip mall.&quot;
+}
+Getting function for the following: {
+  &quot;name&quot;: &quot;HVAC Buildout Quote Template for Strip Mall&quot;,
+  &quot;domain&quot;: &quot;Construction/Commercial HVAC | This template is designed for creating detailed buildout quotes for HVAC systems in strip malls. It encompasses comprehensive cost estimations including labor, materials, permits, equipment, and inspections required for the setup, and provides interactive tools to support detailed financial analysis and project management.&quot;,
+  &quot;personas&quot;: [
+    {
+      &quot;name&quot;: &quot;HVAC Estimator&quot;,
+      &quot;background&quot;: &quot;An experienced HVAC professional specializing in cost estimation and technical planning.&quot;,
+      &quot;role&quot;: &quot;Cost Estimator&quot;,
+      &quot;responsibilities&quot;: &quot;Accurately calculate detailed costs for both materials and labor, and ensure all technical specifications are met in line with project requirements.&quot;,
+      &quot;goals&quot;: &quot;Deliver highly accurate estimates that reflect all cost variables to secure profitable project bids.&quot;,
+      &quot;motivation&quot;: &quot;Efficient and accurate quoting minimizes rework and enhances competitiveness in bidding processes.&quot;,
+      &quot;pain_points&quot;: &quot;Struggles with consolidating various cost data, potential oversight of hidden costs, and keeping estimations up-to-date with market price changes.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Building Information Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;Include fields for property dimensions, location specifics, and building layout details to inform overall project requirements.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Material Cost Breakdown&quot;,
+          &quot;implementation_details&quot;: &quot;Separate sections for HVAC equipment, ductwork, controls, and refrigerants with dynamic lookup tables for material prices.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Labor Cost Estimator&quot;,
+          &quot;implementation_details&quot;: &quot;Calculation modules for on-site labor costs, installation durations, and overtime rates, integrating local wage data.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Installation &amp;amp; Equipment Markup&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to apply adjustable percentage markups on labor and material costs with real-time calculation updates.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Permit and Inspection Fees&quot;,
+          &quot;implementation_details&quot;: &quot;Dedicated fields to input and calculate municipal permitting, inspection, and licensing fees.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Contingency Reserve Calculation&quot;,
+          &quot;implementation_details&quot;: &quot;Section that allows entry of a contingency percentage to cover unforeseen expenses based on project size.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Tax and Insurance Calculations&quot;,
+          &quot;implementation_details&quot;: &quot;Automatic formulas for computing local taxes and insurance premiums related to the buildout.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Unit Cost Analysis&quot;,
+          &quot;implementation_details&quot;: &quot;Breakdowns of costs per unit (e.g., per square foot or per duct length) to assist with scalability of estimates.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Dynamic Cost Summary Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive charts and summary tables that update automatically to reflect changes in cost inputs.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Historical Data Reference&quot;,
+          &quot;implementation_details&quot;: &quot;Section for comparing current estimates with past project data to improve forecast accuracy.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Project Manager&quot;,
+      &quot;background&quot;: &quot;An experienced professional in overseeing large-scale construction and HVAC projects ensuring timelines and budgets are met.&quot;,
+      &quot;role&quot;: &quot;Project Manager&quot;,
+      &quot;responsibilities&quot;: &quot;Coordinate project timelines, budgets, and resources while maintaining communication between stakeholders and ensuring compliance with established milestones.&quot;,
+      &quot;goals&quot;: &quot;Maintain projects on schedule and within budget while effectively managing and mitigating risks.&quot;,
+      &quot;motivation&quot;: &quot;Efficient project tracking and budgeting ensure smoother project execution and higher stakeholder satisfaction.&quot;,
+      &quot;pain_points&quot;: &quot;Difficulty in tracking simultaneous cost updates, managing change orders, and integrating various data sources into coherent progress reports.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Timeline &amp;amp; Milestone Tracker&quot;,
+          &quot;implementation_details&quot;: &quot;A dedicated sheet to capture project phases, key dates, milestones, and task dependencies with automated date alerts.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Budget Overview Summary&quot;,
+          &quot;implementation_details&quot;: &quot;An aggregated dashboard that provides a consolidated view of all cost components and compares actual versus planned budgets.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Vendor and Supplier Database&quot;,
+          &quot;implementation_details&quot;: &quot;A section to store and track vendor details, contact information, and contractual terms for easy reference.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Change Order Log&quot;,
+          &quot;implementation_details&quot;: &quot;A log that captures every change request along with cost implications and approval statuses.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Risk and Issue Register&quot;,
+          &quot;implementation_details&quot;: &quot;A register to record potential risks, current issues, impact assessments, and mitigation plans.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Interactive Project Status Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Visual summaries with charts showing progress, cost burn rate, and schedule adherence updated in real-time.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Resource Allocation Table&quot;,
+          &quot;implementation_details&quot;: &quot;A detailed grid to assign labor, track man-hours and monitor subcontractor engagements.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Reporting and Export Features&quot;,
+          &quot;implementation_details&quot;: &quot;Preformatted report templates that can be exported as PDF or printed for stakeholder update meetings.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Milestone Cost Tracking&quot;,
+          &quot;implementation_details&quot;: &quot;Link specific budget entries to project milestones to track expenditure distribution over time.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;What-if Scenario Simulation&quot;,
+          &quot;implementation_details&quot;: &quot;Tool to simulate changes in cost or schedule variables to assess potential project impacts.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Sales Engineer&quot;,
+      &quot;background&quot;: &quot;Technically proficient with a strong sales orientation, adept at communicating product value and technical details to clients.&quot;,
+      &quot;role&quot;: &quot;Sales Engineer&quot;,
+      &quot;responsibilities&quot;: &quot;Develop persuasive and client-customized quotes that align technical specifications with clear financial breakdowns.&quot;,
+      &quot;goals&quot;: &quot;Convert leads into contracts by providing clear, detailed, and client-friendly HVAC buildout quotes.&quot;,
+      &quot;motivation&quot;: &quot;Enhanced ability to tailor quotes to client needs drives higher conversion rates and customer satisfaction.&quot;,
+      &quot;pain_points&quot;: &quot;Balancing the level of technical detail with ease of understanding for clients and rapidly adjusting pricing during negotiations.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Client Information Section&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to capture client name, contact details, project location, and specific client requirements for personalized quoting.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Quote Customization Options&quot;,
+          &quot;implementation_details&quot;: &quot;Features that allow adding company branding elements, adjustable color schemes, and formatting options for client presentations.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Technical Specifications Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;A detailed section outlining technical requirements, system specifications, and compliance standards.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Pricing Modification Module&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive fields that allow on-the-fly adjustments of labor and material costs to reflect negotiated discounts or value-adds.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Interactive Quoting Tool&quot;,
+          &quot;implementation_details&quot;: &quot;Real-time calculator that updates quotes as clients choose different options and configurations.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Standardized Proposal Format&quot;,
+          &quot;implementation_details&quot;: &quot;A pre-designed layout that integrates detailed quotes with professional design for ease of printing or digital delivery.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Alternative Proposal Templates&quot;,
+          &quot;implementation_details&quot;: &quot;Ability to generate multiple versions of quotes that highlight different configurations or cost-saving options.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Revision and Commentary Log&quot;,
+          &quot;implementation_details&quot;: &quot;A section for tracking revisions, client feedback, and internal notes to maintain a history of changes.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Pricing Assumptions Documentation&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to document assumptions behind cost estimates, including labor rates, material prices, and market factors.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Visual Cost Distribution Charts&quot;,
+          &quot;implementation_details&quot;: &quot;Integrated charts and graphs that visually represent the cost breakdown and highlight key pricing drivers.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Business Owner / Developer&quot;,
+      &quot;background&quot;: &quot;Senior decision-maker responsible for overall project feasibility, strategic investments, and final approvals.&quot;,
+      &quot;role&quot;: &quot;Business Owner / Developer&quot;,
+      &quot;responsibilities&quot;: &quot;Evaluate the financial and operational viability of projects, monitor overall project expenditures, and make high-level strategic decisions.&quot;,
+      &quot;goals&quot;: &quot;Quickly assess project viability through clear, summarized financial information and strategic risk insights.&quot;,
+      &quot;motivation&quot;: &quot;Clear, consolidated data allows for faster, more informed decision-making which can lead to improved project outcomes.&quot;,
+      &quot;pain_points&quot;: &quot;Overly technical details can be overwhelming, and inconsistent summary data may lead to decision delays.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Executive Summary Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;A one-page comprehensive overview covering total estimated costs, ROI, project duration and risk assessments.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Integrated Financial Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Visual dashboard with key metrics such as total cost, cost breakdown, margins, and profitability analysis.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Cost Category Breakdown&quot;,
+          &quot;implementation_details&quot;: &quot;Distinct visualization of labor, material, permit, and contingency costs for rapid assessment.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;ROI and Profitability Calculator&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive tool to calculate profit margins, return on investment and breakeven analysis based on current estimates.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Historical Comparison Feature&quot;,
+          &quot;implementation_details&quot;: &quot;Option to compare current estimates with historical projects to evaluate pricing trends and performance.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Risk Assessment Overview&quot;,
+          &quot;implementation_details&quot;: &quot;A dedicated section summarizing potential project risks alongside mitigation strategies and financial impact.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Exportable Reports&quot;,
+          &quot;implementation_details&quot;: &quot;Ability to export high-level dashboards and summaries into PDF or other presentation formats for board meetings.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Scenario Analysis Tools&quot;,
+          &quot;implementation_details&quot;: &quot;Modules that allow tweaking of key parameters (like markups and contingencies) to forecast different financial outcomes.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;User-Friendly Navigation&quot;,
+          &quot;implementation_details&quot;: &quot;Intuitive tab-based layout with clear labeling for quick navigation across detailed and summary sheets.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Automated Alert System&quot;,
+          &quot;implementation_details&quot;: &quot;Conditional formatting and notifications for cost deviations or significant changes in project estimates.&quot;
+        }
+      ]
+    },
+    {
+      &quot;name&quot;: &quot;Financial Analyst&quot;,
+      &quot;background&quot;: &quot;Specializes in detailed financial modeling, forecasting, and performing sensitivity analyses for cost-efficiency and profitability.&quot;,
+      &quot;role&quot;: &quot;Financial Analyst&quot;,
+      &quot;responsibilities&quot;: &quot;Analyze detailed cost data, prepare financial projections, and provide insights on cost drivers and overall project viability.&quot;,
+      &quot;goals&quot;: &quot;Ensure the project’s financial viability by presenting data-backed forecasts and performing in-depth cost analyses.&quot;,
+      &quot;motivation&quot;: &quot;Accurate models and detailed breakdowns allow for precise financial forecasting and risk-adjusted decision making, optimizing investment returns.&quot;,
+      &quot;pain_points&quot;: &quot;Inconsistencies in data and a lack of integrated financial models hinder comprehensive financial analysis leading to forecasting errors.&quot;,
+      &quot;requirements&quot;: [
+        {
+          &quot;requirement&quot;: &quot;Detailed Cost Analysis Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;Section dedicated to drilling down into individual cost components with detailed formulas and breakdowns.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;What-if Scenario Analysis&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive module to test different variables such as cost increases, labor fluctuations, and delays to forecast financial impacts.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Historical Data Integration&quot;,
+          &quot;implementation_details&quot;: &quot;Import and compare past project data with current estimates to identify trends and validate assumptions.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Dynamic Cost Update Mechanism&quot;,
+          &quot;implementation_details&quot;: &quot;Linked formula system that updates cost components across all sheets when input data is modified.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Profit Margin and NPV Calculations&quot;,
+          &quot;implementation_details&quot;: &quot;Modules to compute profit margins, net present value, and other financial metrics based on input assumptions.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Sensitivity Analysis Reports&quot;,
+          &quot;implementation_details&quot;: &quot;Preformatted reports that identify which variables have the highest impact on overall project costs.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Graphical Data Visualization&quot;,
+          &quot;implementation_details&quot;: &quot;Integrated charts and graphs such as line graphs, bar charts, and pie charts to visualize spending trends and cost distributions.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Data Import/Export Functionality&quot;,
+          &quot;implementation_details&quot;: &quot;Allow users to seamlessly import external data sets and export processed data for further analysis.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Customizable Cost Categories&quot;,
+          &quot;implementation_details&quot;: &quot;Fields that allow the addition or modification of cost categories in line with evolving project needs.&quot;
+        },
+        {
+          &quot;requirement&quot;: &quot;Audit Trail for Data Changes&quot;,
+          &quot;implementation_details&quot;: &quot;Implement a logging feature that records and timestamps changes in key financial figures for accuracy and compliance.&quot;
+        }
+      ]
+    }
+  ],
+  &quot;request&quot;: &quot;I need an HVAC buildout quote template for a strip mall.&quot;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The output is thorough and, though while exhibiting signs of AI-ness, still managages to significantly reinforce the request and improve the outcome.&lt;/p&gt;
 &lt;h2 id=&quot;challenges&quot;&gt;Challenges&lt;/h2&gt;
 &lt;p&gt;While providing additional context and specifications to the LLM should increase outcomes for vague or ambiguous user queries, we need to be mindful of several potential problems: &lt;/p&gt;
 &lt;ol&gt;
