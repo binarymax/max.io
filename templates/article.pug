@@ -14,6 +14,11 @@ block ogtitle
 block ogimage
   meta(name="image", property="og:image", content=tools.image(page.metadata.image,page.url))
   meta(property="twitter:image", content=tools.image(page.metadata.image,page.url))
+  meta(property="og:image:type", content="image/jpeg")
+  if page.metadata.imagewidth
+    meta(property="og:image:width", content=page.metadata.imagewidth)
+    meta(property="og:image:height", content=page.metadata.imageheight)
+
 
 block ogdescription
   meta(name="description", property="og:description", content=tools.description(page.metadata.description))
