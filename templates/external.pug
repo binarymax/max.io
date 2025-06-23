@@ -7,6 +7,9 @@ block append vars
 block prepend title
   | #{ page.title + " - "}
 
+block canonical
+  meta(name="canonical", property="og:url", content=tools.canonical(page.url))
+
 block ogtitle
   meta(property="og:title", content=page.title)
   meta(property="twitter:title", content=page.title)
@@ -24,7 +27,7 @@ block ogdate
   meta(name="article-published_time", property="article:published_time", content=tools.published(page.metadata.date))
   meta(name="article-modified_time", property="article:modified_time", content=tools.published(page.metadata.date))
   meta(name="publish_date", property="og:publish_date", content=tools.published(page.metadata.date))
-  
+
 
 block header
   div.logo

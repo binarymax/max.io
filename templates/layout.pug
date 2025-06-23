@@ -12,7 +12,7 @@ html(lang='en')
       meta(name="viewport", content="width=device-width,initial-scale=1.0")
 
       block canonical
-        meta(name="canonical", content=tools.canonical())
+        meta(name="canonical", property="og:url", content=tools.canonical())
 
       block ogtitle
         meta(name="title", property="og:title", content="maxirwin.com")
@@ -30,7 +30,6 @@ html(lang='en')
         // blank
 
       meta(property="og:type", content="website")
-      meta(property="og:url", content="https://maxirwin.com/")
       meta(property="og:site_name", content="maxirwin.com")
 
       meta(property="twitter:card", content="summary")
