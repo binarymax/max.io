@@ -33,9 +33,6 @@ block header
 
 block content
   article.article
-
-    pre= JSON.stringify(page.metadata,null,2)
-
     section.content!= typogr(page.html).typogrify()
 
 block prepend footer
