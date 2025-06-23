@@ -10,11 +10,18 @@ tools.published = function(datestr) {
 	}
 }
 
+tools.canonical = function(relative) {
+	if(relative) {
+		return `https://maxirwin.com${relative}`;
+	}
+	return "https://maxirwin.com/";
+}
+
 tools.image = function(str,relative) {
 	if(str&&relative) {
 		return `https://maxirwin.com${relative}${str}`;
 	}
-	return str || "https://max.io/star200.png";
+	return str || "https://maxirwin.com/star200.png";
 };
 
 tools.description = function(str) {
