@@ -4,11 +4,15 @@ date: '2025-06-22'
 author: binarymax
 template: article.pug
 tags: [prompting,llm,personas]
+image: card-image.jpg
+imagewidth: 1250
+imageheight: 800
+description: Persona Enriched Prompting is technique to instruct an LLM to generate knowledge about the inferred domain and then generate UX personas for that domain contextual to the problem. Once this context is generated, you use that for final answer generation.
 ---
 
 Approaching prompting from a domain, persona, and user context perspective.  Add some PEP as a step!
 
-For awhile now, I’ve been using a technique that I have developed which I call PEP. In short, you instruct the model to generate knowledge about the inferred domain and then generate UX personas for that domain contextual to the problem. Once this context is generated, only then do you continue on to final answer generation.
+For awhile now, I’ve been using a technique that I have developed which I call __Persona Enriched Prompting__ ("PEP"). With this technique, you instruct the model to generate knowledge about the inferred domain and then generate UX personas for that domain contextual to the problem. Once this context is generated, only then do you continue on to final answer generation.
 
 ## Background
 
@@ -36,7 +40,7 @@ The spreadsheet generated is highly generic, lacking detail, and is not useful t
 
 ### With PEP
 
-Figures 2 through 9 are the different tabs of the spreadsheet generated with PEP, each with contextual detail applicable to the inferred requirements.
+Figures 2 through 9 are the different tabs of the same spreadsheet generated with PEP for the one request, each tab has contextual detail applicable to the inferred requirements.
 
 ![pep-tab-1](pep-1.png)
 
@@ -72,9 +76,9 @@ Figures 2 through 9 are the different tabs of the spreadsheet generated with PEP
 
 As you can see, PEP altered the outcome drastically, providing a much more useful and thorough spreadsheet.
 
-## Why this works
+## Why PEP works
 
-My expertise lies in information retrieval (aka “search”), and I have worked on improving many many retrieval systems since I started this journey back in 2011.  One of the first things you learn when approaching search is that people type vague queries in search bars.  One of the first techniques you apply to improving outcomes is to map out information needs.  Info needs can (and usually should) always be tied to a persona - an example customer profile that describes the motivations behind the search.  This helps us define ways to take the vagueness away from the query.  Let’s illustrate an example.  The query is: “patient injury”
+My expertise lies in information retrieval (aka “search”), and I have worked on improving many many retrieval systems since I started this journey back in 2011.  One of the first things you learn when approaching search is that people type vague queries in search bars.  One of the first techniques you apply to improving outcomes is to map out information needs.  Info needs can (and usually should) be tied to a persona - an example customer profile that describes the motivations behind the search.  This helps us define ways to take the vagueness away from the query.  Let’s illustrate an example.  The query is: “patient injury”
 
 Now what do you think that query means?  It could be lots of things.  So take into account where the query is found:
 
@@ -90,19 +94,16 @@ To recap: When a user query for a generative system or agent is vague, we have t
 
 ## Pre-work
 
-Identify the website or product or scenario for which the application is built.  This can be broad (“generates an excel file”) or narrow (“an e-commerce website”).
+Identify the website or product or scenario for which the agent tool applies.  This can be broad (“generates an excel file”) or narrow (“an e-commerce website”).
 
 Gather a comprehensive description about this domain context.  This yields the domain value.  The domain should be at least one paragraph, perhaps more.  It is the full high-level description of the system in place.
 
 Importantly, the domain is either wholly provided by the designer of the system, or is obtained by acquiring primary source content and generating one using a custom RAG prompt.
 
-Step 1: accept the query or user prompt
-
-Step 2: Provide the domain and the query to a persona identification prompt template to yield persona. The persona is an expanded description of the UX scenario and background from which the user is approaching the tool being used.
-
-Step 3: Provide the domain, persona, and query to the information need prompt template to yield specification.  The specification is the set of needs from the persona’s perspective on exactly what they are looking for, and why.  Consider this the fully expanded version of the original query, incorporating all the domain and persona details we have previously discovered.
-
-Step 4: Execute the task!  Provide the domain, persona, query, and specification to generate the final result.  Previous to PEP, the original user query would have been provided here alone.
+   - Step 1: accept the query or user prompt
+   - Step 2: Provide the domain and the query to a persona identification prompt template to yield persona. The persona is an expanded description of the UX scenario and background from which the user is approaching the tool being used.
+   - Step 3: Provide the domain, persona, and query to the information need prompt template to yield specification.  The specification is the set of needs from the persona’s perspective on exactly what they are looking for, and why.  Consider this the fully expanded version of the original query, incorporating all the domain and persona details we have previously discovered.
+   - Step 4: Execute the task!  Provide the domain, persona, query, and specification to generate the final result.  Previous to PEP, the original user query would have been provided here alone.
 
 ## Application
 
@@ -112,7 +113,7 @@ As an implementation detail, each prompt template in all the steps is applicatio
 
 ## Example Template and Schema
 
-For the excel generator above, I used the following prompt and structure output json-schema to generate the specification.  This accepts the user `request` value (for example `I need an HVAC buildout quote template for a strip mall.`) in a simple form field or chat, and renders the prompt before passing it to the LLM.
+For the excel generator above, I used the following prompt and structure output json-schema to generate the specification.  This accepts the user `request` value (for example "*I need an HVAC buildout quote template for a strip mall.*") in a simple form field or chat, and renders the prompt before passing it to the LLM.
 
 ```markdown
 # Excel Requirements Specification
