@@ -8,13 +8,15 @@
     <meta name="canonical" content="https://maxirwin.com">
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <meta property="og:title" content="Porting a Numpy neural network to Torch">
+    <meta name="title" property="og:title" content="Porting a Numpy neural network to Torch">
     <meta property="twitter:title" content="Porting a Numpy neural network to Torch">
     <meta name="image" property="og:image" content="https://max.io/star200.png">
     <meta property="twitter:image" content="https://max.io/star200.png">
-    <meta name="description" content="">
-    <meta property="og:description" content="">
+    <meta name="description" property="og:description" content="">
     <meta property="twitter:description" content="">
+    <meta name="article-published_time" property="article:published_time" content="2016-02-15T00:00:00.000Z">
+    <meta name="article-modified_time" property="article:modified_time" content="2016-02-15T00:00:00.000Z">
+    <meta name="publish_date" property="og:publish_date" content="2016-02-15T00:00:00.000Z">
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://maxirwin.com/">
     <meta property="og:site_name" content="maxirwin.com">
@@ -50,6 +52,19 @@
     <div id="content">
       <div class="content-wrap">
         <article class="article">
+          <pre>{
+  &quot;title&quot;: &quot;Porting a Numpy neural network to Torch&quot;,
+  &quot;date&quot;: &quot;2016-02-15&quot;,
+  &quot;author&quot;: &quot;binarymax&quot;,
+  &quot;template&quot;: &quot;article.pug&quot;,
+  &quot;tags&quot;: [
+    &quot;code&quot;,
+    &quot;lua&quot;,
+    &quot;python&quot;,
+    &quot;numpy&quot;,
+    &quot;torch&quot;
+  ]
+}</pre>
           <section class="content"><p>This article outlines the process for porting Andrew Trask’s (aka IAmTrask) 11-line neural network[1] from Numpy (Python) to Torch&nbsp;(Lua).</p>
 <p>I’ve documented my progress here, for those who are interested in learning about Torch and Numpy and their differences.  As I started from scratch I hope this can prove useful to others who get stuck or need&nbsp;guidance.  </p>
 <hr>
