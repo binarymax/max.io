@@ -94,38 +94,40 @@ Importantly, the domain is either wholly provided by the designer of the system,
 
 PEP is a general technique, and can be applied to any existing generative or agentic system as a feature expansion of the existing system.  Simply replace the basic generation from the original query with the pre-work and steps provided above.
 
+![PEP workflow](pep-flow.png)
+
 As an implementation detail, each prompt template in all the steps is application specific.  You should craft these templates to derive the context values in each step to best fit your product and user goals.  For example, a set of prompt templates for automated relevance judgements will be very different than a set of prompt templates for excel document generation. 
 
 ## Example Template and Schema
 
 For the excel generator above, I used the following prompt and structure output json-schema to generate the specification.  This accepts the user `request` value (for example "*I need an HVAC buildout quote template for a strip mall.*") in a simple form field or chat, and renders the prompt before passing it to the LLM.
 
-```markdown
-# Excel Requirements Specification
+<div style="background-color:rgba(0,0,0,0.1);font-family: sans-serif;font-size:0.8em;padding:10px;line-height: 1.1em;">
+<strong># Excel Requirements Specification</strong>
 
 You are an business analyst whose job it is to read a vague request for an excel spreadsheet and create a comprehensive specification. You are the best at this, because you are thorough, consistent, and always do more than needed. You are a self-starter and go above and beyond to deliver comprehensive, accurate, and reliable specifications. You will be given a vague request for a spreadsheet.
 
-# Domain Driven Analysis
+<strong># Domain Driven Analysis</strong>
 
 When writing the requirements, you need to think step-by-step on what the potential requirements must be. You do this by (1) describing the background/market/domain of the user request, (2) enumerating the personas and UX details for that domain, and then (3) describing all the possible fields, data, sheets as comprehensive requirements for an excel workbook catering to these personas. You are able to do this all by looking at a simple request for an excel workbook.
 
-## Information Needs
+<strong>## Information Needs</strong>
 
 Along with summarizing a domain and personas, you are also responsible researching how to fulfill the needs for personas that require the solution. Specifically, you are good at understanding and empathizing with a persona, and imagining why they would be using a spreadsheet to fulfill their information needs. You also understand that when users request a workbook, they are typically typing short and often requests in haste. You have a knack for enumerating through all the possible things someone would need, based on their inferred context, and creating the solution. It is your job to understand the domain and write as many possible requirements as would conceivably exist first, and then once you have written those requirements are you then to proceed writing the code.
 
-## User Request
+<strong>## User Request</strong>
 
 The following is the user request for the excel workbook
 
-<%-request%>
+&lt;%-request%&gt;
 
-# Instructions
+<strong># Instructions</strong>
 
- - Read the above carefully
- - Write the industry/market/domain description of the request
- - Write the list of personas and their details
- - Write the comprehensive excel specifications based on the personas information needs
-```
+ <br>- Read the above carefully
+ <br>- Write the industry/market/domain description of the request
+ <br>- Write the list of personas and their details
+ <br>- Write the comprehensive excel specifications based on the personas information needs
+</div>
 
 This is the schema used in a structured output call for the above prompt:
 
@@ -183,7 +185,7 @@ The above template and schema were tailored specifically for the excel generator
 
 ### Example output
 
-This is the output example using the the above templates for the user query *"I need an HVAC buildout quote template for a strip mall."*
+This is the output example using the the above templates for the user query "*I need an HVAC buildout quote template for a strip mall.*"
 
 ```json
 {
@@ -450,7 +452,13 @@ This is the output example using the the above templates for the user query *"I 
 }
 ```
 
-The output is thorough and, though while exhibiting signs of AI-ness, still managages to significantly reinforce the request and improve the outcome.
+The output is thorough and, while exhibiting signs of AI-ness, still managages to significantly reinforce the request and improve the outcome.
+
+Here's how the above would be used, with a modified PEP workflow, tailored to an excel generator application.
+
+![PEP workflow excel](pep-flow-excel.png)
+
+Adoption is straightforward for existing systems and will improve outcomes for vague requests.
 
 ## Challenges
 

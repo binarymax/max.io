@@ -68,33 +68,28 @@
 &lt;/ul&gt;
 &lt;h2 id=&quot;application&quot;&gt;Application&lt;/h2&gt;
 &lt;p&gt;PEP is a general technique, and can be applied to any existing generative or agentic system as a feature expansion of the existing system.  Simply replace the basic generation from the original query with the pre-work and steps provided above.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-flow.png&quot; alt=&quot;PEP workflow&quot;&gt;&lt;/p&gt;
 &lt;p&gt;As an implementation detail, each prompt template in all the steps is application specific.  You should craft these templates to derive the context values in each step to best fit your product and user goals.  For example, a set of prompt templates for automated relevance judgements will be very different than a set of prompt templates for excel document generation. &lt;/p&gt;
 &lt;h2 id=&quot;example-template-and-schema&quot;&gt;Example Template and Schema&lt;/h2&gt;
 &lt;p&gt;For the excel generator above, I used the following prompt and structure output json-schema to generate the specification.  This accepts the user &lt;code&gt;request&lt;/code&gt; value (for example “&lt;em&gt;I need an HVAC buildout quote template for a strip mall.&lt;/em&gt;“) in a simple form field or chat, and renders the prompt before passing it to the LLM.&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-markdown&quot;&gt;&lt;span class=&quot;section&quot;&gt;# Excel Requirements Specification&lt;/span&gt;
+&lt;div style=&quot;background-color:rgba(0,0,0,0.1);font-family: sans-serif;font-size:0.8em;padding:10px;line-height: 1.1em;&quot;&gt;
+&lt;strong&gt;# Excel Requirements Specification&lt;/strong&gt;
 
-You are an business analyst whose job it is to read a vague request for an excel spreadsheet and create a comprehensive specification. You are the best at this, because you are thorough, consistent, and always do more than needed. You are a self-starter and go above and beyond to deliver comprehensive, accurate, and reliable specifications. You will be given a vague request for a spreadsheet.
+&lt;p&gt;You are an business analyst whose job it is to read a vague request for an excel spreadsheet and create a comprehensive specification. You are the best at this, because you are thorough, consistent, and always do more than needed. You are a self-starter and go above and beyond to deliver comprehensive, accurate, and reliable specifications. You will be given a vague request for a spreadsheet.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;# Domain Driven Analysis&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;When writing the requirements, you need to think step-by-step on what the potential requirements must be. You do this by (1) describing the background/market/domain of the user request, (2) enumerating the personas and UX details for that domain, and then (3) describing all the possible fields, data, sheets as comprehensive requirements for an excel workbook catering to these personas. You are able to do this all by looking at a simple request for an excel workbook.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;## Information Needs&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;Along with summarizing a domain and personas, you are also responsible researching how to fulfill the needs for personas that require the solution. Specifically, you are good at understanding and empathizing with a persona, and imagining why they would be using a spreadsheet to fulfill their information needs. You also understand that when users request a workbook, they are typically typing short and often requests in haste. You have a knack for enumerating through all the possible things someone would need, based on their inferred context, and creating the solution. It is your job to understand the domain and write as many possible requirements as would conceivably exist first, and then once you have written those requirements are you then to proceed writing the code.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;## User Request&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt;The following is the user request for the excel workbook&lt;/p&gt;
+&lt;p&gt;&amp;lt;%-request%&amp;gt;&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;# Instructions&lt;/strong&gt;&lt;/p&gt;
+&lt;p&gt; &lt;br&gt;- Read the above carefully
+ &lt;br&gt;- Write the industry/market/domain description of the request
+ &lt;br&gt;- Write the list of personas and their details
+ &lt;br&gt;- Write the comprehensive excel specifications based on the personas information needs&lt;/p&gt;
+&lt;/div&gt;
 
-&lt;span class=&quot;section&quot;&gt;# Domain Driven Analysis&lt;/span&gt;
-
-When writing the requirements, you need to think step-by-step on what the potential requirements must be. You do this by (1) describing the background/market/domain of the user request, (2) enumerating the personas and UX details for that domain, and then (3) describing all the possible fields, data, sheets as comprehensive requirements for an excel workbook catering to these personas. You are able to do this all by looking at a simple request for an excel workbook.
-
-&lt;span class=&quot;section&quot;&gt;## Information Needs&lt;/span&gt;
-
-Along with summarizing a domain and personas, you are also responsible researching how to fulfill the needs for personas that require the solution. Specifically, you are good at understanding and empathizing with a persona, and imagining why they would be using a spreadsheet to fulfill their information needs. You also understand that when users request a workbook, they are typically typing short and often requests in haste. You have a knack for enumerating through all the possible things someone would need, based on their inferred context, and creating the solution. It is your job to understand the domain and write as many possible requirements as would conceivably exist first, and then once you have written those requirements are you then to proceed writing the code.
-
-&lt;span class=&quot;section&quot;&gt;## User Request&lt;/span&gt;
-
-The following is the user request for the excel workbook
-
-&lt;span class=&quot;xml&quot;&gt;&lt;span class=&quot;tag&quot;&gt;&amp;lt;&lt;span class=&quot;name&quot;&gt;%-request%&lt;/span&gt;&amp;gt;&lt;/span&gt;&lt;/span&gt;
-
-&lt;span class=&quot;section&quot;&gt;# Instructions&lt;/span&gt;
-&lt;span class=&quot;bullet&quot;&gt;
- - &lt;/span&gt;Read the above carefully
-&lt;span class=&quot;bullet&quot;&gt; - &lt;/span&gt;Write the industry/market/domain description of the request
-&lt;span class=&quot;bullet&quot;&gt; - &lt;/span&gt;Write the list of personas and their details
-&lt;span class=&quot;bullet&quot;&gt; - &lt;/span&gt;Write the comprehensive excel specifications based on the personas information needs&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This is the schema used in a structured output call for the above prompt:&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;{
   &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;excel_requirements&quot;&lt;/span&gt;,
@@ -144,7 +139,7 @@ The following is the user request for the excel workbook
 &lt;p&gt;The above template and schema were tailored specifically for the excel generator tool in the application context, but you can easily adapt them to your own needs.&lt;/p&gt;
 &lt;p&gt;&lt;em&gt;Note, that since I was using an o-series pseudoreasoning model, I do not need to explicitly request chain-of-thought as this is already covered by the model internals.&lt;/em&gt;&lt;/p&gt;
 &lt;h3 id=&quot;example-output&quot;&gt;Example output&lt;/h3&gt;
-&lt;p&gt;This is the output example using the the above templates for the user query *”I need an HVAC buildout quote template for a strip mall.”*&lt;/p&gt;
+&lt;p&gt;This is the output example using the the above templates for the user query “&lt;em&gt;I need an HVAC buildout quote template for a strip mall.&lt;/em&gt;“&lt;/p&gt;
 &lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;{
   &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;HVAC Buildout Quote Template for Strip Mall&quot;&lt;/span&gt;,
   &lt;span class=&quot;attr&quot;&gt;&quot;domain&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Construction/Commercial HVAC | This template is designed for creating detailed buildout quotes for HVAC systems in strip malls. It encompasses comprehensive cost estimations including labor, materials, permits, equipment, and inspections required for the setup, and provides interactive tools to support detailed financial analysis and project management.&quot;&lt;/span&gt;,
@@ -407,7 +402,10 @@ The following is the user request for the excel workbook
   ],
   &lt;span class=&quot;attr&quot;&gt;&quot;request&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;I need an HVAC buildout quote template for a strip mall.&quot;&lt;/span&gt;
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The output is thorough and, though while exhibiting signs of AI-ness, still managages to significantly reinforce the request and improve the outcome.&lt;/p&gt;
+&lt;p&gt;The output is thorough and, while exhibiting signs of AI-ness, still managages to significantly reinforce the request and improve the outcome.&lt;/p&gt;
+&lt;p&gt;Here’s how the above would be used, with a modified PEP workflow, tailored to an excel generator application.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/persona-enriched-prompting/pep-flow-excel.png&quot; alt=&quot;PEP workflow excel&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Adoption is straightforward for existing systems and will improve outcomes for vague requests.&lt;/p&gt;
 &lt;h2 id=&quot;challenges&quot;&gt;Challenges&lt;/h2&gt;
 &lt;p&gt;While providing additional context and specifications to the LLM should increase outcomes for vague or ambiguous user queries, we need to be mindful of several potential problems: &lt;/p&gt;
 &lt;ol&gt;
