@@ -187,6 +187,7 @@ The above template and schema were tailored specifically for the excel generator
 
 This is the output example using the the above templates for the user query "*I need an HVAC buildout quote template for a strip mall.*"
 
+<!--
 ```json
 {
   "name": "HVAC Buildout Quote Template for Strip Mall",
@@ -451,6 +452,7 @@ This is the output example using the the above templates for the user query "*I 
   "request": "I need an HVAC buildout quote template for a strip mall."
 }
 ```
+-->
 
 <div id="personacards" style="font-size:0.8rem;border:1px solid #000;padding:5px;"></div>
 <script>

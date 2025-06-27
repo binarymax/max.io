@@ -180,268 +180,273 @@
 <p><em>Note, that since I was using an o-series pseudoreasoning model, I do not need to explicitly request chain-of-thought as this is already covered by the model&nbsp;internals.</em></p>
 <h3 id="example-output">Example&nbsp;output</h3>
 <p>This is the output example using the the above templates for the user query “<em>I need an <span class="caps">HVAC</span> buildout quote template for a strip mall.</em>“</p>
-<pre><code class="language-json">{
-  <span class="attr">"name"</span>: <span class="string">"<span class="caps">HVAC</span> Buildout Quote Template for Strip Mall"</span>,
-  <span class="attr">"domain"</span>: <span class="string">"Construction/Commercial <span class="caps">HVAC</span> | This template is designed for creating detailed buildout quotes for HVAC systems in strip malls. It encompasses comprehensive cost estimations including labor, materials, permits, equipment, and inspections required for the setup, and provides interactive tools to support detailed financial analysis and project management."</span>,
-  <span class="attr">"personas"</span>: [
+<!--
+```json
+{
+  "name": "HVAC Buildout Quote Template for Strip Mall",
+  "domain": "Construction/Commercial HVAC | This template is designed for creating detailed buildout quotes for HVAC systems in strip malls. It encompasses comprehensive cost estimations including labor, materials, permits, equipment, and inspections required for the setup, and provides interactive tools to support detailed financial analysis and project management.",
+  "personas": [
     {
-      <span class="attr">"name"</span>: <span class="string">"<span class="caps">HVAC</span> Estimator"</span>,
-      <span class="attr">"background"</span>: <span class="string">"An experienced <span class="caps">HVAC</span> professional specializing in cost estimation and technical planning."</span>,
-      <span class="attr">"role"</span>: <span class="string">"Cost Estimator"</span>,
-      <span class="attr">"responsibilities"</span>: <span class="string">"Accurately calculate detailed costs for both materials and labor, and ensure all technical specifications are met in line with project requirements."</span>,
-      <span class="attr">"goals"</span>: <span class="string">"Deliver highly accurate estimates that reflect all cost variables to secure profitable project bids."</span>,
-      <span class="attr">"motivation"</span>: <span class="string">"Efficient and accurate quoting minimizes rework and enhances competitiveness in bidding processes."</span>,
-      <span class="attr">"pain_points"</span>: <span class="string">"Struggles with consolidating various cost data, potential oversight of hidden costs, and keeping estimations up-to-date with market price changes."</span>,
-      <span class="attr">"requirements"</span>: [
+      "name": "HVAC Estimator",
+      "background": "An experienced HVAC professional specializing in cost estimation and technical planning.",
+      "role": "Cost Estimator",
+      "responsibilities": "Accurately calculate detailed costs for both materials and labor, and ensure all technical specifications are met in line with project requirements.",
+      "goals": "Deliver highly accurate estimates that reflect all cost variables to secure profitable project bids.",
+      "motivation": "Efficient and accurate quoting minimizes rework and enhances competitiveness in bidding processes.",
+      "pain_points": "Struggles with consolidating various cost data, potential oversight of hidden costs, and keeping estimations up-to-date with market price changes.",
+      "requirements": [
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Building Information Sheet"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Include fields for property dimensions, location specifics, and building layout details to inform overall project requirements."</span>
+          "requirement": "Building Information Sheet",
+          "implementation_details": "Include fields for property dimensions, location specifics, and building layout details to inform overall project requirements."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Material Cost Breakdown"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Separate sections for <span class="caps">HVAC</span> equipment, ductwork, controls, and refrigerants with dynamic lookup tables for material prices."</span>
+          "requirement": "Material Cost Breakdown",
+          "implementation_details": "Separate sections for HVAC equipment, ductwork, controls, and refrigerants with dynamic lookup tables for material prices."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Labor Cost Estimator"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Calculation modules for on-site labor costs, installation durations, and overtime rates, integrating local wage data."</span>
+          "requirement": "Labor Cost Estimator",
+          "implementation_details": "Calculation modules for on-site labor costs, installation durations, and overtime rates, integrating local wage data."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Installation <span class="amp">&amp;</span> Equipment Markup"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Fields to apply adjustable percentage markups on labor and material costs with real-time calculation updates."</span>
+          "requirement": "Installation & Equipment Markup",
+          "implementation_details": "Fields to apply adjustable percentage markups on labor and material costs with real-time calculation updates."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Permit and Inspection Fees"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Dedicated fields to input and calculate municipal permitting, inspection, and licensing fees."</span>
+          "requirement": "Permit and Inspection Fees",
+          "implementation_details": "Dedicated fields to input and calculate municipal permitting, inspection, and licensing fees."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Contingency Reserve Calculation"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Section that allows entry of a contingency percentage to cover unforeseen expenses based on project size."</span>
+          "requirement": "Contingency Reserve Calculation",
+          "implementation_details": "Section that allows entry of a contingency percentage to cover unforeseen expenses based on project size."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Tax and Insurance Calculations"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Automatic formulas for computing local taxes and insurance premiums related to the buildout."</span>
+          "requirement": "Tax and Insurance Calculations",
+          "implementation_details": "Automatic formulas for computing local taxes and insurance premiums related to the buildout."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Unit Cost Analysis"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Breakdowns of costs per unit (e.g., per square foot or per duct length) to assist with scalability of estimates."</span>
+          "requirement": "Unit Cost Analysis",
+          "implementation_details": "Breakdowns of costs per unit (e.g., per square foot or per duct length) to assist with scalability of estimates."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Dynamic Cost Summary Dashboard"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Interactive charts and summary tables that update automatically to reflect changes in cost inputs."</span>
+          "requirement": "Dynamic Cost Summary Dashboard",
+          "implementation_details": "Interactive charts and summary tables that update automatically to reflect changes in cost inputs."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Historical Data Reference"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Section for comparing current estimates with past project data to improve forecast accuracy."</span>
+          "requirement": "Historical Data Reference",
+          "implementation_details": "Section for comparing current estimates with past project data to improve forecast accuracy."
         }
       ]
     },
     {
-      <span class="attr">"name"</span>: <span class="string">"Project Manager"</span>,
-      <span class="attr">"background"</span>: <span class="string">"An experienced professional in overseeing large-scale construction and <span class="caps">HVAC</span> projects ensuring timelines and budgets are met."</span>,
-      <span class="attr">"role"</span>: <span class="string">"Project Manager"</span>,
-      <span class="attr">"responsibilities"</span>: <span class="string">"Coordinate project timelines, budgets, and resources while maintaining communication between stakeholders and ensuring compliance with established milestones."</span>,
-      <span class="attr">"goals"</span>: <span class="string">"Maintain projects on schedule and within budget while effectively managing and mitigating risks."</span>,
-      <span class="attr">"motivation"</span>: <span class="string">"Efficient project tracking and budgeting ensure smoother project execution and higher stakeholder satisfaction."</span>,
-      <span class="attr">"pain_points"</span>: <span class="string">"Difficulty in tracking simultaneous cost updates, managing change orders, and integrating various data sources into coherent progress reports."</span>,
-      <span class="attr">"requirements"</span>: [
+      "name": "Project Manager",
+      "background": "An experienced professional in overseeing large-scale construction and HVAC projects ensuring timelines and budgets are met.",
+      "role": "Project Manager",
+      "responsibilities": "Coordinate project timelines, budgets, and resources while maintaining communication between stakeholders and ensuring compliance with established milestones.",
+      "goals": "Maintain projects on schedule and within budget while effectively managing and mitigating risks.",
+      "motivation": "Efficient project tracking and budgeting ensure smoother project execution and higher stakeholder satisfaction.",
+      "pain_points": "Difficulty in tracking simultaneous cost updates, managing change orders, and integrating various data sources into coherent progress reports.",
+      "requirements": [
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Timeline <span class="amp">&amp;</span> Milestone Tracker"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A dedicated sheet to capture project phases, key dates, milestones, and task dependencies with automated date alerts."</span>
+          "requirement": "Timeline & Milestone Tracker",
+          "implementation_details": "A dedicated sheet to capture project phases, key dates, milestones, and task dependencies with automated date alerts."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Budget Overview Summary"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"An aggregated dashboard that provides a consolidated view of all cost components and compares actual versus planned budgets."</span>
+          "requirement": "Budget Overview Summary",
+          "implementation_details": "An aggregated dashboard that provides a consolidated view of all cost components and compares actual versus planned budgets."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Vendor and Supplier Database"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A section to store and track vendor details, contact information, and contractual terms for easy reference."</span>
+          "requirement": "Vendor and Supplier Database",
+          "implementation_details": "A section to store and track vendor details, contact information, and contractual terms for easy reference."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Change Order Log"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A log that captures every change request along with cost implications and approval statuses."</span>
+          "requirement": "Change Order Log",
+          "implementation_details": "A log that captures every change request along with cost implications and approval statuses."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Risk and Issue Register"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A register to record potential risks, current issues, impact assessments, and mitigation plans."</span>
+          "requirement": "Risk and Issue Register",
+          "implementation_details": "A register to record potential risks, current issues, impact assessments, and mitigation plans."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Interactive Project Status Dashboard"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Visual summaries with charts showing progress, cost burn rate, and schedule adherence updated in real-time."</span>
+          "requirement": "Interactive Project Status Dashboard",
+          "implementation_details": "Visual summaries with charts showing progress, cost burn rate, and schedule adherence updated in real-time."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Resource Allocation Table"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A detailed grid to assign labor, track man-hours and monitor subcontractor engagements."</span>
+          "requirement": "Resource Allocation Table",
+          "implementation_details": "A detailed grid to assign labor, track man-hours and monitor subcontractor engagements."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Reporting and Export Features"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Preformatted report templates that can be exported as <span class="caps">PDF</span> or printed for stakeholder update meetings."</span>
+          "requirement": "Reporting and Export Features",
+          "implementation_details": "Preformatted report templates that can be exported as PDF or printed for stakeholder update meetings."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Milestone Cost Tracking"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Link specific budget entries to project milestones to track expenditure distribution over time."</span>
+          "requirement": "Milestone Cost Tracking",
+          "implementation_details": "Link specific budget entries to project milestones to track expenditure distribution over time."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"What-if Scenario Simulation"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Tool to simulate changes in cost or schedule variables to assess potential project impacts."</span>
+          "requirement": "What-if Scenario Simulation",
+          "implementation_details": "Tool to simulate changes in cost or schedule variables to assess potential project impacts."
         }
       ]
     },
     {
-      <span class="attr">"name"</span>: <span class="string">"Sales Engineer"</span>,
-      <span class="attr">"background"</span>: <span class="string">"Technically proficient with a strong sales orientation, adept at communicating product value and technical details to clients."</span>,
-      <span class="attr">"role"</span>: <span class="string">"Sales Engineer"</span>,
-      <span class="attr">"responsibilities"</span>: <span class="string">"Develop persuasive and client-customized quotes that align technical specifications with clear financial breakdowns."</span>,
-      <span class="attr">"goals"</span>: <span class="string">"Convert leads into contracts by providing clear, detailed, and client-friendly <span class="caps">HVAC</span> buildout quotes."</span>,
-      <span class="attr">"motivation"</span>: <span class="string">"Enhanced ability to tailor quotes to client needs drives higher conversion rates and customer satisfaction."</span>,
-      <span class="attr">"pain_points"</span>: <span class="string">"Balancing the level of technical detail with ease of understanding for clients and rapidly adjusting pricing during negotiations."</span>,
-      <span class="attr">"requirements"</span>: [
+      "name": "Sales Engineer",
+      "background": "Technically proficient with a strong sales orientation, adept at communicating product value and technical details to clients.",
+      "role": "Sales Engineer",
+      "responsibilities": "Develop persuasive and client-customized quotes that align technical specifications with clear financial breakdowns.",
+      "goals": "Convert leads into contracts by providing clear, detailed, and client-friendly HVAC buildout quotes.",
+      "motivation": "Enhanced ability to tailor quotes to client needs drives higher conversion rates and customer satisfaction.",
+      "pain_points": "Balancing the level of technical detail with ease of understanding for clients and rapidly adjusting pricing during negotiations.",
+      "requirements": [
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Client Information Section"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Fields to capture client name, contact details, project location, and specific client requirements for personalized quoting."</span>
+          "requirement": "Client Information Section",
+          "implementation_details": "Fields to capture client name, contact details, project location, and specific client requirements for personalized quoting."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Quote Customization Options"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Features that allow adding company branding elements, adjustable color schemes, and formatting options for client presentations."</span>
+          "requirement": "Quote Customization Options",
+          "implementation_details": "Features that allow adding company branding elements, adjustable color schemes, and formatting options for client presentations."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Technical Specifications Sheet"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A detailed section outlining technical requirements, system specifications, and compliance standards."</span>
+          "requirement": "Technical Specifications Sheet",
+          "implementation_details": "A detailed section outlining technical requirements, system specifications, and compliance standards."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Pricing Modification Module"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Interactive fields that allow on-the-fly adjustments of labor and material costs to reflect negotiated discounts or value-adds."</span>
+          "requirement": "Pricing Modification Module",
+          "implementation_details": "Interactive fields that allow on-the-fly adjustments of labor and material costs to reflect negotiated discounts or value-adds."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Interactive Quoting Tool"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Real-time calculator that updates quotes as clients choose different options and configurations."</span>
+          "requirement": "Interactive Quoting Tool",
+          "implementation_details": "Real-time calculator that updates quotes as clients choose different options and configurations."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Standardized Proposal Format"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A pre-designed layout that integrates detailed quotes with professional design for ease of printing or digital delivery."</span>
+          "requirement": "Standardized Proposal Format",
+          "implementation_details": "A pre-designed layout that integrates detailed quotes with professional design for ease of printing or digital delivery."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Alternative Proposal Templates"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Ability to generate multiple versions of quotes that highlight different configurations or cost-saving options."</span>
+          "requirement": "Alternative Proposal Templates",
+          "implementation_details": "Ability to generate multiple versions of quotes that highlight different configurations or cost-saving options."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Revision and Commentary Log"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A section for tracking revisions, client feedback, and internal notes to maintain a history of changes."</span>
+          "requirement": "Revision and Commentary Log",
+          "implementation_details": "A section for tracking revisions, client feedback, and internal notes to maintain a history of changes."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Pricing Assumptions Documentation"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Fields to document assumptions behind cost estimates, including labor rates, material prices, and market factors."</span>
+          "requirement": "Pricing Assumptions Documentation",
+          "implementation_details": "Fields to document assumptions behind cost estimates, including labor rates, material prices, and market factors."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Visual Cost Distribution Charts"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Integrated charts and graphs that visually represent the cost breakdown and highlight key pricing drivers."</span>
+          "requirement": "Visual Cost Distribution Charts",
+          "implementation_details": "Integrated charts and graphs that visually represent the cost breakdown and highlight key pricing drivers."
         }
       ]
     },
     {
-      <span class="attr">"name"</span>: <span class="string">"Business Owner / Developer"</span>,
-      <span class="attr">"background"</span>: <span class="string">"Senior decision-maker responsible for overall project feasibility, strategic investments, and final approvals."</span>,
-      <span class="attr">"role"</span>: <span class="string">"Business Owner / Developer"</span>,
-      <span class="attr">"responsibilities"</span>: <span class="string">"Evaluate the financial and operational viability of projects, monitor overall project expenditures, and make high-level strategic decisions."</span>,
-      <span class="attr">"goals"</span>: <span class="string">"Quickly assess project viability through clear, summarized financial information and strategic risk insights."</span>,
-      <span class="attr">"motivation"</span>: <span class="string">"Clear, consolidated data allows for faster, more informed decision-making which can lead to improved project outcomes."</span>,
-      <span class="attr">"pain_points"</span>: <span class="string">"Overly technical details can be overwhelming, and inconsistent summary data may lead to decision delays."</span>,
-      <span class="attr">"requirements"</span>: [
+      "name": "Business Owner / Developer",
+      "background": "Senior decision-maker responsible for overall project feasibility, strategic investments, and final approvals.",
+      "role": "Business Owner / Developer",
+      "responsibilities": "Evaluate the financial and operational viability of projects, monitor overall project expenditures, and make high-level strategic decisions.",
+      "goals": "Quickly assess project viability through clear, summarized financial information and strategic risk insights.",
+      "motivation": "Clear, consolidated data allows for faster, more informed decision-making which can lead to improved project outcomes.",
+      "pain_points": "Overly technical details can be overwhelming, and inconsistent summary data may lead to decision delays.",
+      "requirements": [
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Executive Summary Sheet"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A one-page comprehensive overview covering total estimated costs, <span class="caps">ROI</span>, project duration and risk assessments."</span>
+          "requirement": "Executive Summary Sheet",
+          "implementation_details": "A one-page comprehensive overview covering total estimated costs, ROI, project duration and risk assessments."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Integrated Financial Dashboard"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Visual dashboard with key metrics such as total cost, cost breakdown, margins, and profitability analysis."</span>
+          "requirement": "Integrated Financial Dashboard",
+          "implementation_details": "Visual dashboard with key metrics such as total cost, cost breakdown, margins, and profitability analysis."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Cost Category Breakdown"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Distinct visualization of labor, material, permit, and contingency costs for rapid assessment."</span>
+          "requirement": "Cost Category Breakdown",
+          "implementation_details": "Distinct visualization of labor, material, permit, and contingency costs for rapid assessment."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"<span class="caps">ROI</span> and Profitability Calculator"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Interactive tool to calculate profit margins, return on investment and breakeven analysis based on current estimates."</span>
+          "requirement": "ROI and Profitability Calculator",
+          "implementation_details": "Interactive tool to calculate profit margins, return on investment and breakeven analysis based on current estimates."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Historical Comparison Feature"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Option to compare current estimates with historical projects to evaluate pricing trends and performance."</span>
+          "requirement": "Historical Comparison Feature",
+          "implementation_details": "Option to compare current estimates with historical projects to evaluate pricing trends and performance."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Risk Assessment Overview"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"A dedicated section summarizing potential project risks alongside mitigation strategies and financial impact."</span>
+          "requirement": "Risk Assessment Overview",
+          "implementation_details": "A dedicated section summarizing potential project risks alongside mitigation strategies and financial impact."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Exportable Reports"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Ability to export high-level dashboards and summaries into <span class="caps">PDF</span> or other presentation formats for board meetings."</span>
+          "requirement": "Exportable Reports",
+          "implementation_details": "Ability to export high-level dashboards and summaries into PDF or other presentation formats for board meetings."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Scenario Analysis Tools"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Modules that allow tweaking of key parameters (like markups and contingencies) to forecast different financial outcomes."</span>
+          "requirement": "Scenario Analysis Tools",
+          "implementation_details": "Modules that allow tweaking of key parameters (like markups and contingencies) to forecast different financial outcomes."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"User-Friendly Navigation"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Intuitive tab-based layout with clear labeling for quick navigation across detailed and summary sheets."</span>
+          "requirement": "User-Friendly Navigation",
+          "implementation_details": "Intuitive tab-based layout with clear labeling for quick navigation across detailed and summary sheets."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Automated Alert System"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Conditional formatting and notifications for cost deviations or significant changes in project estimates."</span>
+          "requirement": "Automated Alert System",
+          "implementation_details": "Conditional formatting and notifications for cost deviations or significant changes in project estimates."
         }
       ]
     },
     {
-      <span class="attr">"name"</span>: <span class="string">"Financial Analyst"</span>,
-      <span class="attr">"background"</span>: <span class="string">"Specializes in detailed financial modeling, forecasting, and performing sensitivity analyses for cost-efficiency and profitability."</span>,
-      <span class="attr">"role"</span>: <span class="string">"Financial Analyst"</span>,
-      <span class="attr">"responsibilities"</span>: <span class="string">"Analyze detailed cost data, prepare financial projections, and provide insights on cost drivers and overall project viability."</span>,
-      <span class="attr">"goals"</span>: <span class="string">"Ensure the project’s financial viability by presenting data-backed forecasts and performing in-depth cost analyses."</span>,
-      <span class="attr">"motivation"</span>: <span class="string">"Accurate models and detailed breakdowns allow for precise financial forecasting and risk-adjusted decision making, optimizing investment returns."</span>,
-      <span class="attr">"pain_points"</span>: <span class="string">"Inconsistencies in data and a lack of integrated financial models hinder comprehensive financial analysis leading to forecasting errors."</span>,
-      <span class="attr">"requirements"</span>: [
+      "name": "Financial Analyst",
+      "background": "Specializes in detailed financial modeling, forecasting, and performing sensitivity analyses for cost-efficiency and profitability.",
+      "role": "Financial Analyst",
+      "responsibilities": "Analyze detailed cost data, prepare financial projections, and provide insights on cost drivers and overall project viability.",
+      "goals": "Ensure the project’s financial viability by presenting data-backed forecasts and performing in-depth cost analyses.",
+      "motivation": "Accurate models and detailed breakdowns allow for precise financial forecasting and risk-adjusted decision making, optimizing investment returns.",
+      "pain_points": "Inconsistencies in data and a lack of integrated financial models hinder comprehensive financial analysis leading to forecasting errors.",
+      "requirements": [
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Detailed Cost Analysis Sheet"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Section dedicated to drilling down into individual cost components with detailed formulas and breakdowns."</span>
+          "requirement": "Detailed Cost Analysis Sheet",
+          "implementation_details": "Section dedicated to drilling down into individual cost components with detailed formulas and breakdowns."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"What-if Scenario Analysis"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Interactive module to test different variables such as cost increases, labor fluctuations, and delays to forecast financial impacts."</span>
+          "requirement": "What-if Scenario Analysis",
+          "implementation_details": "Interactive module to test different variables such as cost increases, labor fluctuations, and delays to forecast financial impacts."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Historical Data Integration"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Import and compare past project data with current estimates to identify trends and validate assumptions."</span>
+          "requirement": "Historical Data Integration",
+          "implementation_details": "Import and compare past project data with current estimates to identify trends and validate assumptions."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Dynamic Cost Update Mechanism"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Linked formula system that updates cost components across all sheets when input data is modified."</span>
+          "requirement": "Dynamic Cost Update Mechanism",
+          "implementation_details": "Linked formula system that updates cost components across all sheets when input data is modified."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Profit Margin and <span class="caps">NPV</span> Calculations"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Modules to compute profit margins, net present value, and other financial metrics based on input assumptions."</span>
+          "requirement": "Profit Margin and NPV Calculations",
+          "implementation_details": "Modules to compute profit margins, net present value, and other financial metrics based on input assumptions."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Sensitivity Analysis Reports"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Preformatted reports that identify which variables have the highest impact on overall project costs."</span>
+          "requirement": "Sensitivity Analysis Reports",
+          "implementation_details": "Preformatted reports that identify which variables have the highest impact on overall project costs."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Graphical Data Visualization"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Integrated charts and graphs such as line graphs, bar charts, and pie charts to visualize spending trends and cost distributions."</span>
+          "requirement": "Graphical Data Visualization",
+          "implementation_details": "Integrated charts and graphs such as line graphs, bar charts, and pie charts to visualize spending trends and cost distributions."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Data Import/Export Functionality"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Allow users to seamlessly import external data sets and export processed data for further analysis."</span>
+          "requirement": "Data Import/Export Functionality",
+          "implementation_details": "Allow users to seamlessly import external data sets and export processed data for further analysis."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Customizable Cost Categories"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Fields that allow the addition or modification of cost categories in line with evolving project needs."</span>
+          "requirement": "Customizable Cost Categories",
+          "implementation_details": "Fields that allow the addition or modification of cost categories in line with evolving project needs."
         },
         {
-          <span class="attr">"requirement"</span>: <span class="string">"Audit Trail for Data Changes"</span>,
-          <span class="attr">"implementation_details"</span>: <span class="string">"Implement a logging feature that records and timestamps changes in key financial figures for accuracy and compliance."</span>
+          "requirement": "Audit Trail for Data Changes",
+          "implementation_details": "Implement a logging feature that records and timestamps changes in key financial figures for accuracy and compliance."
         }
       ]
     }
   ],
-  <span class="attr">"request"</span>: <span class="string">"I need an <span class="caps">HVAC</span> buildout quote template for a strip mall."</span>
-}</code></pre>
+  "request": "I need an HVAC buildout quote template for a strip mall."
+}
+```
+-->
+
 <div id="personacards" style="font-size:0.8rem;border:1px solid #000;padding:5px;"></div>
 <script>
    (function(){

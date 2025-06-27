@@ -140,268 +140,273 @@
 &lt;p&gt;&lt;em&gt;Note, that since I was using an o-series pseudoreasoning model, I do not need to explicitly request chain-of-thought as this is already covered by the model internals.&lt;/em&gt;&lt;/p&gt;
 &lt;h3 id=&quot;example-output&quot;&gt;Example output&lt;/h3&gt;
 &lt;p&gt;This is the output example using the the above templates for the user query “&lt;em&gt;I need an HVAC buildout quote template for a strip mall.&lt;/em&gt;“&lt;/p&gt;
-&lt;pre&gt;&lt;code class=&quot;language-json&quot;&gt;{
-  &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;HVAC Buildout Quote Template for Strip Mall&quot;&lt;/span&gt;,
-  &lt;span class=&quot;attr&quot;&gt;&quot;domain&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Construction/Commercial HVAC | This template is designed for creating detailed buildout quotes for HVAC systems in strip malls. It encompasses comprehensive cost estimations including labor, materials, permits, equipment, and inspections required for the setup, and provides interactive tools to support detailed financial analysis and project management.&quot;&lt;/span&gt;,
-  &lt;span class=&quot;attr&quot;&gt;&quot;personas&quot;&lt;/span&gt;: [
+&lt;!--
+```json
+{
+  &quot;name&quot;: &quot;HVAC Buildout Quote Template for Strip Mall&quot;,
+  &quot;domain&quot;: &quot;Construction/Commercial HVAC | This template is designed for creating detailed buildout quotes for HVAC systems in strip malls. It encompasses comprehensive cost estimations including labor, materials, permits, equipment, and inspections required for the setup, and provides interactive tools to support detailed financial analysis and project management.&quot;,
+  &quot;personas&quot;: [
     {
-      &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;HVAC Estimator&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;background&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;An experienced HVAC professional specializing in cost estimation and technical planning.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;role&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Cost Estimator&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;responsibilities&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Accurately calculate detailed costs for both materials and labor, and ensure all technical specifications are met in line with project requirements.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;goals&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Deliver highly accurate estimates that reflect all cost variables to secure profitable project bids.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;motivation&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Efficient and accurate quoting minimizes rework and enhances competitiveness in bidding processes.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;pain_points&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Struggles with consolidating various cost data, potential oversight of hidden costs, and keeping estimations up-to-date with market price changes.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;requirements&quot;&lt;/span&gt;: [
+      &quot;name&quot;: &quot;HVAC Estimator&quot;,
+      &quot;background&quot;: &quot;An experienced HVAC professional specializing in cost estimation and technical planning.&quot;,
+      &quot;role&quot;: &quot;Cost Estimator&quot;,
+      &quot;responsibilities&quot;: &quot;Accurately calculate detailed costs for both materials and labor, and ensure all technical specifications are met in line with project requirements.&quot;,
+      &quot;goals&quot;: &quot;Deliver highly accurate estimates that reflect all cost variables to secure profitable project bids.&quot;,
+      &quot;motivation&quot;: &quot;Efficient and accurate quoting minimizes rework and enhances competitiveness in bidding processes.&quot;,
+      &quot;pain_points&quot;: &quot;Struggles with consolidating various cost data, potential oversight of hidden costs, and keeping estimations up-to-date with market price changes.&quot;,
+      &quot;requirements&quot;: [
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Building Information Sheet&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Include fields for property dimensions, location specifics, and building layout details to inform overall project requirements.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Building Information Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;Include fields for property dimensions, location specifics, and building layout details to inform overall project requirements.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Material Cost Breakdown&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Separate sections for HVAC equipment, ductwork, controls, and refrigerants with dynamic lookup tables for material prices.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Material Cost Breakdown&quot;,
+          &quot;implementation_details&quot;: &quot;Separate sections for HVAC equipment, ductwork, controls, and refrigerants with dynamic lookup tables for material prices.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Labor Cost Estimator&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Calculation modules for on-site labor costs, installation durations, and overtime rates, integrating local wage data.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Labor Cost Estimator&quot;,
+          &quot;implementation_details&quot;: &quot;Calculation modules for on-site labor costs, installation durations, and overtime rates, integrating local wage data.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Installation &amp;amp; Equipment Markup&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Fields to apply adjustable percentage markups on labor and material costs with real-time calculation updates.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Installation &amp; Equipment Markup&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to apply adjustable percentage markups on labor and material costs with real-time calculation updates.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Permit and Inspection Fees&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Dedicated fields to input and calculate municipal permitting, inspection, and licensing fees.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Permit and Inspection Fees&quot;,
+          &quot;implementation_details&quot;: &quot;Dedicated fields to input and calculate municipal permitting, inspection, and licensing fees.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Contingency Reserve Calculation&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Section that allows entry of a contingency percentage to cover unforeseen expenses based on project size.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Contingency Reserve Calculation&quot;,
+          &quot;implementation_details&quot;: &quot;Section that allows entry of a contingency percentage to cover unforeseen expenses based on project size.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Tax and Insurance Calculations&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Automatic formulas for computing local taxes and insurance premiums related to the buildout.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Tax and Insurance Calculations&quot;,
+          &quot;implementation_details&quot;: &quot;Automatic formulas for computing local taxes and insurance premiums related to the buildout.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Unit Cost Analysis&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Breakdowns of costs per unit (e.g., per square foot or per duct length) to assist with scalability of estimates.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Unit Cost Analysis&quot;,
+          &quot;implementation_details&quot;: &quot;Breakdowns of costs per unit (e.g., per square foot or per duct length) to assist with scalability of estimates.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Dynamic Cost Summary Dashboard&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Interactive charts and summary tables that update automatically to reflect changes in cost inputs.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Dynamic Cost Summary Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive charts and summary tables that update automatically to reflect changes in cost inputs.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Historical Data Reference&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Section for comparing current estimates with past project data to improve forecast accuracy.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Historical Data Reference&quot;,
+          &quot;implementation_details&quot;: &quot;Section for comparing current estimates with past project data to improve forecast accuracy.&quot;
         }
       ]
     },
     {
-      &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Project Manager&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;background&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;An experienced professional in overseeing large-scale construction and HVAC projects ensuring timelines and budgets are met.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;role&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Project Manager&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;responsibilities&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Coordinate project timelines, budgets, and resources while maintaining communication between stakeholders and ensuring compliance with established milestones.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;goals&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Maintain projects on schedule and within budget while effectively managing and mitigating risks.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;motivation&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Efficient project tracking and budgeting ensure smoother project execution and higher stakeholder satisfaction.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;pain_points&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Difficulty in tracking simultaneous cost updates, managing change orders, and integrating various data sources into coherent progress reports.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;requirements&quot;&lt;/span&gt;: [
+      &quot;name&quot;: &quot;Project Manager&quot;,
+      &quot;background&quot;: &quot;An experienced professional in overseeing large-scale construction and HVAC projects ensuring timelines and budgets are met.&quot;,
+      &quot;role&quot;: &quot;Project Manager&quot;,
+      &quot;responsibilities&quot;: &quot;Coordinate project timelines, budgets, and resources while maintaining communication between stakeholders and ensuring compliance with established milestones.&quot;,
+      &quot;goals&quot;: &quot;Maintain projects on schedule and within budget while effectively managing and mitigating risks.&quot;,
+      &quot;motivation&quot;: &quot;Efficient project tracking and budgeting ensure smoother project execution and higher stakeholder satisfaction.&quot;,
+      &quot;pain_points&quot;: &quot;Difficulty in tracking simultaneous cost updates, managing change orders, and integrating various data sources into coherent progress reports.&quot;,
+      &quot;requirements&quot;: [
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Timeline &amp;amp; Milestone Tracker&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A dedicated sheet to capture project phases, key dates, milestones, and task dependencies with automated date alerts.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Timeline &amp; Milestone Tracker&quot;,
+          &quot;implementation_details&quot;: &quot;A dedicated sheet to capture project phases, key dates, milestones, and task dependencies with automated date alerts.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Budget Overview Summary&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;An aggregated dashboard that provides a consolidated view of all cost components and compares actual versus planned budgets.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Budget Overview Summary&quot;,
+          &quot;implementation_details&quot;: &quot;An aggregated dashboard that provides a consolidated view of all cost components and compares actual versus planned budgets.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Vendor and Supplier Database&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A section to store and track vendor details, contact information, and contractual terms for easy reference.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Vendor and Supplier Database&quot;,
+          &quot;implementation_details&quot;: &quot;A section to store and track vendor details, contact information, and contractual terms for easy reference.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Change Order Log&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A log that captures every change request along with cost implications and approval statuses.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Change Order Log&quot;,
+          &quot;implementation_details&quot;: &quot;A log that captures every change request along with cost implications and approval statuses.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Risk and Issue Register&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A register to record potential risks, current issues, impact assessments, and mitigation plans.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Risk and Issue Register&quot;,
+          &quot;implementation_details&quot;: &quot;A register to record potential risks, current issues, impact assessments, and mitigation plans.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Interactive Project Status Dashboard&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Visual summaries with charts showing progress, cost burn rate, and schedule adherence updated in real-time.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Interactive Project Status Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Visual summaries with charts showing progress, cost burn rate, and schedule adherence updated in real-time.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Resource Allocation Table&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A detailed grid to assign labor, track man-hours and monitor subcontractor engagements.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Resource Allocation Table&quot;,
+          &quot;implementation_details&quot;: &quot;A detailed grid to assign labor, track man-hours and monitor subcontractor engagements.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Reporting and Export Features&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Preformatted report templates that can be exported as PDF or printed for stakeholder update meetings.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Reporting and Export Features&quot;,
+          &quot;implementation_details&quot;: &quot;Preformatted report templates that can be exported as PDF or printed for stakeholder update meetings.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Milestone Cost Tracking&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Link specific budget entries to project milestones to track expenditure distribution over time.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Milestone Cost Tracking&quot;,
+          &quot;implementation_details&quot;: &quot;Link specific budget entries to project milestones to track expenditure distribution over time.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;What-if Scenario Simulation&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Tool to simulate changes in cost or schedule variables to assess potential project impacts.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;What-if Scenario Simulation&quot;,
+          &quot;implementation_details&quot;: &quot;Tool to simulate changes in cost or schedule variables to assess potential project impacts.&quot;
         }
       ]
     },
     {
-      &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Sales Engineer&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;background&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Technically proficient with a strong sales orientation, adept at communicating product value and technical details to clients.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;role&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Sales Engineer&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;responsibilities&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Develop persuasive and client-customized quotes that align technical specifications with clear financial breakdowns.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;goals&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Convert leads into contracts by providing clear, detailed, and client-friendly HVAC buildout quotes.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;motivation&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Enhanced ability to tailor quotes to client needs drives higher conversion rates and customer satisfaction.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;pain_points&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Balancing the level of technical detail with ease of understanding for clients and rapidly adjusting pricing during negotiations.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;requirements&quot;&lt;/span&gt;: [
+      &quot;name&quot;: &quot;Sales Engineer&quot;,
+      &quot;background&quot;: &quot;Technically proficient with a strong sales orientation, adept at communicating product value and technical details to clients.&quot;,
+      &quot;role&quot;: &quot;Sales Engineer&quot;,
+      &quot;responsibilities&quot;: &quot;Develop persuasive and client-customized quotes that align technical specifications with clear financial breakdowns.&quot;,
+      &quot;goals&quot;: &quot;Convert leads into contracts by providing clear, detailed, and client-friendly HVAC buildout quotes.&quot;,
+      &quot;motivation&quot;: &quot;Enhanced ability to tailor quotes to client needs drives higher conversion rates and customer satisfaction.&quot;,
+      &quot;pain_points&quot;: &quot;Balancing the level of technical detail with ease of understanding for clients and rapidly adjusting pricing during negotiations.&quot;,
+      &quot;requirements&quot;: [
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Client Information Section&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Fields to capture client name, contact details, project location, and specific client requirements for personalized quoting.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Client Information Section&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to capture client name, contact details, project location, and specific client requirements for personalized quoting.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Quote Customization Options&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Features that allow adding company branding elements, adjustable color schemes, and formatting options for client presentations.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Quote Customization Options&quot;,
+          &quot;implementation_details&quot;: &quot;Features that allow adding company branding elements, adjustable color schemes, and formatting options for client presentations.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Technical Specifications Sheet&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A detailed section outlining technical requirements, system specifications, and compliance standards.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Technical Specifications Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;A detailed section outlining technical requirements, system specifications, and compliance standards.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Pricing Modification Module&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Interactive fields that allow on-the-fly adjustments of labor and material costs to reflect negotiated discounts or value-adds.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Pricing Modification Module&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive fields that allow on-the-fly adjustments of labor and material costs to reflect negotiated discounts or value-adds.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Interactive Quoting Tool&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Real-time calculator that updates quotes as clients choose different options and configurations.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Interactive Quoting Tool&quot;,
+          &quot;implementation_details&quot;: &quot;Real-time calculator that updates quotes as clients choose different options and configurations.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Standardized Proposal Format&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A pre-designed layout that integrates detailed quotes with professional design for ease of printing or digital delivery.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Standardized Proposal Format&quot;,
+          &quot;implementation_details&quot;: &quot;A pre-designed layout that integrates detailed quotes with professional design for ease of printing or digital delivery.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Alternative Proposal Templates&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Ability to generate multiple versions of quotes that highlight different configurations or cost-saving options.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Alternative Proposal Templates&quot;,
+          &quot;implementation_details&quot;: &quot;Ability to generate multiple versions of quotes that highlight different configurations or cost-saving options.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Revision and Commentary Log&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A section for tracking revisions, client feedback, and internal notes to maintain a history of changes.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Revision and Commentary Log&quot;,
+          &quot;implementation_details&quot;: &quot;A section for tracking revisions, client feedback, and internal notes to maintain a history of changes.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Pricing Assumptions Documentation&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Fields to document assumptions behind cost estimates, including labor rates, material prices, and market factors.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Pricing Assumptions Documentation&quot;,
+          &quot;implementation_details&quot;: &quot;Fields to document assumptions behind cost estimates, including labor rates, material prices, and market factors.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Visual Cost Distribution Charts&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Integrated charts and graphs that visually represent the cost breakdown and highlight key pricing drivers.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Visual Cost Distribution Charts&quot;,
+          &quot;implementation_details&quot;: &quot;Integrated charts and graphs that visually represent the cost breakdown and highlight key pricing drivers.&quot;
         }
       ]
     },
     {
-      &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Business Owner / Developer&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;background&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Senior decision-maker responsible for overall project feasibility, strategic investments, and final approvals.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;role&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Business Owner / Developer&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;responsibilities&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Evaluate the financial and operational viability of projects, monitor overall project expenditures, and make high-level strategic decisions.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;goals&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Quickly assess project viability through clear, summarized financial information and strategic risk insights.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;motivation&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Clear, consolidated data allows for faster, more informed decision-making which can lead to improved project outcomes.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;pain_points&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Overly technical details can be overwhelming, and inconsistent summary data may lead to decision delays.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;requirements&quot;&lt;/span&gt;: [
+      &quot;name&quot;: &quot;Business Owner / Developer&quot;,
+      &quot;background&quot;: &quot;Senior decision-maker responsible for overall project feasibility, strategic investments, and final approvals.&quot;,
+      &quot;role&quot;: &quot;Business Owner / Developer&quot;,
+      &quot;responsibilities&quot;: &quot;Evaluate the financial and operational viability of projects, monitor overall project expenditures, and make high-level strategic decisions.&quot;,
+      &quot;goals&quot;: &quot;Quickly assess project viability through clear, summarized financial information and strategic risk insights.&quot;,
+      &quot;motivation&quot;: &quot;Clear, consolidated data allows for faster, more informed decision-making which can lead to improved project outcomes.&quot;,
+      &quot;pain_points&quot;: &quot;Overly technical details can be overwhelming, and inconsistent summary data may lead to decision delays.&quot;,
+      &quot;requirements&quot;: [
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Executive Summary Sheet&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A one-page comprehensive overview covering total estimated costs, ROI, project duration and risk assessments.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Executive Summary Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;A one-page comprehensive overview covering total estimated costs, ROI, project duration and risk assessments.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Integrated Financial Dashboard&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Visual dashboard with key metrics such as total cost, cost breakdown, margins, and profitability analysis.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Integrated Financial Dashboard&quot;,
+          &quot;implementation_details&quot;: &quot;Visual dashboard with key metrics such as total cost, cost breakdown, margins, and profitability analysis.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Cost Category Breakdown&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Distinct visualization of labor, material, permit, and contingency costs for rapid assessment.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Cost Category Breakdown&quot;,
+          &quot;implementation_details&quot;: &quot;Distinct visualization of labor, material, permit, and contingency costs for rapid assessment.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;ROI and Profitability Calculator&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Interactive tool to calculate profit margins, return on investment and breakeven analysis based on current estimates.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;ROI and Profitability Calculator&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive tool to calculate profit margins, return on investment and breakeven analysis based on current estimates.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Historical Comparison Feature&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Option to compare current estimates with historical projects to evaluate pricing trends and performance.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Historical Comparison Feature&quot;,
+          &quot;implementation_details&quot;: &quot;Option to compare current estimates with historical projects to evaluate pricing trends and performance.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Risk Assessment Overview&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;A dedicated section summarizing potential project risks alongside mitigation strategies and financial impact.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Risk Assessment Overview&quot;,
+          &quot;implementation_details&quot;: &quot;A dedicated section summarizing potential project risks alongside mitigation strategies and financial impact.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Exportable Reports&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Ability to export high-level dashboards and summaries into PDF or other presentation formats for board meetings.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Exportable Reports&quot;,
+          &quot;implementation_details&quot;: &quot;Ability to export high-level dashboards and summaries into PDF or other presentation formats for board meetings.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Scenario Analysis Tools&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Modules that allow tweaking of key parameters (like markups and contingencies) to forecast different financial outcomes.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Scenario Analysis Tools&quot;,
+          &quot;implementation_details&quot;: &quot;Modules that allow tweaking of key parameters (like markups and contingencies) to forecast different financial outcomes.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;User-Friendly Navigation&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Intuitive tab-based layout with clear labeling for quick navigation across detailed and summary sheets.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;User-Friendly Navigation&quot;,
+          &quot;implementation_details&quot;: &quot;Intuitive tab-based layout with clear labeling for quick navigation across detailed and summary sheets.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Automated Alert System&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Conditional formatting and notifications for cost deviations or significant changes in project estimates.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Automated Alert System&quot;,
+          &quot;implementation_details&quot;: &quot;Conditional formatting and notifications for cost deviations or significant changes in project estimates.&quot;
         }
       ]
     },
     {
-      &lt;span class=&quot;attr&quot;&gt;&quot;name&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Financial Analyst&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;background&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Specializes in detailed financial modeling, forecasting, and performing sensitivity analyses for cost-efficiency and profitability.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;role&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Financial Analyst&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;responsibilities&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Analyze detailed cost data, prepare financial projections, and provide insights on cost drivers and overall project viability.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;goals&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Ensure the project’s financial viability by presenting data-backed forecasts and performing in-depth cost analyses.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;motivation&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Accurate models and detailed breakdowns allow for precise financial forecasting and risk-adjusted decision making, optimizing investment returns.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;pain_points&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Inconsistencies in data and a lack of integrated financial models hinder comprehensive financial analysis leading to forecasting errors.&quot;&lt;/span&gt;,
-      &lt;span class=&quot;attr&quot;&gt;&quot;requirements&quot;&lt;/span&gt;: [
+      &quot;name&quot;: &quot;Financial Analyst&quot;,
+      &quot;background&quot;: &quot;Specializes in detailed financial modeling, forecasting, and performing sensitivity analyses for cost-efficiency and profitability.&quot;,
+      &quot;role&quot;: &quot;Financial Analyst&quot;,
+      &quot;responsibilities&quot;: &quot;Analyze detailed cost data, prepare financial projections, and provide insights on cost drivers and overall project viability.&quot;,
+      &quot;goals&quot;: &quot;Ensure the project’s financial viability by presenting data-backed forecasts and performing in-depth cost analyses.&quot;,
+      &quot;motivation&quot;: &quot;Accurate models and detailed breakdowns allow for precise financial forecasting and risk-adjusted decision making, optimizing investment returns.&quot;,
+      &quot;pain_points&quot;: &quot;Inconsistencies in data and a lack of integrated financial models hinder comprehensive financial analysis leading to forecasting errors.&quot;,
+      &quot;requirements&quot;: [
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Detailed Cost Analysis Sheet&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Section dedicated to drilling down into individual cost components with detailed formulas and breakdowns.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Detailed Cost Analysis Sheet&quot;,
+          &quot;implementation_details&quot;: &quot;Section dedicated to drilling down into individual cost components with detailed formulas and breakdowns.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;What-if Scenario Analysis&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Interactive module to test different variables such as cost increases, labor fluctuations, and delays to forecast financial impacts.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;What-if Scenario Analysis&quot;,
+          &quot;implementation_details&quot;: &quot;Interactive module to test different variables such as cost increases, labor fluctuations, and delays to forecast financial impacts.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Historical Data Integration&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Import and compare past project data with current estimates to identify trends and validate assumptions.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Historical Data Integration&quot;,
+          &quot;implementation_details&quot;: &quot;Import and compare past project data with current estimates to identify trends and validate assumptions.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Dynamic Cost Update Mechanism&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Linked formula system that updates cost components across all sheets when input data is modified.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Dynamic Cost Update Mechanism&quot;,
+          &quot;implementation_details&quot;: &quot;Linked formula system that updates cost components across all sheets when input data is modified.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Profit Margin and NPV Calculations&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Modules to compute profit margins, net present value, and other financial metrics based on input assumptions.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Profit Margin and NPV Calculations&quot;,
+          &quot;implementation_details&quot;: &quot;Modules to compute profit margins, net present value, and other financial metrics based on input assumptions.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Sensitivity Analysis Reports&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Preformatted reports that identify which variables have the highest impact on overall project costs.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Sensitivity Analysis Reports&quot;,
+          &quot;implementation_details&quot;: &quot;Preformatted reports that identify which variables have the highest impact on overall project costs.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Graphical Data Visualization&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Integrated charts and graphs such as line graphs, bar charts, and pie charts to visualize spending trends and cost distributions.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Graphical Data Visualization&quot;,
+          &quot;implementation_details&quot;: &quot;Integrated charts and graphs such as line graphs, bar charts, and pie charts to visualize spending trends and cost distributions.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Data Import/Export Functionality&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Allow users to seamlessly import external data sets and export processed data for further analysis.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Data Import/Export Functionality&quot;,
+          &quot;implementation_details&quot;: &quot;Allow users to seamlessly import external data sets and export processed data for further analysis.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Customizable Cost Categories&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Fields that allow the addition or modification of cost categories in line with evolving project needs.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Customizable Cost Categories&quot;,
+          &quot;implementation_details&quot;: &quot;Fields that allow the addition or modification of cost categories in line with evolving project needs.&quot;
         },
         {
-          &lt;span class=&quot;attr&quot;&gt;&quot;requirement&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Audit Trail for Data Changes&quot;&lt;/span&gt;,
-          &lt;span class=&quot;attr&quot;&gt;&quot;implementation_details&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;Implement a logging feature that records and timestamps changes in key financial figures for accuracy and compliance.&quot;&lt;/span&gt;
+          &quot;requirement&quot;: &quot;Audit Trail for Data Changes&quot;,
+          &quot;implementation_details&quot;: &quot;Implement a logging feature that records and timestamps changes in key financial figures for accuracy and compliance.&quot;
         }
       ]
     }
   ],
-  &lt;span class=&quot;attr&quot;&gt;&quot;request&quot;&lt;/span&gt;: &lt;span class=&quot;string&quot;&gt;&quot;I need an HVAC buildout quote template for a strip mall.&quot;&lt;/span&gt;
-}&lt;/code&gt;&lt;/pre&gt;
+  &quot;request&quot;: &quot;I need an HVAC buildout quote template for a strip mall.&quot;
+}
+```
+--&gt;
+
 &lt;div id=&quot;personacards&quot; style=&quot;font-size:0.8rem;border:1px solid #000;padding:5px;&quot;&gt;&lt;/div&gt;
 &lt;script&gt;
    (function(){
