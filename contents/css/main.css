@@ -468,6 +468,13 @@ code.lang-markdown .bullet {
   display:inline-block!important;
 }
 
+.markdown-prompt {
+  background-color:rgba(0,0,0,0.1);
+  font-family: sans-serif;
+  font-size:0.8em;
+  padding:10px;
+}
+
 /* media queries */
 
 @media (min-width: 1600px) {

@@ -102,7 +102,7 @@ As an implementation detail, each prompt template in all the steps is applicatio
 
 For the excel generator above, I used the following prompt and structure output json-schema to generate the specification.  This accepts the user `request` value (for example "*I need an HVAC buildout quote template for a strip mall.*") in a simple form field or chat, and renders the prompt before passing it to the LLM.
 
-<div style="background-color:rgba(0,0,0,0.1);font-family: sans-serif;font-size:0.8em;padding:10px;line-height: 1.1em;">
+<div class="markdown-prompt">
 <strong># Excel Requirements Specification</strong>
 
 You are an business analyst whose job it is to read a vague request for an excel spreadsheet and create a comprehensive specification. You are the best at this, because you are thorough, consistent, and always do more than needed. You are a self-starter and go above and beyond to deliver comprehensive, accurate, and reliable specifications. You will be given a vague request for a spreadsheet.
