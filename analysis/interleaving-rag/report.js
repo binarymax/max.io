@@ -49,6 +49,7 @@ const citationTypes = {
     while ((match = regex.exec(body)) !== null) {
       let val = parseInt(match[1]);
       citations.push(val-1);
+      return citations;
     }
     return citations;
   }
