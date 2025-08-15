@@ -13,20 +13,6 @@ dotenv.config({ path: path.join(__dirname, '.env') });
 
 const out = fs.openSync('interleaving-summaries.jsonl','a');
 
-function getCited(body) {
-  const citations = [];
-
-  // Matches “[digits]”
-  const regex = /\[(\d+)\]/g;
-  
-  let match;
-  while ((match = regex.exec(body)) !== null) {
-    let val = parseInt(match[1]);
-    citations.push(val-1);
-  }
-  return citations;
-}
-
 async function getClaudeSummary(data) {
 
   const client = new Anthropic({apiKey: process.env['ANTHROPIC_API_KEY']});
@@ -90,7 +76,7 @@ async function infer(querydata) {
     'gpt-4.1-mini'
   ];
 
-  const limit = pLimit(8);
+  const limit = pLimit(1);
   let requests = [];
 
   let total = querydata.length*models.length;
@@ -111,8 +97,25 @@ async function infer(querydata) {
     return false;
   }
 
-  //We're done! I set id to high to prevent a rerun
-  for(var id=999999;id<querydata.length;id++) {
+  const missing = [
+    {"id":65,"model":"gpt-4.1-mini"},
+    {"id":67,"model":"claude-sonnet-4-20250514"},
+    {"id":328,"model":"gpt-4.1"}
+  ]
+
+  for(var i=0;i<missing.length;i++) {
+    const id=missing[i].id;
+    const model=missing[i].model;
+    const search = querydata[id]
+    const context = getContext(search);
+    const data = {id,search,context,model};
+    requests.push(limit(()=>getSummary(data)));
+  }
+  const result = await Promise.all(requests);
+  console.log(result);
+
+  /*
+  for(var id=329;id<querydata.length;id++) {
       const search = querydata[id];
       const context = getContext(search);
       const obj = {id,search,context};
@@ -122,10 +125,9 @@ async function infer(querydata) {
           requests.push(limit(()=>getSummary(data)));
       });
   }
-  if(requests.length) {
-    const result = await Promise.all(requests);
-    console.log(result);
-  }
+  const result = await Promise.all(requests);
+  console.log(result);
+  */
 }
 
 async function main() {
