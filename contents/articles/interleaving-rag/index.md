@@ -1,9 +1,9 @@
 ---
 title: Interleaving for Retrieval Augmented Generation
-date: '2025-08-15'
+date: '2025-08-18'
 author: binarymax
 template: article.pug
-tags: [interleaving,rag,search]
+tags: [interleaving,rag,llm,search]
 image: card-image.jpg
 imagewidth: 1250
 imageheight: 800
@@ -70,7 +70,7 @@ Additionally, while there are plenty of LLM-as-a-judge theses out there, I posit
 
 We consider these two areas: optimizing context and tuning result relevance, by interleaving results and scoring the summary. This yields important information and enables you to naturally gravitate to the best retrieval configuration.
 
-One more illustration before diving into the experiment, contrasting the approach of A/B testing versus Interleaving for RAG.  The benefit becomes clear: the LLM will give credit assignment for the interleaved results when cited, compared to A/B testing which is much harder to measure for RAG.  In A/B testing the summaries will be different for each team, leaving you wondering what the summary would be when the LLM is presented with both sets at once.
+One more illustration (Figure 3) before diving into the experiment, contrasting the approach of A/B testing versus Interleaving for RAG.  The benefit becomes clear: the LLM will give credit assignment for the interleaved results when cited, compared to A/B testing which is much harder to measure for RAG.  In A/B testing the summaries will be different for each team, leaving you wondering what the summary would be when the LLM is presented with both sets at once.
 
 ![A/B vs Interleaving for RAG](ab-rag-versus-interleaving-rag.png)
 
@@ -80,9 +80,11 @@ I present the following evidence in the context of RAG for web search. I used __
 
 The search queries were captured over the past 6 months by users in their casual use of a research engine I built.  They are all from anonymous sources and I scrubbed them of PII (which were mostly vanity searches - you know who you are!). The queries were primarily in English, with a handful of German, Polish, Hebrew, and Armenian.  Overall they were a mix of technical, medical, legal, general research, and trivial queries. To remove bias I excluded news, politics, sports, and anything I found to be spicy.  I was left with a nice set of 976 unique and real queries from dozens of actual people.  I will note potential bias in the query list, in that the engine is primarily used by me, and my queries account for just more than half.  Even with this note the queries were always in real scenarios for my actual day-to-day use and not tests.
 
-An example result from the platform is displayed below.  The interleaved results for the three engines are on the left, and the summary on the right.  The 27 interleaved results are cropped down to 6 in the image.
+An example result from the platform is displayed in Figure 4.  The interleaved results for the three engines are on the left, and the summary on the right.  The 27 interleaved results are cropped down to 6 in the image.
 
 ![MAX.IO Search Platform example for 'email DMARC SPF'](maxio-search-results-example.png)
+
+_Figure 4_
 
 Here is the process: 
 
@@ -101,23 +103,23 @@ Here is the process:
 
 ![RAG: Average Result Citations per Engine](interleaving-rag-average-result-citations.jpg)
 
-_Figure 1: Average credit assignment of citations to the respective retriever across all 4 models._
+_Figure 5: Average credit assignment of citations to the respective retriever across all 4 models._
 
-In Figure 1, we can clearly see the engine with the most citations is Bing by a significant margin, followed by Brave, and deeply lagging in third is Google.
+In Figure 5, we can clearly see the engine with the most citations is Bing by a significant margin, followed by Brave, and deeply lagging in third is Google.
 
 ![RAG: Who gets cited first?](interleaving-rag-first-result-citations.jpg)
 
-_Figure 2: First only credit assignment of citations to the respective retriever across all 4 models._
+_Figure 6: First only credit assignment of citations to the respective retriever across all 4 models._
 
-Figure 2 only looks at who got cited first. This takes the first citation found in the summary and assigns credit to the engine that provided it. Again, the difference is clear with Bing far in the lead - however GPT has Google in a closer second place.
+Figure 6 shows results for who got cited first (and then stops). This only takes the first citation found in the summary and assigns credit to the engine that provided it. Again, the difference is clear with Bing far in the lead - however GPT has Google in a closer second place. An important note: all three had an equal chance of appearing as the first result in the list due to team-draft selection, and Bing still overcomes this by a wide margin.
 
-But why? Do we not assume that Google is the world’s best search? The answer becomes clear when we dig: for all results across all searches, the average length of a Google result snippet is 155 characters, while the average lengths of Bing and Brave are 293 and 253, respectively.  This is illustrated in Figure 3.
+Why is Google so far behind? Do we not assume that it is the world’s best search engine? The answer becomes clear when we dig: for all results across all searches, the average length of a Google result snippet is 155 characters, while the average lengths of Bing and Brave are 293 and 253, respectively.  This is the analogous "perceived relevance" for LLMs, but really it's just that there isn't enough context available for the model to use when generating the summary.  This comparison is illustrated in Figure 7.
 
 ![RAG: Average Snippet Length for Cited Results per Engine](interleaving-rag-average-result-length.jpg)
 
-_Figure 3: Average character length (in bytes) for each engine's snippets_
+_Figure 7: Average character length (in bytes) for each engine's snippets_
 
-This shows a direct correlation. The shorter snippets are very likely responsible for the LLM to pass over Google in favor of Bing’s and Brave’s longer snippets. Note the snippet length is only counted for results that are cited in the summary. Table 1 contains the raw numbers for Figures 1, 2, and 3.
+This shows a direct correlation. The shorter snippets are very likely responsible for the LLM to pass over Google in favor of Bing’s and Brave’s longer snippets. Note the snippet length is only counted for results that are cited in the summary. Table 1 contains the raw numbers for Figures 5, 6, and 7.
 
 <table class="datasheet">
 <thead>
@@ -138,6 +140,8 @@ This shows a direct correlation. The shorter snippets are very likely responsibl
 
 _Table 1: search result citations and snippet length per model and method, for 976 search queries_
 
+## Cited Position Analysis
+
 We can also garner some keen insights on relevance from a histogram of result positions cited, regardless of engine.  My research application uses lots of results for RAG.  Upwards of 40.  I do this because I learned early on in its development that relevant results often appeared past the first page of 10.  This is illustrated with histograms of cited position for each model.  You can clearly see that >10 holds significant input.
 
 ![Search positions cited by Claude Haiku 3.5](interleaving-rag-positions-claude-3.5-haiku.png)
@@ -148,21 +152,21 @@ We can also garner some keen insights on relevance from a histogram of result po
 
 ![Search positions cited by OpenAI GPT-4.1-mini](interleaving-rag-positions-gpt-4.1-mini.png)
 
-Web search agents like ChatGPT produce mediocre research due to this lack of scope, and the summaries of Google, Bing, and Brave in their own sites fall short because they assume all the good stuff is at the top.  It’s not.  You must dig deep.  There’s gold buried on the 2nd and 3rd pages!
+Spicy takes: 🌶️ The summaries of Google, Bing, and Brave in their own sites fall short because they assume all the good stuff is at the top.  It’s not.  You must dig deep.  There’s gold buried on the 2nd and 3rd pages!  In addition, agents using web search such as ChatGPT only look at the top several results from Google before making a decision on what to download and include in a deeper context inference. They produce mediocre research due to this lack of depth in scope.
 
 ## Conclusions
 
 To recap, use the following lessons when building RAG or a research agent:
 
 1. Make your snippets longer for the LLM, because cutting them short may leave critical information out of the summary.
-2. Don’t worry too much about the top 5 documents, and give your LLM several pages of results. You can reorder the result on the page according to citation order.
+2. Don’t worry too much about the top 5 documents, and give your LLM several pages of results. You can reorder the result on the page according to citation order.  This will vastly improve the outcome, and we saw that even the best tuned engines don't cut it on the first page.
 3. Iterate and tune by interleaving different versions of your retriever configuration and see which works best for the LLM.
 
 I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your RAG prompt template.
 
-## Prompts
+## But what about the Prompt!?
 
-Out of scope for this test is variation on the prompt. This is because it is already well tuned, and while I considered adding a prompt variant the costs got a bit out of hand for this post (you're looking at over $100 of search and AI credits folks!).
+Out of scope for this test was prompt/context engineering and testing variations on the prompt. This is because it was already well tuned back in December 2024.
 
 ## Obituary Section
 
