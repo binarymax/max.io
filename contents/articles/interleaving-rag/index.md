@@ -1,5 +1,5 @@
 ---
-title: Interleaving for Retrieval Augmented Generation (RAG)
+title: Interleaving for Retrieval Augmented Generation
 date: '2025-08-15'
 author: binarymax
 template: article.pug
@@ -7,22 +7,48 @@ tags: [interleaving,rag,search]
 image: card-image.jpg
 imagewidth: 1250
 imageheight: 800
-description: Interleaving and RAG presents a powerful opportunity to validate both the retriever configuration, the model, and the prompt. In this article I focus on comparing the outcomes of Bing, Google, and Brave search results when interleaved in a RAG research platform.
+description: Interleaving and Retrieval Augmented Generation (RAG) presents a powerful opportunity to validate the retriever configuration, the model, and the prompt, in one package. In this article I focus on comparing the outcomes of Bing, Google, and Brave search results when using team-draft interleaving in a RAG web research platform.
 ---
 
-What kinds of search results work best for an LLM?  When asking this question the first thing that jumps into most minds is that of relevance. But the answer is more complex.
+Hello friends.  In this post I outline a pragmatic approach to testing RAG with interleaving search results from different retrieval engines, and present some spicy evidence that Google is not a good fit for RAG compared to Bing and Brave in a web research context.
 
-When exploring the best solution to the above, comparing outcomes of retrieval engine configurations one at a time poses significant challenges. This is because A/B testing and contrasting metrics robs you of understanding true comparative preference.
+First we ask the question: What kinds of search results work best for an LLM during RAG?  When asking this, the first thing that jumps into most minds is that of relevance. But the answer is more complex.
+
+When exploring the best solution to the above, comparing outcomes of retrieval engine configurations one at a time with A/B testing poses significant challenges. This is because A/B testing and contrasting metrics deny you of understanding true comparative preference, and unless the same queries are used enough by multiple people, the data is too sparse and you are unable to make trustworthy conclusions.
 
 ## Interleaving
 
-Interleaving, the process of blending the query results of two or more engines into the same result set, gives us easy to obtain insights into the behavior of LLMs for knowledge summaries, and allows us to craft our results to align better with these behaviors.  This also avoids error prone independent comparisons.
+Interleaving, the process of blending the query results of two or more engines into the same result set, gives us easy to obtain insights into the relevance of search results and the behavior of LLMs for knowledge summaries, and allows us to craft our results to align better with successful outcomes. Interleaving also avoids error prone independent comparisons and long-tail sparsity problems that pop up with A/B testing.
 
-Indeed, interleaving results for LLMs presents a comprehensive solution to not only tune actual relevance, but also tune perceived relevance.
+Before we add LLMs into the mix, first we need to describe how interleaving works.
+
+### Team Draft Interleaving and credit assignment
+
+Here is a simple illustration and step-by-step overview that show the team-draft interleaving process.  Team-draft is a certain type of interleaving, which I first learned from an incredible talk by the Wikimedia search team way back in 2018.
+
+![Team Draft Interleaving](team-draft-interleaving.png)
+
+The process:
+
+1. We take a search query from a user
+2. We send the query to two different engines
+3. We pick a team at random, and add their first result to the set
+4. We then take the first result of the other team
+5. If the result was already added by someone, we skip it and take the next
+6. We alternate picking results from each team until the end of both
+7. We use that final set as the results to display to the user
+
+This is powerful, because we also make use of __credit assignment__.  If a user interacts with one of the results, we remember which team it came from, and we give that team points.  Over some time, with hundreds or thousands of queries, we can tally the points and see which team performs better.  Since a winning team represents a search engine configuration, we promote that configuration and use it exclusively until we want to run another test.
+
+Interestingly, interleaving results for presents a comprehensive solution to not only tune and measure actual relevance, but also tune _perceived relevance_.
 
 ## Perceived Relevance
 
 The difference between actual vs perceived relevance is fascinating. The former is the empirical truth of whether or not the result contains the information necessary to satisfy the query.  Perceived relevance on the other hand, is whether or not the person looking at a search result can tell whether or not it likely contains the answer.  It's easy to understand when we're shown a picture.
+
+![Comparing how a result is displayed for Google, Bing, and Brave](search-result-comparisson.jpg)
+
+_Figure 2: Which result would you choose for the query?_
 
 Before we were all spoon fed summaries en masse at the top of our results, we actually had to look at results and make decisions with our brains.  Optimizing perceived relevance is key to making this easy for us by showing concise information about the results so we can decide what to click.
 
@@ -31,8 +57,6 @@ To illustrate the benefits of perceived relevance, consider an extreme example: 
 Now another extreme: each result in the list shows the entire document and you are presented with thousands of sentences to exhaustingly scroll through while hunting for what you need. This is also poor perceived relevance because again, it is difficult to tell immediately and requires significant effort.
 
 Compare these extremes with what is typically presented: a title, a url, a short contextual snippet, and perhaps a date of publication. This allows one to scan the results and make a very quick decision on which is best before continuing further:
-
-![Comparing how a result is displayed for Google, Bing, and Brave](search-result-comparisson.jpg)
 
 Google, Bing, and Brave all provide clear information that gives you enough information to make a decision on whether to click on the result. Only two snippets provide exactly the definition for the term, and only two provide extra text.  You can already see where this is going.  In this case, Bing's snippet will be useless to an LLM for summarization.
 
@@ -46,9 +70,13 @@ Additionally, while there are plenty of LLM-as-a-judge theses out there, I posit
 
 We consider these two areas: optimizing context and tuning result relevance, by interleaving results and scoring the summary. This yields important information and enables you to naturally gravitate to the best retrieval configuration.
 
+One more illustration before diving into the experiment, contrasting the approach of A/B testing versus Interleaving for RAG.  The benefit becomes clear: the LLM will give credit assignment for the interleaved results when cited, compared to A/B testing which is much harder to measure for RAG.  In A/B testing the summaries will be different for each team, leaving you wondering what the summary would be when the LLM is presented with both sets at once.
+
+![A/B vs Interleaving for RAG](ab-rag-versus-interleaving-rag.png)
+
 ## Experiments for web search summaries
 
-I present the following evidence in the context of RAG for web search.  I used 976 actual search queries, three interleaved engines of _Google, Bing, and Brave_ as retrievers, and four LLM models ( _Claude Haiku 3.5, Claude Sonnet 4, GPT-4.1, and GPT-4.1-Mini_ ) for summarization.  We know that these three engines are already tuned for relevance, and we know these models are state of the art for summarization. We can cross compare them by observing the outcome of the LLM summaries.
+I present the following evidence in the context of RAG for web search. I used __976__ actual search queries, three interleaved engines of _Google, Bing, and Brave_ as retrievers, and four LLM models ( _Claude Haiku 3.5, Claude Sonnet 4, GPT-4.1, and GPT-4.1-Mini_ ) for summarization.  We know that these three engines are already tuned for relevance, and we know these models are state of the art for summarization. We can cross compare them by observing the outcome of the LLM summaries.
 
 The search queries were captured over the past 6 months by users in their casual use of a research engine I built.  They are all from anonymous sources and I scrubbed them of PII (which were mostly vanity searches - you know who you are!). The queries were primarily in English, with a handful of German, Polish, Hebrew, and Armenian.  Overall they were a mix of technical, medical, legal, general research, and trivial queries. To remove bias I excluded news, politics, sports, and anything I found to be spicy.  I was left with a nice set of 976 unique and real queries from dozens of actual people.  I will note potential bias in the query list, in that the engine is primarily used by me, and my queries account for just more than half.  Even with this note the queries were always in real scenarios for my actual day-to-day use and not tests.
 
@@ -85,23 +113,24 @@ _Figure 3: Average character length (in bytes) for each engine's snippets_
 
 This shows a direct correlation. The shorter snippets are very likely responsible for the LLM to pass over Google in favor of Bing’s and Brave’s longer snippets. Note the snippet length is only counted for results that are cited in the summary. Table 1 contains the raw numbers for Figures 1, 2, and 3.
 
-<table>
+<table class="datasheet">
 <thead>
-<tr><th>model</th><th>citationType</th><th>searches</th><th>Bing_cited</th><th>Bing_cited_avg</th><th>Bing_char_len_avg</th><th>Google_cited</th><th>Google_cited_avg</th><th>Google_char_len_avg</th><th>Brave_cited</th><th>Brave_cited_avg</th><th>Brave_char_len_avg</th></tr>
+<tr><th colspan=2>&nbsp</th><th colspan=3>Bing</th><th colspan=3>Google</th><th colspan=3>Brave</th></tr>
+<tr><th>model</th><th>type</th><th>cited</th><th>cited_avg</th><th>char_avg</th><th>cited</th><th>cited_avg</th><th>char_avg</th><th>cited</th><th>cited_avg</th><th>char_avg</th></tr>
 </thead>
 <tbody>
-<tr><td>claude-3-5-haiku-20241022</td><td>getCitedOnce</td><td>976</td><td>2872</td><td>2.9</td><td>300.3</td><td>1575</td><td>1.6</td><td>155.6</td><td>2529</td><td>2.6</td><td>286.8</td></tr>
-<tr><td>claude-3-5-haiku-20241022</td><td>getCitedFirst</td><td>976</td><td>3929</td><td>4.0</td><td>304.8</td><td>1831</td><td>1.9</td><td>155.7</td><td>3115</td><td>3.2</td><td>292.1</td></tr>
-<tr><td>claude-sonnet-4-20250514</td><td>getCitedOnce</td><td>976</td><td>4709</td><td>4.8</td><td>290.9</td><td>3064</td><td>3.1</td><td>155.1</td><td>5019</td><td>5.1</td><td>277.4</td></tr>
-<tr><td>claude-sonnet-4-20250514</td><td>getCitedFirst</td><td>976</td><td>7841</td><td>8.0</td><td>298.7</td><td>3974</td><td>4.1</td><td>155.6</td><td>7099</td><td>7.3</td><td>286.1</td></tr>
-<tr><td>gpt-4.1</td><td>getCitedOnce</td><td>976</td><td>5691</td><td>5.8</td><td>286.2</td><td>3357</td><td>3.4</td><td>155.1</td><td>6370</td><td>6.5</td><td>271.3</td></tr>
-<tr><td>gpt-4.1</td><td>getCitedFirst</td><td>976</td><td>13455</td><td>13.8</td><td>292.6</td><td>6206</td><td>6.4</td><td>156.0</td><td>13385</td><td>13.7</td><td>281.6</td></tr>
-<tr><td>gpt-4.1-mini</td><td>getCitedOnce</td><td>976</td><td>5631</td><td>5.8</td><td>288.3</td><td>3709</td><td>3.8</td><td>155.2</td><td>6630</td><td>6.8</td><td>270.4</td></tr>
-<tr><td>gpt-4.1-mini</td><td>getCitedFirst</td><td>976</td><td>11276</td><td>11.6</td><td>293.4</td><td>6170</td><td>6.3</td><td>155.7</td><td>11753</td><td>12.0</td><td>278.1</td></tr>
+<tr><td>claude-3-5-haiku</td><td>Once</td><td>2872</td><td>2.9</td><td>300.3</td><td>1575</td><td>1.6</td><td>155.6</td><td>2529</td><td>2.6</td><td>286.8</td></tr>
+<tr><td>claude-3-5-haiku</td><td>First</td><td>3929</td><td>4.0</td><td>304.8</td><td>1831</td><td>1.9</td><td>155.7</td><td>3115</td><td>3.2</td><td>292.1</td></tr>
+<tr><td>claude-sonnet-4</td><td>Once</td><td>4709</td><td>4.8</td><td>290.9</td><td>3064</td><td>3.1</td><td>155.1</td><td>5019</td><td>5.1</td><td>277.4</td></tr>
+<tr><td>claude-sonnet-4</td><td>First</td><td>7841</td><td>8.0</td><td>298.7</td><td>3974</td><td>4.1</td><td>155.6</td><td>7099</td><td>7.3</td><td>286.1</td></tr>
+<tr><td>gpt-4.1</td><td>Once</td><td>5691</td><td>5.8</td><td>286.2</td><td>3357</td><td>3.4</td><td>155.1</td><td>6370</td><td>6.5</td><td>271.3</td></tr>
+<tr><td>gpt-4.1</td><td>First</td><td>13455</td><td>13.8</td><td>292.6</td><td>6206</td><td>6.4</td><td>156.0</td><td>13385</td><td>13.7</td><td>281.6</td></tr>
+<tr><td>gpt-4.1-mini</td><td>Once</td><td>5631</td><td>5.8</td><td>288.3</td><td>3709</td><td>3.8</td><td>155.2</td><td>6630</td><td>6.8</td><td>270.4</td></tr>
+<tr><td>gpt-4.1-mini</td><td>First</td><td>11276</td><td>11.6</td><td>293.4</td><td>6170</td><td>6.3</td><td>155.7</td><td>11753</td><td>12.0</td><td>278.1</td></tr>
 </tbody>
 </table>
 
-_Table 1: search result citations and snippet length per model and method_
+_Table 1: search result citations and snippet length per model and method, for 976 search queries_
 
 We can also garner some keen insights on relevance from a histogram of result positions cited, regardless of engine.  My research application uses lots of results for RAG.  Upwards of 40.  I do this because I learned early on in its development that relevant results often appeared past the first page of 10.  This is illustrated with histograms of cited position for each model.  You can clearly see that >10 holds significant input.
 
