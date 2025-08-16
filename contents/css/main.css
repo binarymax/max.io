@@ -504,6 +504,7 @@ code.lang-markdown .bullet {
   .article {
     margin: 1em 0 2.5em;
     padding: 1em;
+    font-size:0.9em;
   }
 
   .datasheet {

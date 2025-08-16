@@ -80,6 +80,10 @@ I present the following evidence in the context of RAG for web search. I used __
 
 The search queries were captured over the past 6 months by users in their casual use of a research engine I built.  They are all from anonymous sources and I scrubbed them of PII (which were mostly vanity searches - you know who you are!). The queries were primarily in English, with a handful of German, Polish, Hebrew, and Armenian.  Overall they were a mix of technical, medical, legal, general research, and trivial queries. To remove bias I excluded news, politics, sports, and anything I found to be spicy.  I was left with a nice set of 976 unique and real queries from dozens of actual people.  I will note potential bias in the query list, in that the engine is primarily used by me, and my queries account for just more than half.  Even with this note the queries were always in real scenarios for my actual day-to-day use and not tests.
 
+An example result from the platform is displayed below.  The interleaved results for the three engines are on the left, and the summary on the right.  The 27 interleaved results are cropped down to 6 in the image.
+
+![MAX.IO Search Platform example for 'email DMARC SPF'](maxio-search-results-example.png)
+
 Here is the process: 
 
 1. A query is run against all three engines Google, Bing, and Brave.
@@ -92,6 +96,8 @@ Here is the process:
 8. A citation assigns credit to the engine that provided the result.
 9. The process is repeated for all 976 the queries in the list and the outcomes tallied.
 
+
+## Results
 
 ![RAG: Average Result Citations per Engine](interleaving-rag-average-result-citations.jpg)
 
@@ -144,7 +150,7 @@ We can also garner some keen insights on relevance from a histogram of result po
 
 Web search agents like ChatGPT produce mediocre research due to this lack of scope, and the summaries of Google, Bing, and Brave in their own sites fall short because they assume all the good stuff is at the top.  It’s not.  You must dig deep.  There’s gold buried on the 2nd and 3rd pages!
 
-# Conclusions
+## Conclusions
 
 To recap, use the following lessons when building RAG or a research agent:
 
@@ -164,4 +170,4 @@ Out of scope for this test is variation on the prompt. This is because it is alr
 
 This article had been sitting in my brain for several months, but it was spurred by a recent event.
 
-On Monday August 11th, 2025, Microsoft killed the Bing Search API.  This was largely ignored by the technical community, but the death of this product has an outsize impact on the quality of augmented web knowledge applications.  You can use it as part of “grounding” for their AI thing in Azure - but it removes the flexibility that I and many others need (and it’s stupid expensive).  For shame Microsoft!  This leaves Brave.  Their coverage of the web is not as good as Bing (I estimate 1/5th the scope), but otherwise a decent contender and they have very favorable API terms.
+On Monday August 11th, 2025, Microsoft killed the Bing Search API.  This was largely ignored by the technical community, but the death of this product has an outsize impact on the quality of augmented web knowledge applications.  You can use it as part of “grounding” for their agent API in Azure - but it removes the flexibility that I and many others need (and it’s very expensive).  This leaves Brave.  Their coverage of the web is not as good as Bing (I estimate 1/5th the scope), but otherwise a decent contender and they have very favorable API terms.
