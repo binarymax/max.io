@@ -168,6 +168,10 @@ To recap, use the following lessons when building RAG or a research agent:
 
 I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your RAG prompt template.
 
+## Stay Tuned for Part 2!
+
+Soon, I'll release part 2, where I show how to choose one of the four models by leveraging our interleaved results.
+
 <div class="newspaper is-columns">
   <span class="kicker">The Irwin Gazette | August 18, 2025</span>
   <hr>
