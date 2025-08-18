@@ -4,17 +4,21 @@ date: '2025-08-18'
 author: binarymax
 template: article.pug
 tags: [interleaving,rag,llm,search]
-image: card-image.jpg
-imagewidth: 1250
-imageheight: 800
+image: interleaving-rag-average-result-citations.jpg
+imagewidth: 1920
+imageheight: 1040
 description: Interleaving and Retrieval Augmented Generation (RAG) presents a powerful opportunity to validate the retriever configuration, the model, and the prompt, in one package. In this article I focus on comparing the outcomes of Bing, Google, and Brave search results when using team-draft interleaving in a RAG web research platform.
 ---
 
-Hello friends.  In this post I outline a pragmatic approach to testing RAG with interleaving search results from different retrieval engines, and present some spicy evidence that Google is not a good fit for RAG compared to Bing and Brave in a web research context.
+Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary LLM model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or configurations.
+
+This is an important article, because when a summary is present less people click on results. This means we have less data to use when iterating on retrieval engines and configurations.  Since everyone is showing summaries these days, I outline a pragmatic approach to choosing a search retriever from two or three candidates when using RAG, and how to use interleaving to iterate over configurations with one or more LLMs providing stake in the choice.
+
+Furthermore, I will show that Bing and Brave absolutely TROUNCE Google in a showdown for use as context in a summary, that you need to use multiple pages of results for success, and how to effectively measure outcomes to make retriever decisions.  In part 2, I will outline how to select an LLM using the results we gather in this part 1.
 
 First we ask the question: What kinds of search results work best for an LLM during RAG?  When asking this, the first thing that jumps into most minds is that of relevance. But the answer is more complex.
 
-When exploring the best solution to the above, comparing outcomes of retrieval engine configurations one at a time with A/B testing poses significant challenges. This is because A/B testing and contrasting metrics deny you of understanding true comparative preference, and unless the same queries are used enough by multiple people, the data is too sparse and you are unable to make trustworthy conclusions.
+When exploring the best solution to this question, comparing outcomes of retrieval engine configurations one at a time with A/B testing poses significant challenges. This is because A/B testing and contrasting metrics deny you of understanding true comparative preference, and unless the same queries are used enough by multiple people, the data is too sparse and you are unable to make trustworthy conclusions.
 
 ## Interleaving
 
@@ -84,7 +88,7 @@ An example result from the platform is displayed in Figure 4.  The interleaved r
 
 ![MAX.IO Search Platform example for 'email DMARC SPF'](maxio-search-results-example.png)
 
-_Figure 4_
+_Figure 4: one of the platform examples in the query set "email DMARC SPF", shows interleaved results from the three engines on the left, and the summary with citations in blue on the right._
 
 Here is the process: 
 
@@ -164,14 +168,15 @@ To recap, use the following lessons when building RAG or a research agent:
 
 I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your RAG prompt template.
 
-## But what about the Prompt!?
+<div class="newspaper is-columns">
+  <span class="kicker">The Irwin Gazette | August 18, 2025</span>
+  <hr>
+  <h2 class="newspaper__section-title">Obituaries</h2>  
+  <div class="newspaper__body">
+  	<div style="text-align: center;">Microsoft Bing Search API | July 31, 2009 - August 11th, 2025</div>
+	<p>On Monday August 11th, 2025, Microsoft killed the Bing Search API.  This was largely ignored by the technical community, but the death of this product has an outsize impact on the quality of augmented web knowledge applications.</p>
+	<p>You can use it as part of “grounding” for their agent API in Azure - but it removes the flexibility that I and many others need (and it’s very expensive).  This leaves Brave.  Their coverage of the web is not as good as Bing (I estimate 1/5th the scope), but otherwise a decent contender and they have very favorable API terms.</p>
+  </div>
+  <hr>
+</div>
 
-Out of scope for this test was prompt/context engineering and testing variations on the prompt. This is because it was already well tuned back in December 2024.
-
-## Obituary Section
-
-🪦 _RIP Bing Search API_
-
-This article had been sitting in my brain for several months, but it was spurred by a recent event.
-
-On Monday August 11th, 2025, Microsoft killed the Bing Search API.  This was largely ignored by the technical community, but the death of this product has an outsize impact on the quality of augmented web knowledge applications.  You can use it as part of “grounding” for their agent API in Azure - but it removes the flexibility that I and many others need (and it’s very expensive).  This leaves Brave.  Their coverage of the web is not as good as Bing (I estimate 1/5th the scope), but otherwise a decent contender and they have very favorable API terms.
