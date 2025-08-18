@@ -170,7 +170,8 @@ I propose in fact, having two snippet versions per result: one for people and on
 
 ## Stay Tuned for Part 2!
 
-Soon, I'll release part 2, where I show how to choose one of the four models by leveraging our interleaved results.
+Soon, I'll release part 2, where I show how to choose one of the four models by leveraging our interleaved results. Also I'd like to as a favor - please [share this article](https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/)! Get in touch with me on [LinkedIn](https://www.linkedin.com/in/maxirwin/) if you are interested in discussing more, or if you'd like some help integrating these or other techniques into your products.
+
 
 <div class="newspaper is-columns">
   <span class="kicker">The Irwin Gazette | August 18, 2025</span>
