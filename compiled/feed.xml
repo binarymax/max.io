@@ -36,7 +36,7 @@
 &lt;li&gt;We use that final set as the results to display to the user&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;This is powerful, because we also make use of &lt;strong&gt;credit assignment&lt;/strong&gt;.  If a user interacts with one of the results, we remember which team it came from, and we give that team points.  Over some time, with hundreds or thousands of queries, we can tally the points and see which team performs better.  Since a winning team represents a search engine configuration, we promote that configuration and use it exclusively until we want to run another test.&lt;/p&gt;
-&lt;p&gt;Interestingly, interleaving results for presents a comprehensive solution to not only tune and measure actual relevance, but also tune &lt;em&gt;perceived relevance&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Interestingly, interleaving results for LLMs presents a comprehensive solution to not only tune and measure actual relevance, but also tune &lt;em&gt;perceived relevance&lt;/em&gt;.&lt;/p&gt;
 &lt;h2 id=&quot;perceived-relevance&quot;&gt;Perceived Relevance&lt;/h2&gt;
 &lt;p&gt;The difference between actual vs perceived relevance is fascinating. The former is the empirical truth of whether or not the result contains the information necessary to satisfy the query.  Perceived relevance on the other hand, is whether or not the person looking at a search result can tell whether or not it likely contains the answer.  It’s easy to understand when we’re shown a picture.&lt;/p&gt;
 &lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/search-result-comparisson.jpg&quot; alt=&quot;Comparing how a result is displayed for Google, Bing, and Brave&quot;&gt;&lt;/p&gt;
