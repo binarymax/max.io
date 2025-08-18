@@ -44,7 +44,7 @@ The process:
 
 This is powerful, because we also make use of __credit assignment__.  If a user interacts with one of the results, we remember which team it came from, and we give that team points.  Over some time, with hundreds or thousands of queries, we can tally the points and see which team performs better.  Since a winning team represents a search engine configuration, we promote that configuration and use it exclusively until we want to run another test.
 
-Interestingly, interleaving results for presents a comprehensive solution to not only tune and measure actual relevance, but also tune _perceived relevance_.
+Interestingly, interleaving results for LLMs presents a comprehensive solution to not only tune and measure actual relevance, but also tune _perceived relevance_.
 
 ## Perceived Relevance
 
