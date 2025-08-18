@@ -116,7 +116,7 @@
 &lt;/ol&gt;
 &lt;p&gt;I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your RAG prompt template.&lt;/p&gt;
 &lt;h2 id=&quot;stay-tuned-for-part-2-&quot;&gt;Stay Tuned for Part 2!&lt;/h2&gt;
-&lt;p&gt;Soon, I’ll release part 2, where I show how to choose one of the four models by leveraging our interleaved results.&lt;/p&gt;
+&lt;p&gt;Soon, I’ll release part 2, where I show how to choose one of the four models by leveraging our interleaved results. Also I’d like to as a favor - please &lt;a href=&quot;https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/&quot;&gt;share this article&lt;/a&gt;! Get in touch with me on &lt;a href=&quot;https://www.linkedin.com/in/maxirwin/&quot;&gt;LinkedIn&lt;/a&gt; if you are interested in discussing more, or if you’d like some help integrating these or other techniques into your products.&lt;/p&gt;
 &lt;div class=&quot;newspaper is-columns&quot;&gt;
   &lt;span class=&quot;kicker&quot;&gt;The Irwin Gazette | August 18, 2025&lt;/span&gt;
   &lt;hr&gt;
