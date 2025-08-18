@@ -5,9 +5,526 @@
     <atom:link href="https://maxirwin.com/feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>https://maxirwin.com</link>
     <description></description>
-    <pubDate>Sat, 21 Jun 2025 20:00:00 -0400</pubDate>
+    <pubDate>Sun, 17  Aug 2025 20:00:00 -0400</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>Interleaving for Retrieval Augmented Generation</title>
+      <link>https://maxirwin.com/articles/interleaving-rag/</link>
+      <pubDate>Sun, 17  Aug 2025 20:00:00 -0400</pubDate>
+      <guid isPermaLink="true">https://maxirwin.com/articles/interleaving-rag/</guid>
+      <author></author>
+      <description>&lt;p&gt;Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary LLM model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or configurations.&lt;/p&gt;
+&lt;p&gt;This is an important article, because when a summary is present less people click on results. This means we have less data to use when iterating on retrieval engines and configurations.  Since everyone is showing summaries these days, I outline a pragmatic approach to choosing a search retriever from two or three candidates when using RAG, and how to use interleaving to iterate over configurations with one or more LLMs providing stake in the choice.&lt;/p&gt;
+&lt;p&gt;Furthermore, I will show that Bing and Brave absolutely TROUNCE Google in a showdown for use as context in a summary, that you need to use multiple pages of results for success, and how to effectively measure outcomes to make retriever decisions.  In part 2, I will outline how to select an LLM using the results we gather in this part 1.&lt;/p&gt;
+&lt;p&gt;First we ask the question: What kinds of search results work best for an LLM during RAG?  When asking this, the first thing that jumps into most minds is that of relevance. But the answer is more complex.&lt;/p&gt;
+&lt;p&gt;When exploring the best solution to this question, comparing outcomes of retrieval engine configurations one at a time with A/B testing poses significant challenges. This is because A/B testing and contrasting metrics deny you of understanding true comparative preference, and unless the same queries are used enough by multiple people, the data is too sparse and you are unable to make trustworthy conclusions.&lt;/p&gt;
+&lt;h2 id=&quot;interleaving&quot;&gt;Interleaving&lt;/h2&gt;
+&lt;p&gt;Interleaving, the process of blending the query results of two or more engines into the same result set, gives us easy to obtain insights into the relevance of search results and the behavior of LLMs for knowledge summaries, and allows us to craft our results to align better with successful outcomes. Interleaving also avoids error prone independent comparisons and long-tail sparsity problems that pop up with A/B testing.&lt;/p&gt;
+&lt;p&gt;Before we add LLMs into the mix, first we need to describe how interleaving works.&lt;/p&gt;
+&lt;h3 id=&quot;team-draft-interleaving-and-credit-assignment&quot;&gt;Team Draft Interleaving and credit assignment&lt;/h3&gt;
+&lt;p&gt;Here is a simple illustration and step-by-step overview that show the team-draft interleaving process.  Team-draft is a certain type of interleaving, which I first learned from an incredible talk by the Wikimedia search team way back in 2018.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/team-draft-interleaving.png&quot; alt=&quot;Team Draft Interleaving&quot;&gt;&lt;/p&gt;
+&lt;p&gt;The process:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;We take a search query from a user&lt;/li&gt;
+&lt;li&gt;We send the query to two different engines&lt;/li&gt;
+&lt;li&gt;We pick a team at random, and add their first result to the set&lt;/li&gt;
+&lt;li&gt;We then take the first result of the other team&lt;/li&gt;
+&lt;li&gt;If the result was already added by someone, we skip it and take the next&lt;/li&gt;
+&lt;li&gt;We alternate picking results from each team until the end of both&lt;/li&gt;
+&lt;li&gt;We use that final set as the results to display to the user&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;This is powerful, because we also make use of &lt;strong&gt;credit assignment&lt;/strong&gt;.  If a user interacts with one of the results, we remember which team it came from, and we give that team points.  Over some time, with hundreds or thousands of queries, we can tally the points and see which team performs better.  Since a winning team represents a search engine configuration, we promote that configuration and use it exclusively until we want to run another test.&lt;/p&gt;
+&lt;p&gt;Interestingly, interleaving results for presents a comprehensive solution to not only tune and measure actual relevance, but also tune &lt;em&gt;perceived relevance&lt;/em&gt;.&lt;/p&gt;
+&lt;h2 id=&quot;perceived-relevance&quot;&gt;Perceived Relevance&lt;/h2&gt;
+&lt;p&gt;The difference between actual vs perceived relevance is fascinating. The former is the empirical truth of whether or not the result contains the information necessary to satisfy the query.  Perceived relevance on the other hand, is whether or not the person looking at a search result can tell whether or not it likely contains the answer.  It’s easy to understand when we’re shown a picture.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/search-result-comparisson.jpg&quot; alt=&quot;Comparing how a result is displayed for Google, Bing, and Brave&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Figure 2: Which result would you choose for the query?&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Before we were all spoon fed summaries en masse at the top of our results, we actually had to look at results and make decisions with our brains.  Optimizing perceived relevance is key to making this easy for us by showing concise information about the results so we can decide what to click.&lt;/p&gt;
+&lt;p&gt;To illustrate the benefits of perceived relevance, consider an extreme example: imagine you are only presented with a list of page links as search results with no other data. Assume these are in varying order of relevance with at least one or more containing the information you need.  How can you tell which are relevant? You have to click on every result until you see the answer. This example has poor perceived relevance.&lt;/p&gt;
+&lt;p&gt;Now another extreme: each result in the list shows the entire document and you are presented with thousands of sentences to exhaustingly scroll through while hunting for what you need. This is also poor perceived relevance because again, it is difficult to tell immediately and requires significant effort.&lt;/p&gt;
+&lt;p&gt;Compare these extremes with what is typically presented: a title, a url, a short contextual snippet, and perhaps a date of publication. This allows one to scan the results and make a very quick decision on which is best before continuing further:&lt;/p&gt;
+&lt;p&gt;Google, Bing, and Brave all provide clear information that gives you enough information to make a decision on whether to click on the result. Only two snippets provide exactly the definition for the term, and only two provide extra text.  You can already see where this is going.  In this case, Bing’s snippet will be useless to an LLM for summarization.&lt;/p&gt;
+&lt;h2 id=&quot;snippets-for-llms&quot;&gt;Snippets for LLMs&lt;/h2&gt;
+&lt;p&gt;LLMs behave differently than people. And while we can drop entire documents into an LLM for a summary, it’s unnecessary and expensive, and will add noise and irrelevant information - especially for trivial queries.  So we look to optimize what to gather for context when summarizing a list of results.  In essence we need a concept of perceived relevance for LLMs.&lt;/p&gt;
+&lt;p&gt;In general, the following holds: longer snippets yield better summaries.  They reduce hallucinations and improve coverage of the answer.  However if the snippets are too long, noisy tangential or irrelevant information can creep into the summary.&lt;/p&gt;
+&lt;p&gt;Additionally, while there are plenty of LLM-as-a-judge theses out there, I posit that doing this separately is a waste of time for RAG.  LLM summaries work perfectly fine over dozens of results en lieu of a well tuned top list of 4 or 5.  In effect, extreme relevance tuning becomes less important when a summary is presented, because the LLM skips the irrelevant results for you. Thus, when validating the quality of a RAG summary with citations, you also get judgements as a bonus.&lt;/p&gt;
+&lt;p&gt;We consider these two areas: optimizing context and tuning result relevance, by interleaving results and scoring the summary. This yields important information and enables you to naturally gravitate to the best retrieval configuration.&lt;/p&gt;
+&lt;p&gt;One more illustration (Figure 3) before diving into the experiment, contrasting the approach of A/B testing versus Interleaving for RAG.  The benefit becomes clear: the LLM will give credit assignment for the interleaved results when cited, compared to A/B testing which is much harder to measure for RAG.  In A/B testing the summaries will be different for each team, leaving you wondering what the summary would be when the LLM is presented with both sets at once.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/ab-rag-versus-interleaving-rag.png&quot; alt=&quot;A/B vs Interleaving for RAG&quot;&gt;&lt;/p&gt;
+&lt;h2 id=&quot;experiments-for-web-search-summaries&quot;&gt;Experiments for web search summaries&lt;/h2&gt;
+&lt;p&gt;I present the following evidence in the context of RAG for web search. I used &lt;strong&gt;976&lt;/strong&gt; actual search queries, three interleaved engines of &lt;em&gt;Google, Bing, and Brave&lt;/em&gt; as retrievers, and four LLM models ( &lt;em&gt;Claude Haiku 3.5, Claude Sonnet 4, GPT-4.1, and GPT-4.1-Mini&lt;/em&gt; ) for summarization.  We know that these three engines are already tuned for relevance, and we know these models are state of the art for summarization. We can cross compare them by observing the outcome of the LLM summaries.&lt;/p&gt;
+&lt;p&gt;The search queries were captured over the past 6 months by users in their casual use of a research engine I built.  They are all from anonymous sources and I scrubbed them of PII (which were mostly vanity searches - you know who you are!). The queries were primarily in English, with a handful of German, Polish, Hebrew, and Armenian.  Overall they were a mix of technical, medical, legal, general research, and trivial queries. To remove bias I excluded news, politics, sports, and anything I found to be spicy.  I was left with a nice set of 976 unique and real queries from dozens of actual people.  I will note potential bias in the query list, in that the engine is primarily used by me, and my queries account for just more than half.  Even with this note the queries were always in real scenarios for my actual day-to-day use and not tests.&lt;/p&gt;
+&lt;p&gt;An example result from the platform is displayed in Figure 4.  The interleaved results for the three engines are on the left, and the summary on the right.  The 27 interleaved results are cropped down to 6 in the image.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/maxio-search-results-example.png&quot; alt=&quot;MAX.IO Search Platform example for &amp;#39;email DMARC SPF&amp;#39;&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Figure 4: one of the platform examples in the query set “email DMARC SPF”, shows interleaved results from the three engines on the left, and the summary with citations in blue on the right.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Here is the process: &lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;A query is run against all three engines Google, Bing, and Brave.&lt;/li&gt;
+&lt;li&gt;None of the engine results contain ads, as I used their official paid APIs to avoid them.&lt;/li&gt;
+&lt;li&gt;The results are combined into a single set using team-draft interleaving.&lt;/li&gt;
+&lt;li&gt;Each positional result in the interleaved set maintains its source engine name for credit assignment later on.&lt;/li&gt;
+&lt;li&gt;The interleaved results are formatted into a summary prompt template.&lt;/li&gt;
+&lt;li&gt;The prompt is sent to the LLM and the output streamed back to the system.&lt;/li&gt;
+&lt;li&gt;The output contains summary passages with citations of the search results.&lt;/li&gt;
+&lt;li&gt;A citation assigns credit to the engine that provided the result.&lt;/li&gt;
+&lt;li&gt;The process is repeated for all 976 the queries in the list and the outcomes tallied.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;h2 id=&quot;results&quot;&gt;Results&lt;/h2&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/interleaving-rag-average-result-citations.jpg&quot; alt=&quot;RAG: Average Result Citations per Engine&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Figure 5: Average credit assignment of citations to the respective retriever across all 4 models.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;In Figure 5, we can clearly see the engine with the most citations is Bing by a significant margin, followed by Brave, and deeply lagging in third is Google.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/interleaving-rag-first-result-citations.jpg&quot; alt=&quot;RAG: Who gets cited first?&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Figure 6: First only credit assignment of citations to the respective retriever across all 4 models.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;Figure 6 shows results for who got cited first (and then stops). This only takes the first citation found in the summary and assigns credit to the engine that provided it. Again, the difference is clear with Bing far in the lead - however GPT has Google in a closer second place. An important note: all three had an equal chance of appearing as the first result in the list due to team-draft selection, and Bing still overcomes this by a wide margin.&lt;/p&gt;
+&lt;p&gt;Why is Google so far behind? Do we not assume that it is the world’s best search engine? The answer becomes clear when we dig: for all results across all searches, the average length of a Google result snippet is 155 characters, while the average lengths of Bing and Brave are 293 and 253, respectively.  This is the analogous “perceived relevance” for LLMs, but really it’s just that there isn’t enough context available for the model to use when generating the summary.  This comparison is illustrated in Figure 7.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/interleaving-rag-average-result-length.jpg&quot; alt=&quot;RAG: Average Snippet Length for Cited Results per Engine&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Figure 7: Average character length (in bytes) for each engine’s snippets&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;This shows a direct correlation. The shorter snippets are very likely responsible for the LLM to pass over Google in favor of Bing’s and Brave’s longer snippets. Note the snippet length is only counted for results that are cited in the summary. Table 1 contains the raw numbers for Figures 5, 6, and 7.&lt;/p&gt;
+&lt;table class=&quot;datasheet&quot;&gt;
+&lt;thead&gt;
+&lt;tr&gt;&lt;th colspan=2&gt;&amp;nbsp&lt;/th&gt;&lt;th colspan=3&gt;Bing&lt;/th&gt;&lt;th colspan=3&gt;Google&lt;/th&gt;&lt;th colspan=3&gt;Brave&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;th&gt;model&lt;/th&gt;&lt;th&gt;type&lt;/th&gt;&lt;th&gt;cited&lt;/th&gt;&lt;th&gt;cited_avg&lt;/th&gt;&lt;th&gt;char_avg&lt;/th&gt;&lt;th&gt;cited&lt;/th&gt;&lt;th&gt;cited_avg&lt;/th&gt;&lt;th&gt;char_avg&lt;/th&gt;&lt;th&gt;cited&lt;/th&gt;&lt;th&gt;cited_avg&lt;/th&gt;&lt;th&gt;char_avg&lt;/th&gt;&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt;claude-3-5-haiku&lt;/td&gt;&lt;td&gt;Once&lt;/td&gt;&lt;td&gt;2872&lt;/td&gt;&lt;td&gt;2.9&lt;/td&gt;&lt;td&gt;300.3&lt;/td&gt;&lt;td&gt;1575&lt;/td&gt;&lt;td&gt;1.6&lt;/td&gt;&lt;td&gt;155.6&lt;/td&gt;&lt;td&gt;2529&lt;/td&gt;&lt;td&gt;2.6&lt;/td&gt;&lt;td&gt;286.8&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;claude-3-5-haiku&lt;/td&gt;&lt;td&gt;First&lt;/td&gt;&lt;td&gt;3929&lt;/td&gt;&lt;td&gt;4.0&lt;/td&gt;&lt;td&gt;304.8&lt;/td&gt;&lt;td&gt;1831&lt;/td&gt;&lt;td&gt;1.9&lt;/td&gt;&lt;td&gt;155.7&lt;/td&gt;&lt;td&gt;3115&lt;/td&gt;&lt;td&gt;3.2&lt;/td&gt;&lt;td&gt;292.1&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;claude-sonnet-4&lt;/td&gt;&lt;td&gt;Once&lt;/td&gt;&lt;td&gt;4709&lt;/td&gt;&lt;td&gt;4.8&lt;/td&gt;&lt;td&gt;290.9&lt;/td&gt;&lt;td&gt;3064&lt;/td&gt;&lt;td&gt;3.1&lt;/td&gt;&lt;td&gt;155.1&lt;/td&gt;&lt;td&gt;5019&lt;/td&gt;&lt;td&gt;5.1&lt;/td&gt;&lt;td&gt;277.4&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;claude-sonnet-4&lt;/td&gt;&lt;td&gt;First&lt;/td&gt;&lt;td&gt;7841&lt;/td&gt;&lt;td&gt;8.0&lt;/td&gt;&lt;td&gt;298.7&lt;/td&gt;&lt;td&gt;3974&lt;/td&gt;&lt;td&gt;4.1&lt;/td&gt;&lt;td&gt;155.6&lt;/td&gt;&lt;td&gt;7099&lt;/td&gt;&lt;td&gt;7.3&lt;/td&gt;&lt;td&gt;286.1&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;gpt-4.1&lt;/td&gt;&lt;td&gt;Once&lt;/td&gt;&lt;td&gt;5691&lt;/td&gt;&lt;td&gt;5.8&lt;/td&gt;&lt;td&gt;286.2&lt;/td&gt;&lt;td&gt;3357&lt;/td&gt;&lt;td&gt;3.4&lt;/td&gt;&lt;td&gt;155.1&lt;/td&gt;&lt;td&gt;6370&lt;/td&gt;&lt;td&gt;6.5&lt;/td&gt;&lt;td&gt;271.3&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;gpt-4.1&lt;/td&gt;&lt;td&gt;First&lt;/td&gt;&lt;td&gt;13455&lt;/td&gt;&lt;td&gt;13.8&lt;/td&gt;&lt;td&gt;292.6&lt;/td&gt;&lt;td&gt;6206&lt;/td&gt;&lt;td&gt;6.4&lt;/td&gt;&lt;td&gt;156.0&lt;/td&gt;&lt;td&gt;13385&lt;/td&gt;&lt;td&gt;13.7&lt;/td&gt;&lt;td&gt;281.6&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;gpt-4.1-mini&lt;/td&gt;&lt;td&gt;Once&lt;/td&gt;&lt;td&gt;5631&lt;/td&gt;&lt;td&gt;5.8&lt;/td&gt;&lt;td&gt;288.3&lt;/td&gt;&lt;td&gt;3709&lt;/td&gt;&lt;td&gt;3.8&lt;/td&gt;&lt;td&gt;155.2&lt;/td&gt;&lt;td&gt;6630&lt;/td&gt;&lt;td&gt;6.8&lt;/td&gt;&lt;td&gt;270.4&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;gpt-4.1-mini&lt;/td&gt;&lt;td&gt;First&lt;/td&gt;&lt;td&gt;11276&lt;/td&gt;&lt;td&gt;11.6&lt;/td&gt;&lt;td&gt;293.4&lt;/td&gt;&lt;td&gt;6170&lt;/td&gt;&lt;td&gt;6.3&lt;/td&gt;&lt;td&gt;155.7&lt;/td&gt;&lt;td&gt;11753&lt;/td&gt;&lt;td&gt;12.0&lt;/td&gt;&lt;td&gt;278.1&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+&lt;p&gt;&lt;em&gt;Table 1: search result citations and snippet length per model and method, for 976 search queries&lt;/em&gt;&lt;/p&gt;
+&lt;h2 id=&quot;cited-position-analysis&quot;&gt;Cited Position Analysis&lt;/h2&gt;
+&lt;p&gt;We can also garner some keen insights on relevance from a histogram of result positions cited, regardless of engine.  My research application uses lots of results for RAG.  Upwards of 40.  I do this because I learned early on in its development that relevant results often appeared past the first page of 10.  This is illustrated with histograms of cited position for each model.  You can clearly see that &amp;gt;10 holds significant input.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/interleaving-rag-positions-claude-3.5-haiku.png&quot; alt=&quot;Search positions cited by Claude Haiku 3.5&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/interleaving-rag-positions-claude-sonnet-4.png&quot; alt=&quot;Search positions cited by Claude Sonnet 4&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/interleaving-rag-positions-gpt-4.1.png&quot; alt=&quot;Search positions cited by OpenAI GPT-4.1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/interleaving-rag/interleaving-rag-positions-gpt-4.1-mini.png&quot; alt=&quot;Search positions cited by OpenAI GPT-4.1-mini&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Spicy takes: 🌶️ The summaries of Google, Bing, and Brave in their own sites fall short because they assume all the good stuff is at the top.  It’s not.  You must dig deep.  There’s gold buried on the 2nd and 3rd pages!  In addition, agents using web search such as ChatGPT only look at the top several results from Google before making a decision on what to download and include in a deeper context inference. They produce mediocre research due to this lack of depth in scope.&lt;/p&gt;
+&lt;h2 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h2&gt;
+&lt;p&gt;To recap, use the following lessons when building RAG or a research agent:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Make your snippets longer for the LLM, because cutting them short may leave critical information out of the summary.&lt;/li&gt;
+&lt;li&gt;Don’t worry too much about the top 5 documents, and give your LLM several pages of results. You can reorder the result on the page according to citation order.  This will vastly improve the outcome, and we saw that even the best tuned engines don’t cut it on the first page.&lt;/li&gt;
+&lt;li&gt;Iterate and tune by interleaving different versions of your retriever configuration and see which works best for the LLM.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your RAG prompt template.&lt;/p&gt;
+&lt;div class=&quot;newspaper is-columns&quot;&gt;
+  &lt;span class=&quot;kicker&quot;&gt;The Irwin Gazette | August 18, 2025&lt;/span&gt;
+  &lt;hr&gt;
+  &lt;h2 class=&quot;newspaper__section-title&quot;&gt;Obituaries&lt;/h2&gt;  
+  &lt;div class=&quot;newspaper__body&quot;&gt;
+      &lt;div style=&quot;text-align: center;&quot;&gt;Microsoft Bing Search API | July 31, 2009 - August 11th, 2025&lt;/div&gt;
+    &lt;p&gt;On Monday August 11th, 2025, Microsoft killed the Bing Search API.  This was largely ignored by the technical community, but the death of this product has an outsize impact on the quality of augmented web knowledge applications.&lt;/p&gt;
+    &lt;p&gt;You can use it as part of “grounding” for their agent API in Azure - but it removes the flexibility that I and many others need (and it’s very expensive).  This leaves Brave.  Their coverage of the web is not as good as Bing (I estimate 1/5th the scope), but otherwise a decent contender and they have very favorable API terms.&lt;/p&gt;
+  &lt;/div&gt;
+  &lt;hr&gt;
+&lt;/div&gt;
+
+</description>
+    </item>
+    <item>
+      <title>How to really scale autocomplete</title>
+      <link>https://maxirwin.com/articles/how-to-really-scale-autocomplete/</link>
+      <pubDate>Fri, 18 Jul 2025 00:00:00 -0400</pubDate>
+      <guid isPermaLink="true">https://maxirwin.com/articles/how-to-really-scale-autocomplete/</guid>
+      <author></author>
+      <description>&lt;p&gt;A straightforward guide to scaling an autocomplete solution in Elasticsearch or OpenSearch.&lt;/p&gt;
+&lt;hr&gt;
+&lt;p&gt;How to really scale autocomplete
+A straightforward guide to scaling an autocomplete solution in Elasticsearch or OpenSearch.
+Last time, in Part 1, “How To Really Do Autocomplete”, we covered a straightforward technique to build a quality autocomplete solution in pure Elasticsearch or OpenSearch. We used the significant_terms aggregation to provide diverse and helpful suggestions of words and phrases to help guide the user while they are typing a query. In this part, we’ll scale it up to 6 million documents, and get 500 autocompletes-per-second at 30ms latency on a cluster that most teams probably run already.
+Here’s what we’re going to build:
+Your browser does not support the video tag.
+Our adventure continues
+While Part 1 worked well and offered good suggestions for small datasets, it didn’t scale for phrases the way I had it configured. The sweet spot for significant_phrases from Part 1 was for tens of thousands of docs. It turns out that as you add more and more documents and increase the variance and cardinality of the vocabulary, aggregating significant_terms on shingles gets really slow. And that’s not fun.
+I found this out because I was working on load testing a vector search cluster, and I had finished my goals for the week. I had millions of Wikipedia documents and vectors loaded into a nice set of data nodes. I wanted to get an index time comparison for lexical ingestion without vectors anyway, so I went side questing for an afternoon and said, “let’s scale autocomplete, baby!” It was Friday and that’s how I party.
+I dropped in the components from Part 1 into my schema, turned off KNN, used a super fast Rust indexing client, and 5 minutes of ingestion later I had 6 million Wikipedia titles and abstracts ready for that sweet, sweet autocomplete query.
+Fall from grace
+Sad trombone. It was slow. Not just laggy - but failures everywhere. I tried warming the index but didn’t get very far. CPU started screaming 🔥🔥😱😱 and almost all the queries were timing out. However when it did run, the word suggestions were amazing. They were exactly what I was hoping for, but I was feeling dejected that I might need to sacrifice the quality while getting it to work.
+Success Example
+Note the time. Over 4 seconds for a single autocomplete for ‘tri’. Ouch. Also notice, the phrases aren’t really that good!
+{
+“took”: 4458,
+“timed_out”: false,
+“_shards”: {
+“total”: 2,
+“successful”: 2,
+“skipped”: 0,
+“failed”: 0
+},
+“hits”: { … },
+“aggregations”: {
+“significant_words”: {
+“doc_count”: 167796,
+“bg_count”: 5745033,
+“buckets”: [
+{
+“key”: “tributary”,
+“doc_count”: 21299,
+“score”: 4.207454601569715,
+“bg_count”: 21356
+},
+{
+“key”: “tribe”,
+“doc_count”: 12849,
+“score”: 2.4987201587484775,
+“bg_count”: 13081
+},
+{
+“key”: “trial”,
+“doc_count”: 9878,
+“score”: 1.9174879930694648,
+“bg_count”: 10074
+},
+{
+“key”: “trinity”,
+“doc_count”: 8204,
+“score”: 1.600972838447807,
+“bg_count”: 8324
+},
+{
+“key”: “triple”,
+“doc_count”: 6960,
+“score”: 1.3401736773540918,
+“bg_count”: 7154
+},
+{
+“key”: “trio”,
+“doc_count”: 6701,
+“score”: 1.311448880959107,
+“bg_count”: 6780
+},
+{
+“key”: “trilogy”,
+“doc_count”: 5123,
+“score”: 0.9971466407544656,
+“bg_count”: 5211
+}
+]
+},
+“significant_phrases”: {
+“doc_count”: 167796,
+“bg_count”: 5745033,
+“buckets”: [
+{
+“key”: “tributary _”,
+“doc_count”: 19116,
+“score”: 3.776251688799064,
+“bg_count”: 19167
+},
+{
+“key”: “tributary _ _”,
+“doc_count”: 15915,
+“score”: 3.146240861011439,
+“bg_count”: 15946
+},
+{
+“key”: “tribe _”,
+“doc_count”: 6226,
+“score”: 1.2126146642013433,
+“bg_count”: 6329
+},
+{
+“key”: “trial _”,
+“doc_count”: 5283,
+“score”: 1.0306112391930962,
+“bg_count”: 5362
+}
+]
+}
+}
+}
+Shortly after, I singled out significant_phrases aggregation as the culprit. Just plain unusable when doing an agg and include pattern at that cardinality of millions of docs. Shingles really explodes the set, and sadly it must go. I also wasn’t too pleased with the quality for completions for the titles, so I had to start coming up with replacements for both.
+Rebuild
+I started with the completions analyzer for both titles and text. An out-of-the-box search-as-you-type field on titles works well and is really fast, memory wise looked good, and it was very simple to implement. It’s still using edge_ngrams and shingles behind the scenes, but when isolating on titles and coupled with max shingle size of 3 it performed surprisingly well compared to my custom implementation.
+Even with an updated completions field, however, the page suggestions were still un-tuned for relevance. We need pages in the background - they provide a good match set for the word and phrase suggestion aggregations to ensure good performance, but I wanted to get them somewhat decent. Luckily, the dataset has a ‘views’ column, which is the accumulated number of views for the page. This turned out to be a far better signal for relevance than the completions match_phrase_prefix score, so I use that as the primary ranking feature.
+This is the pages query I arrived at with about 10 minutes of tuning. It can certainly be improved further, but my focus for this exercise was on scaling and not relevance tuning:
+{
+“query”: {
+“function_score”: {
+“query”: {
+“match_phrase_prefix”: {
+“completions”: {
+“query”: q,
+“boost”: 0.01
+}
+}
+},
+“field_value_factor”: {
+“field”: “views”,
+“factor”: 1.0,
+“modifier”: “log1p”,
+“missing”: 0
+},
+“boost_mode”: “sum”
+}
+},
+…
+}
+The next to go was, of course, the significant_phrases aggregations. We don’t need to actually change the schema for this, we just need to change the query, and it is an easy thing to remove. Our replacement is now just a regular terms agg. This works great! It’s fast and honestly much better in terms of quality.
+Here’s how it works: we perform a match of the prefix in the completions field, and that narrows the result set down to thousands of documents from millions. With this narrow scope, the significant_words and phrase terms aggregations are very fast, and the quality is laudable. Here is the aggs portion of the query:
+{
+…
+“aggs”: {
+“significant_words”: {
+“significant_terms”: {
+“field”: “suggest_word_all”,
+“min_doc_count”: 1,
+“include”: q+’.&lt;em&gt;‘
+}
+},
+“significant_phrases”: {
+“terms”: {
+“field”: “suggest_phrase”,
+“order”: { “_count”: “desc” },
+“include”: q+’.&lt;/em&gt;‘,
+“min_doc_count”: 1
+}
+}
+},
+…
+}
+Find out how we can help you.
+Schedule a free consultation to see how we can create a customized plan to meet your search needs.
+Schedule a consultation
+Recovery
+Here’s the new schema and query in their entirety. You’ll notice some fields look slightly different from Part 1, but this is a different dataset. I used the same names of things where appropriate.
+Schema (mappings and settings)
+{
+“mappings”: {
+“properties”: {
+“id”: { “type”: “keyword” },
+“title”: { “type”: “text”,
+“analyzer”: “analyze_english”,
+“copy_to”: [ “completions”, “suggest_word”, “suggest_word_all”, “suggest_phrase” ]
+},
+“text”: { “type”: “text”,
+“analyzer”: “analyze_english”,
+“copy_to”: [ “suggest_word_all” ]
+},
+“url”: { “type”: “keyword” },
+“wiki_id”: { “type”: “keyword” },
+“views”: { “type”: “float” },
+“paragraph_id”: { “type”: “integer” },
+“langs”: { “type”: “keyword” },
+“completions”: {“type”: “search_as_you_type”, “max_shingle_size”: 3 },
+“suggest_word”: {
+“type”: “text”,
+“analyzer”: “analyze_suggest_word”,
+“search_analyzer”: “analyze_suggest_search”,
+“fielddata”: true
+},
+“suggest_word_all”: {
+“type”: “text”,
+“analyzer”: “analyze_suggest_word”,
+“search_analyzer”: “analyze_suggest_search”,
+“fielddata”: true
+},
+“suggest_phrase”: {
+“type”: “text”,
+“analyzer”: “analyze_suggest_phrase”,
+“search_analyzer”: “analyze_suggest_search”,
+“fielddata”: true
+}
+}
+},
+“settings”: {
+“analysis”: {
+“char_filter”: {
+“strip_html”: { “type”: “html_strip” }
+},
+“filter”: {
+“english_stop”: {
+“type”: “stop”,
+“stopwords”: “_english_”
+},
+“english_light_stem” : {
+“type” : “stemmer”,
+“language” : “light_english”
+},
+“english_possessive_stem”: {
+“type”: “stemmer”,
+“language”: “possessive_english”
+},
+“shingles”: {
+“type”: “shingle”,
+“min_shingle_size”: 2,
+“max_shingle_size”: 4,
+“output_unigrams”: false
+}
+},
+“analyzer”: {
+“analyze_english”: {
+“tokenizer”: “standard”,
+“char_filter”: [“html_strip”],
+“filter”: [“lowercase”, “english_possessive_stem”, “english_stop”, “english_light_stem” ]
+},
+“analyze_suggest_word”: {
+“tokenizer”: “standard”,
+“char_filter”: [ “html_strip” ],
+“filter”: [ “lowercase”, “english_stop” ]
+},
+“analyze_suggest_phrase”: {
+“tokenizer”: “standard”,
+“char_filter”: [ “strip_html” ],
+“filter”: [ “lowercase”, “english_stop”, “shingles”, “unique” ]
+},
+“analyze_suggest_search”: {
+“tokenizer”: “standard”,
+“char_filter”: [ “strip_html” ],
+“filter”: [ “lowercase”, “english_stop” ]
+}
+}
+}
+}
+}
+Query
+{
+“query”: {
+“function_score”: {
+“query”: {
+“match_phrase_prefix”: {
+“completions”: {
+“query”: q,
+“boost”: 0.01
+}
+}
+},
+“field_value_factor”: {
+“field”: “views”,
+“factor”: 1.0,
+“modifier”: “log1p”,
+“missing”: 0
+},
+“boost_mode”: “sum”
+}
+},
+“aggs”: {
+“significant_words”: {
+“significant_terms”: {
+“field”: “suggest_word_all”,
+“min_doc_count”: minwords,
+“include”: q+’.&lt;em&gt;‘
+}
+},
+“significant_phrases”: {
+“terms”: {
+“field”: “suggest_phrase”,
+“order”: { “_count”: “desc” },
+“include”: q+’.&lt;/em&gt;‘,
+“min_doc_count”: minwords
+}
+}
+},
+“_source”: {“include”: [“title”, “url” ] },
+“size”: 3
+}
+Most importantly, the results are good AND it scales! I’m getting consistent sub-50ms on a warm index even when I’m hammering the cluster - which I do in the next section.
+Load Testing
+To ensure we’re actually able to handle load, we need to test. And to do so we also need to ensure we’re not just hitting cache.
+I use the following methodology: source a list of thousands of prefixes, and test by running those as our prefix queries at high load. Obtaining prefixes is quite easy. If you’re on Mac or Linux, you have access to the /usr/share/dict/words file. This is a convenient, plaintext, flat dictionary that has various uses. With some Python we can source all the 3-letter and 4-letter prefixes with these 7 lines of code:
+import os
+with open(“/usr/share/dict/words”, “r”, encoding=”utf-8”) as f:
+lines = f.read().lower().splitlines()
+threes = [l[:3] for l in lines if len(l)&amp;gt;2]
+fours = [l[:4] for l in lines if len(l)&amp;gt;3]
+prefixes = list(set(threes + fours))
+print(prefixes)
+This gives us 24509 prefixes in total for the English dictionary.
+With the prefixes, we can run the load test. I used Locust (no affiliation), which is really easy to setup and use with uvx. All we need are the prefixes, the query, and an easy to configure handler.
+🥁🥁🥁 And the results!
+Autocomplete Results
+Look at these numbers. Absolutely beautiful.
+Request Summary (requests/second)
+Namereq/sfailsAvgMinMaxMed
+autocomplete416.020251727525
+Aggregated416.020251727525
+Response Time Percentiles (milliseconds)
+Name50%75%95%99%99.99%100%
+autocomplete23263145130210
+Aggregated23263145130210
+We can see a clear sub-50ms query time at p99, running ~450qps once the concurrency rampup finishes and the index is warm. This is very fast, and very production ready. If you want to isolate your autocomplete infrastructure, you can achieve this on a standalone pair of instances (one for replication) with 4 vCPUs and 8GB RAM each.
+Autocomplete and Vector Search on the same cluster
+Remember earlier in the article, why I had this cluster in the first place? I am also running another large 31M document vector search index. Since I have two different indices, with two different use cases, I ran another test - simultaneous autocomplete and hybrid (lexical+vector+aggs) search load. The QPS number drops which is expected, but I’m very pleased with this result. The cluster will easily support the needs of both search and autocomplete.
+Request Summary (requests/second)
+Namereq/sfailsAvgMinMaxMed
+autocomplete95.330271613126
+hybrid96.420865627984
+Aggregated191.750571627965
+Response Time Percentiles (milliseconds)
+Name50%75%95%99%99.99%100%
+autocomplete26304058130130
+hybrid8492110130280280
+Aggregated6584100120280280
+Implementation Notes
+Here are some important implementation specifics to keep it snappy:
+In most cases, you should use a separate index for autocomplete than your regular search. They have different profiles and scaling needs and the engine will work better when they are separate.
+When the user is typing, don’t send a request for autocomplete immediately - wait 25ms to 50ms for them to pause beforehand. This will save on requests and only suggest when the user briefly pauses to think. Nick told me this is called “debouncing” which was a new fun term for me.
+For your dataset, experiment with your match prefix query and what goes into the completions field. This will make a big impact on the seeded documents from which to draw your aggregations.
+One area to watch is the fielddata property of the aggregation fields. If you have a much larger corpus of documents or your cluster is too small, then you might have to make concessions there.
+Co-Occurrence Sugar
+When your corpus is huge, people have a much harder time understanding what’s available. We can attribute this to the discovery problem: you don’t know what you’re missing, or even if you should be looking. So, as search engineers, we can and should come up with ways to help guide you and show you what’s out there.
+Once you’ve chosen a suggestion from autocomplete, drawn from a corpus of millions, there could be hundreds or thousands of results that match the selection. Yes, relevance tuning should take care of what shows up on the first page, but if our concept is broad there are likely hidden gems buried in the results, and they are left for the user to blindly explore with query refinement.
+We can help improve this discovery with some UX by showing narrow navigation paths using suggestions to help guide the user. We construct another query that uses our selection, and provide more terms for those guide paths. Here’s the query we use. Pass in a pre-selected autocomplete suggestion and experiment with min_doc_count.
+{
+“query”: {
+“bool”: {
+“filter”: {
+“bool”: {
+“should”: [
+{“match_phrase”: {“title”: q}},
+{“match_phrase”: {“text”: q}}
+]
+}
+}
+}
+},
+“aggs”: {
+“significant_words”: {
+“significant_terms”: {
+“field”: “suggest_word_all”,
+“min_doc_count”: 1,
+“exclude”: q
+}
+}
+},
+“size”: 0
+}
+Here are some examples, straight from the engine:
+“elasticsearch”
+[‘kibana’, ‘lucene’, ‘opensearch’, ‘solr’, ‘mongodb’, ‘trino’, ‘dashboards’, ‘postgresql’, ‘sql’]
+“opensearch”
+[‘kibana’, ‘elasticsearch’, ‘dashboards’, ‘dashboard’, ‘visualization’, ‘search’, ‘web’, ‘engines’, ‘data’, ‘source’]
+“solr”
+[‘vufind’, ‘elasticsearch’, ‘blacklight’, ‘repositories’, ‘apache’, ‘indexes’, ‘metadata’, ‘rails’, ‘search’, ‘analytics’]
+“horse”
+[‘horses’, ‘thoroughbred’, ‘stakes’, ‘racehorse’, ‘furlongs’, ‘racecourse’, ‘fillies’, ‘foaled’, ‘bred’, ‘race’]
+“wolf”
+[“wolf’s”, ‘rayet’, ‘lycosidae’, ‘howlin’, ‘pack’, ‘pardosa’, ‘retty’, ‘albach’, ‘canis’, ‘lycodon’]
+“bonsai”
+[‘gartneriet’, ‘vestdal’, ‘penjing’, ‘saikei’, ‘akadama’, ‘zoonami’, ‘elegantissima’, ‘hòn’, ‘osteomeles’]
+“lucene”
+[‘nutch’, ‘elasticsearch’, ‘hadoop’, ‘workflow’, ‘indexing’, ‘apache’, ‘repository’, ‘proprietary’, ‘java’, ‘search’]
+“bidirectional encoder”
+[‘encoder’, ‘nlp’, ‘leveraging’, ‘bidirectional’, ‘transformer’, ‘devlin’, ‘baseline’, ‘transformers’, ‘query’, ‘ubiquitous’]
+“large language model”
+[‘chatgpt’, ‘bigscience’, “openai’s”, ‘gpt’, ‘openai’, ‘megatron’, ‘chatbot’, ‘transformer’, ‘decoder’, ‘lm’]
+We call this co-occurrence of terms. With a fully formed concept, co-occurrence shows which terms appear in the same passages as that concept. Honestly, I could play with this all day. Too bad I need to tear down my test cluster. See you next time!
+Ready to take a closer look at Bonsai?
+Find out if Bonsai is a good fit for you in just 15 minutes.
+Learn how a managed service works and why it’s valuable to dev teams
+You won’t be pressured or used in any manipulative sales tactics
+We’ll get a deep understanding of your current tech stack and needs
+Get all the information you need to decide to continue exploring Bonsai services&lt;/p&gt;
+</description>
+    </item>
     <item>
       <title>Automating Persona Enriched Prompting</title>
       <link>https://maxirwin.com/articles/persona-enriched-prompting/</link>

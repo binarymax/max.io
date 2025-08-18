@@ -58,6 +58,30 @@
       <div class="content-wrap">
         <article class="article intro">
           <header>
+            <p class="date"><span>18. August 2025</span></p>
+            <h2><a href="/articles/interleaving-rag/">Interleaving for Retrieval Augmented Generation</a></h2>
+          </header>
+          <section class="content"><p>Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary <span class="caps">LLM</span> model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or&nbsp;configurations.</p>
+<p>This is an important article, because when a summary is present less people click on results. This means we have less data to use when iterating on retrieval engines and configurations.  Since everyone is showing summaries these days, I outline a pragmatic approach to choosing a search retriever from two or three candidates when using <span class="caps">RAG</span>, and how to use interleaving to iterate over configurations with one or more LLMs providing stake in the&nbsp;choice.</p>
+<p>Furthermore, I will show that Bing and Brave absolutely <span class="caps">TROUNCE</span> Google in a showdown for use as context in a summary, that you need to use multiple pages of results for success, and how to effectively measure outcomes to make retriever decisions.  In part 2, I will outline how to select an LLM using the results we gather in this part&nbsp;1.</p>
+<p>First we ask the question: What kinds of search results work best for an <span class="caps">LLM</span> during RAG?  When asking this, the first thing that jumps into most minds is that of relevance. But the answer is more&nbsp;complex.</p>
+<p>When exploring the best solution to this question, comparing outcomes of retrieval engine configurations one at a time with A/B testing poses significant challenges. This is because A/B testing and contrasting metrics deny you of understanding true comparative preference, and unless the same queries are used enough by multiple people, the data is too sparse and you are unable to make trustworthy&nbsp;conclusions.</p>
+
+            <p class="more"><a href="/articles/interleaving-rag/">more</a></p>
+          </section>
+        </article>
+        <article class="article intro">
+          <header>
+            <p class="date"><span>18. July 2025</span></p>
+            <h2><a href="https://bonsai.io/blog/how-to-really-scale-autocomplete/"><img src="/images/icons/bonsai.io.png" style="height:24px">How to really scale autocomplete</a></h2>
+          </header>
+          <section class="content"><p>A straightforward guide to scaling an autocomplete solution in Elasticsearch or&nbsp;OpenSearch.</p>
+
+          </section>
+          <p class="more"><a href="https://bonsai.io/blog/how-to-really-scale-autocomplete/">bonsai.io<img src="/images/external-link-2.svg" style="width:12px;height:12px;margin-top:2px;margin-left:5px;display:inline-block;"></a></p>
+        </article>
+        <article class="article intro">
+          <header>
             <p class="date"><span>22. June 2025</span></p>
             <h2><a href="/articles/persona-enriched-prompting/">Automating Persona Enriched Prompting</a></h2>
           </header>
