@@ -11,7 +11,9 @@
   "license": "ISC",
   "dependencies": {
     "@anthropic-ai/sdk": "^0.59.0",
+    "compute-histogram": "^0.9.11",
     "dotenv": "^17.2.1",
+    "krippendorff": "^0.1.0",
     "llm-primitives": "^1.5.0",
     "p-limit": "^6.2.0"
   }
