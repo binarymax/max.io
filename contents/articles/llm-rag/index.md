@@ -113,6 +113,10 @@ In other words, if two independent models disagree, who can you trust?  If two i
 
 ### Alpha
 
+Here is the overall likelyhood of agreement.  Numbers closer to 1 indicate very likely probability that the models will agree.  Numbers closer to -1 indicate likelihood of randomness (and not necessarily disagreement).  I read this chart as there is some agreement likelihood.  I use this as a check to make sure that the majority of these numbers are not less than 0 (that would mean I can't trust any of these models to have concensus). I am confident also that this is likely skewed by the two GPT models agreeing due to what we learned with Jaccard and RBO, but that's OK.
+
+![Alpha](./alpha.png)
+
 ### Concept P/R/F1
 
 Precision and Recall is a delicate balance in search. It requires a choice between correctness and coverage.  Some information needs require correctness (such as targeted or trivial answers), and some information needs require coverage (such as survey or broad research).  It is rare to excel at both, and usually you need to choose one or the other.  F1 provides an equal blend of the two, so that is usually the metric you end up going with since you're likely to be in both scenarios.
