@@ -1,5 +1,5 @@
 import fs from 'fs';
-import dotenv from 'dotenv';
+//import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -130,7 +130,7 @@ function aggregate(data) {
   const groups = {};
   data.forEach(row=>{
       const summary = row.model.indexOf('gpt')==0 ? row.summary : row.message.content[0].text;
-      const length = row.search.data.hits.hits;
+      const length = row.search.data.hits.hits.length;
       const citations = getCitedOrder(summary);
       const ratings = getCitedBinary(summary,length);
       groups[row.id]=groups[row.id]||{};
@@ -140,14 +140,16 @@ function aggregate(data) {
   
   const report = {};
 
+  const alphas = [];
+
   for(var id of ids) {
     for(var pair of pairs) {
       const pairid = pair.join('|');
       report[pairid] = report[pairid]||{jaccard:[],rbo:[],alpha:[]};
       const ac = groups[id][pair[0]].citations;
       const bc = groups[id][pair[1]].citations;
-      const ar = groups[id][pair[0]].citations;
-      const br = groups[id][pair[1]].citations;
+      const ar = groups[id][pair[0]].ratings;
+      const br = groups[id][pair[1]].ratings;
       const jaccard = metrics.jaccard(ac,bc);
       const rbo = metrics.rbo(ac,bc);
       const alpha = metrics.alpha([ar,br]);
@@ -155,7 +157,23 @@ function aggregate(data) {
       report[pairid].rbo.push(rbo||0)
       report[pairid].alpha.push(alpha||0);
     }
+
+    let ratingarr = []
+    for(var m of models) {
+      if(!groups[id][m].ratings) console.log(id,m);
+      //else console.log(groups[id][m].ratings.length);
+      ratingarr.push(groups[id][m].ratings.map(r=>r||0));
+    }
+    
+    const ka = metrics.alpha(ratingarr)
+    if(!ka) {
+      console.log(id,ratingarr[0],ratingarr[1],ratingarr[2],ratingarr[3])
+    }
+    alphas.push(metrics.alpha(ratingarr));
+    //break;
   }
+
+  report.alphas = alphas;
 
   return report;
 }
@@ -204,6 +222,12 @@ function toCSV(report) {
     }
     console.log(row.join(','));
   }
+
+}
+
+function toAlphaCSV(report) {
+  const alphacsv = "alpha\n" + report.alphas.join("\n");
+  fs.writeFileSync('alpha.csv',alphacsv,'utf8');
 }
 
 function main() {
@@ -250,7 +274,8 @@ function main() {
   console.log("big_alpha_avg",big_alpha_avg);
   */
 
-  toCSV(report)
+  //toCSV(report)
+  toAlphaCSV(report);
 
 
 }
