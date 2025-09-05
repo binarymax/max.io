@@ -149,6 +149,8 @@ Let’s lay it all out and I’ll make a pick.  But first, which would you choos
 
 #### Make your choice!
 
+Choose what model you would use based on the data above, and I'll reveal my selection!
+
 <style>
 	.llm-choice {
 		font-size: 1.0em;
@@ -171,15 +173,41 @@ Let’s lay it all out and I’ll make a pick.  But first, which would you choos
 	}
 </style>
 
-<form>
+<form id="llm-form">
 	 <button id="haiku35" class="llm-choice">Claude Haiku 3.5</button> 
 	 <button id="sonnet4" class="llm-choice">Claude Sonnet 4</button> 
 	 <button id="gpt41" class="llm-choice">GPT 4.1</button> 
 	 <button id="gpt41mini" class="llm-choice">GPT 4.1-mini</button> 
 </form>
 
-<div class="spoiler">
-I chose <strong><em>GPT-4.1-mini</em></strong>. I made this choice because it is better than Sonnet in the Concept F1 metric, and I see less variance of agreement with its bigger sibling. Comparatively the two Claude models are in violent disagreement, and their accuracy is lower than GPT.  Granted, there is no haiku-4, and the mini model for GPT is likely a distillation of its bigger sibling.
+<div id="spoiler" style="display:none;">
+<p>You chose <strong><em id="chosen"></em></strong></p>
+
+<p>I chose <strong><em>GPT-4.1-mini</em></strong>. I made this choice because it is better than Sonnet in the Concept F1 metric, and I see less variance of agreement with its bigger sibling. Comparatively the two Claude models are in violent disagreement, and their accuracy is lower than GPT.  Granted, there is no haiku-4, and the mini model for GPT is likely a distillation of its bigger sibling.</p>
 </div>
+
+---
+
+<script>
+	(function(){
+		var els = document.querySelectorAll(".llm-choice");
+		els.forEach(el=>{
+			el.addEventListener("click",function(e){
+				e.preventDefault();
+				var id = el.id;
+				document.getElementById("chosen").innerText = el.innerText;
+				document.getElementById("spoiler").style="display:block;";
+				els.forEach(ee=>{
+					ee.style="display:none;";
+				});
+				return null;
+			})
+		});
+		document.getElementById("llm-form").addEventListener("submit",function(e){
+			e.preventDefault();
+			return null;
+		})
+	})()
+</script>
 
 Well that was very informative, and lots of fun.  See kids?  Data science really works!  Now I’m off to implement my model upgrade.  See you next time.
