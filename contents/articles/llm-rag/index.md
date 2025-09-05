@@ -186,7 +186,9 @@ Choose what model you would use based on the data above, and I'll reveal my sele
 <p>I chose <strong><em>GPT-4.1-mini</em></strong>. I made this choice because it is better than Sonnet in the Concept F1 metric, and I see less variance of agreement with its bigger sibling. Comparatively the two Claude models are in violent disagreement, and their accuracy is lower than GPT.  Granted, there is no haiku-4, and the mini model for GPT is likely a distillation of its bigger sibling.</p>
 </div>
 
----
+<noscript>
+	I chose <strong><em>GPT-4.1-mini</em></strong>. I made this choice because it is better than Sonnet in the Concept F1 metric, and I see less variance of agreement with its bigger sibling. Comparatively the two Claude models are in violent disagreement, and their accuracy is lower than GPT.  Granted, there is no haiku-4, and the mini model for GPT is likely a distillation of its bigger sibling.
+</noscript>
 
 <script>
 	(function(){
@@ -209,5 +211,7 @@ Choose what model you would use based on the data above, and I'll reveal my sele
 		})
 	})()
 </script>
+
+---
 
 Well that was very informative, and lots of fun.  See kids?  Data science really works!  Now I’m off to implement my model upgrade.  See you next time.
