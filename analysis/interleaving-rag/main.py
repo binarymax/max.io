@@ -9,9 +9,12 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 import spacy
-nlp = spacy.load('en_core_web_lg')
+nlp = spacy.load(
+    "en_core_web_lg",
+    disable=["parser", "senter", "ner", "entity_ruler", "textcat", "morphologizer", "trainable_lemmatizer"]
+)
 
-def makerecallplot(data):
+def makerecallplot(data,type="concept"):
     # Prepare long-form DataFrame for seaborn (model, recall)
     recall_rows = []
     for model, values in data.items():
@@ -22,12 +25,12 @@ def makerecallplot(data):
     # Create violin plot
     fig = plt.figure(figsize=(10, 6))
     sns.violinplot(x="model", y="recall", data=recall_df, inner="quartile", palette="Set2")
-    plt.title("Recall Distribution per Model")
+    plt.title(f"Recall Distribution per Model ({type})")
     plt.xticks(rotation=25)
     plt.tight_layout()
-    fig.savefig("recall2.png")
+    fig.savefig(f"{type}_recall.png")
 
-def makeprecisionplot(data):
+def makeprecisionplot(data,type="concept"):
     # Prepare long-form DataFrame for seaborn (model, recall)
     precision_rows = []
     for model, values in data.items():
@@ -38,27 +41,27 @@ def makeprecisionplot(data):
     # Create violin plot
     fig = plt.figure(figsize=(10, 6))
     sns.violinplot(x="model", y="precision", data=precision_df, inner="quartile", palette="Set2")
-    plt.title("Precision Distribution per Model")
+    plt.title(f"Precision Distribution per Model ({type})")
     plt.xticks(rotation=25)
     plt.tight_layout()
-    fig.savefig("precision2.png")
+    fig.savefig(f"{type}_precision.png")
 
-def makef1plot(data):
+def makef1plot(data,type="concept"):
     # Prepare long-form DataFrame for seaborn (model, recall)
     f1_rows = []
     for model, values in data.items():
         for p, r in values:
             name = model.replace('-20241022','').replace('-20250514','')
-            f1 = 2*((p*(1-r))/(p+(1-r)))
+            f1 = 2*((p*r)/(p+r))
             f1_rows.append({"model": name, "f1": f1})
     f1_df = pd.DataFrame(f1_rows)
     # Create violin plot
     fig = plt.figure(figsize=(10, 6))
     sns.violinplot(x="model", y="f1", data=f1_df, inner="quartile", palette="Set2")
-    plt.title("F1 Distribution per Model")
+    plt.title(f"F1 Distribution per Model ({type})")
     plt.xticks(rotation=25)
     plt.tight_layout()
-    fig.savefig("f1.png")
+    fig.savefig(f"{type}_f1.png")
 
 citations = re.compile(r"\[[\d]+\]")
 def getcites(summary):
@@ -75,6 +78,14 @@ def getnouns(text):
     [nouns.add(lemma) for lemma in lemmas]
     return nouns
 
+def getlemmas(text):
+    lemmas = set()
+    text = html.unescape(re.sub(r"<.*?>", "", text))
+    doc = nlp(text)
+    words = [token.lemma_.lower() for token in doc]
+    [lemmas.add(lemma) for lemma in words]
+    return lemmas
+
 def getsummary(obj):
     if(obj["model"][:6]=="claude"):
         text = obj["message"]["content"][0]["text"]
@@ -86,7 +97,11 @@ def summarynouns(obj):
     summary = getsummary(obj)
     return getnouns(summary)
 
-def hitnouns(obj,cites):
+def summarylemmas(obj):
+    summary = getsummary(obj)
+    return getlemmas(summary)
+
+def gethittexts(obj,cites):
     texts = []
     for (i,o) in enumerate(obj["search"]["data"]["hits"]["hits"]):
         if i in cites:
@@ -96,9 +111,18 @@ def hitnouns(obj,cites):
                 texts.append(o["title"])
             elif "description" in o:
                 texts.append(o["description"])
+    return texts
+
+
+def hitlemmas(obj,cites):
+    texts = gethittexts(obj,cites)
+    return getlemmas('\n\n'.join(texts))
+
+def hitnouns(obj,cites):
+    texts = gethittexts(obj,cites)
     return getnouns('\n\n'.join(texts))
 
-def load():
+def load(type="concept"):
     models = {}
     with jsonlines.open('interleaving-summaries.jsonl','r') as jl:
         lst = [obj for obj in jl]
@@ -106,34 +130,36 @@ def load():
         if(obj["model"] not in models.keys()):
             models[obj["model"]] = []
         cites = getcites(getsummary(obj))
-        hn = hitnouns(obj,cites)
+        hn = hitnouns(obj,cites) if type=="concept" else hitlemmas(obj,cites)
         if len(hn)>0:
-            sn = summarynouns(obj)
+            sn = summarynouns(obj) if type=="concept" else summarylemmas(obj)
             if len(sn)>0:
                 precision = 1-(len(sn-hn)/len(sn)) #inverse of included nouns
                 recall = 1-(len(hn-sn)/len(hn)) #inverse of missing nouns
                 models[obj["model"]].append((recall,precision))
                 print(precision,recall)
     
-    makerecallplot(models)
-    makeprecisionplot(models)
+    makerecallplot(models,type=type)
+    makeprecisionplot(models,type=type)
+    makef1plot(models,type=type)
 
-    with open('concept_f1.pickle', 'wb') as handle:
+    with open(f'{type}_f1.pickle', 'wb') as handle:
         pickle.dump(models, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
-def report():
-    with open('concept_f1.pickle', 'rb') as handle:
+def report(type="concept"):
+    fn = f'{type}_f1.pickle'
+    with open(fn, 'rb') as handle:
         models = pickle.load(handle)
-    
-    #makerecallplot(models)
-    #makeprecisionplot(models)
-    makef1plot(models)
+
+    makerecallplot(models,type=type)
+    makeprecisionplot(models,type=type)
+    makef1plot(models,type=type)
 
 
 def main():
     print("Hello from interleaving-rag!")
-    #load()
-    report()
+    #load(type="lemma")
+    report(type="lemma")
 
 
 if __name__ == "__main__":
