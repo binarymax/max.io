@@ -63,10 +63,21 @@ function loadData() {
   return data
 }
 
+const sum = (a) => {
+  var t = 0.0;
+  a.forEach(i=>t+=i);
+  return t;  
+}
+
+const avg = (a) => sum(a)/a.length;
+
 function main() {
   const data = loadData();
-  const amount = aggregate(data);
-  console.log(amount);
+  const amounts = aggregate(data);
+  for(var key of Object.keys(amounts)) {
+    console.log(key,sum(amounts[key]).toFixed(2),avg(amounts[key]).toFixed(4));
+  }
+  //console.log(amounts);
 }
 
 main();
