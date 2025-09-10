@@ -1,4 +1,39 @@
 import fs from 'fs';
+import sqlite3 from 'sqlite3';
+sqlite3.verbose();
+
+
+function allAsync(db, sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.all(sql, params, function (err, rows) {
+      if (err) return reject(err);
+      resolve(rows);
+    });
+  });
+}
+
+async function gptCostSummary() {
+  const db = new sqlite3.Database(
+    './cache-backup.sqlite',
+    sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE,
+    (err) => {
+      if (err) throw err;
+    }
+  );
+
+  const sql = `
+    SELECT 
+      model,
+      COUNT(*) AS count,
+      SUM(cost) AS total_cost,
+      AVG(cost) AS avg_cost
+    FROM completions
+    GROUP BY model
+  `;
+
+  return await allAsync(db, sql, []);
+}
+
 
 const pricesPerMillion = {
     "claude-3-5-haiku-20241022": { input: 0.80, output: 4.00 },
@@ -71,12 +106,15 @@ const sum = (a) => {
 
 const avg = (a) => sum(a)/a.length;
 
-function main() {
+async function main() {
+  /*
   const data = loadData();
   const amounts = aggregate(data);
   for(var key of Object.keys(amounts)) {
     console.log(key,sum(amounts[key]).toFixed(2),avg(amounts[key]).toFixed(4));
   }
+  */
+  console.log(await gptCostSummary());
   //console.log(amounts);
 }
 

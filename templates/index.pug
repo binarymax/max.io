@@ -49,7 +49,10 @@ block content
           h2
             a(href=article.url)= article.title
         section.content
-          if article.intro.length > 0
+          // != JSON.stringify(article.metadata,null,2)
+          if article.metadata.description
+            != article.metadata.description
+          else if article.intro.length > 0
             != typogr(article.intro).typogrify()
           if article.hasMore
             p.more

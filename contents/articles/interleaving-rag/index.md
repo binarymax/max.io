@@ -10,6 +10,9 @@ imageheight: 1040
 description: Interleaving and Retrieval Augmented Generation (RAG) presents a powerful opportunity to validate the retriever configuration, the model, and the prompt, in one package. In this article I focus on comparing the outcomes of Bing, Google, and Brave search results when using team-draft interleaving in a RAG web research platform.
 ---
 
+ - Part 1 - Choosing a Retriever
+ - [Part 2 - Choosing a Model](../llm-rag)
+
 Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary LLM model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or configurations.
 
 This is an important article, because when a summary is present less people click on results. This means we have less data to use when iterating on retrieval engines and configurations.  Since everyone is showing summaries these days, I outline a pragmatic approach to choosing a search retriever from two or three candidates when using RAG, and how to use interleaving to iterate over configurations with one or more LLMs providing stake in the choice.
@@ -168,9 +171,9 @@ To recap, use the following lessons when building RAG or a research agent:
 
 I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your RAG prompt template.
 
-## Stay Tuned for Part 2!
+Up next, in part 2 ["Comparing Models for RAG"](../llm-rag), I show how to choose one of the four models by leveraging our interleaved results and a set of metrics.
 
-Soon, I'll release part 2, where I show how to choose one of the four models by leveraging our interleaved results. Also I'd like to as a favor - please [share this article](https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/)! Get in touch with me on [LinkedIn](https://www.linkedin.com/in/maxirwin/) if you are interested in discussing more, or if you'd like some help integrating these or other techniques into your products.
+Also I'd like to as a favor - please [share this article](https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/)! Get in touch with me on [LinkedIn](https://www.linkedin.com/in/maxirwin/) if you are interested in discussing more, or if you'd like some help integrating these or other techniques into your products.
 
 
 <div class="newspaper is-columns">
