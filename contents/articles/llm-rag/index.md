@@ -228,6 +228,7 @@ Comparatively the two Claude models are in violent disagreement, their Concept-F
 				els.forEach(ee=>{
 					ee.style="display:none;";
 				});
+				fetch('/voting-stats/llm-rag/'+id, {method: 'GET'});
 				return null;
 			})
 		});
