@@ -5,16 +5,200 @@
     <atom:link href="https://maxirwin.com/feed.xml" rel="self" type="application/rss+xml"></atom:link>
     <link>https://maxirwin.com</link>
     <description></description>
-    <pubDate>Sun, 17  Aug 2025 20:00:00 -0400</pubDate>
+    <pubDate>Tue, 09 Sep 2025 20:00:00 -0400</pubDate>
     <generator>Wintersmith - https://github.com/jnordberg/wintersmith</generator>
     <language>en</language>
+    <item>
+      <title>Comparing Models for Retrieval Augmented Generation</title>
+      <link>https://maxirwin.com/articles/llm-rag/</link>
+      <pubDate>Tue, 09 Sep 2025 20:00:00 -0400</pubDate>
+      <guid isPermaLink="true">https://maxirwin.com/articles/llm-rag/</guid>
+      <author></author>
+      <description>&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://maxirwin.com/articles/interleaving-rag&quot;&gt;Part 1 - Choosing a Retriever&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Part 2 - Choosing a Model&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Our goal for this part is to choose a model for RAG.  In part 1, &lt;a href=&quot;https://maxirwin.com/articles/interleaving-rag/&quot;&gt;“Interleaving for RAG”&lt;/a&gt; we saw how to use four different models to choose a retriever, but It is nonsensical to use four models for every summary, so we need to pick one!&lt;/p&gt;
+&lt;p&gt;I say “our goal”, but it’s really “my goal”.  Because my search platform is currently using GPT-4o, and I need to move on to something better.  As I write these words I truly don’t know what the answer is. But by the time I get to the end, I will have made a choice and you get to come along for the ride.&lt;/p&gt;
+&lt;h2 id=&quot;methodology&quot;&gt;Methodology&lt;/h2&gt;
+&lt;p&gt;In part 1 we saw how engines compare to one another. In this part we see how models compare to one another.  We do this by looking at the following:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Whether models agree on results to use in the summary&lt;/li&gt;
+&lt;li&gt;Whether the summaries deviate from source material&lt;/li&gt;
+&lt;li&gt;The cost of the summaries&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;For step 2, I also introduce a new and novel metric, to help understand both potential hallucinations and potential summary recall loss.&lt;/p&gt;
+&lt;h3 id=&quot;expectations-and-coverage&quot;&gt;Expectations and Coverage&lt;/h3&gt;
+&lt;p&gt;I do have some preferences in the choice of the model.  I’d like quality summaries that are produced faster and at a lower cost.  With accuracy being equal I will lean to these preferred outcomes. We don’t always get what we want in life (and very rarely in NLP), but we take what we can get! So I’m also looking for justification to use one of the smaller models.&lt;/p&gt;
+&lt;p&gt;First let’s review what we are comparing.&lt;/p&gt;
+&lt;p&gt;We have four models, from two “families”, Anthropic’s Claude and OpenAI’s GPT.  Of these two families we have each a large model: Claude Sonnet 4 vs GPT-4.1, and a fast model: Claude Haiku 3.5 vs GPT-4.1-mini.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Claude Sonnet 4 (Anthropic, large)&lt;/li&gt;
+&lt;li&gt;Claude Haiku 3.5 (Anthropic, small)&lt;/li&gt;
+&lt;li&gt;GPT-4.1 (OpenAI, large)&lt;/li&gt;
+&lt;li&gt;GPT-4.1-mini (OpenAI, small)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;If possible, I want to use a small/fast model for the long term.  Not only because it produces the summary faster, but also because it’s cheaper.&lt;/p&gt;
+&lt;p&gt;Let’s call out the Elephant in the room.  Why isn’t GPT-5 on the list?  Well, I have a very good reason for that.  I stream summary responses to the client (instead of waiting several seconds for the whole thing and the showing it all at once).  OpenAI has decided to require people who want streaming with GPT-5 to submit their biometrics to a 3rd party company as “verification”.  I consider this an overreach on their part.  I won’t do it and if this is the trend with OpenAI I’m happy to take my business elsewhere. GPT-4.1 doesn’t require this nonsense, so it’s a candidate.&lt;/p&gt;
+&lt;p&gt;What about other models? I considered adding Gemini, and maybe I will do a comparison with that model family at some point. There are dozens of models that I could look at, and I stuck with the most popular for this analysis. Were this for a client and not myself, I would certainly have added several other candidates to the mix.&lt;/p&gt;
+&lt;h2 id=&quot;metrics&quot;&gt;Metrics&lt;/h2&gt;
+&lt;p&gt;I use three metrics to understand whether our models choose the same results (and in which priority). These metrics are Jaccard, Rank Biased Overlap, and Krippendorff’s alpha.  To help with summary deviation from context (hallucinations and recall issues). I also introduce a new metric which I’m calling “concept F1”. And I also look at cost.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Jaccard&lt;/strong&gt; compares how much the result choices of two models overlap, regardless of order. This is used to see how much models deviate from each other in the choice they make for results.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Rank Biased Overlap (RBO)&lt;/strong&gt; is similar to Jaccard but takes into account the order or results. This is used to see if models agree on priority of results for the summary.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Krippendorff’s Alpha&lt;/strong&gt; is very different from the other two metrics. It is used to understand probabilistic consensus between two or more judges. We can use alpha to see if all our models are likely to agree with each other on which results are chosen.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Concept F1&lt;/strong&gt; is of my own design and calls forth the NLP ancestral spirits. Its goal is to provide a number for how well the models stick to the source material.  It does this with a rather simple algorithm using one of my favorite NLP tricks: part of speech tagging.  It’s kinda similar to Ragas’ “Context Entities Recall” but goes one step further.  In essence it compares the overlap of cited search results’ nouns to those found in the summary.&lt;/p&gt;
+&lt;p&gt;&lt;strong&gt;Cost&lt;/strong&gt; is easy to understand, but I save it for last to prevent biasing myself early on what is cheaper or more expensive.&lt;/p&gt;
+&lt;p&gt;Why these four metrics (not including cost)? We start from simple to more complex.  While &lt;em&gt;Jaccard&lt;/em&gt; and &lt;em&gt;RBO&lt;/em&gt; are useful, they are simple and only work well when comparing two models.  &lt;em&gt;Alpha&lt;/em&gt; however, we can compare more than two for a probabilistic measure of agreement.  And &lt;em&gt;Concept F1&lt;/em&gt; isn’t looking for agreement between models, but we can compare adherence to the source material per model and use that to help us choose.&lt;/p&gt;
+&lt;p&gt;Importantly this approach is a good mix of agreement, scoring, and business requirements.  This focuses our task into explicit contextual comparisons for exact scenarios, and gives what we need to make an informed choice.&lt;/p&gt;
+&lt;p&gt;I’m also, for a change, not using manual judgements here. I did spend time doing this back in December 2024 when I was building the platform, and quickly found the task meaningless when using Bing, Google, and Brave.  All three engines are really the best in class for relevance. Spending time with manual relevance judgements on Google is not a good use of my time, and I can safely assume the results are relevant.  So really this exercise is about finding whether small models pick the same stuff as big models, whether models adhere to facts, and make an informed choice weighing several factors from a business perspective.&lt;/p&gt;
+&lt;p&gt;I’ll also point out that average is usually a poor representation of behavior in complexity, so we’ll look at histograms and violin plots to get a visual picture for the true differences of all our metrics.  If you take away &lt;em&gt;anything&lt;/em&gt; from this article, it is that you should look at distributions and not averages!&lt;/p&gt;
+&lt;p&gt;Enough talk. On with the show! Here are the results:&lt;/p&gt;
+&lt;h3 id=&quot;jaccard-rbo&quot;&gt;Jaccard &amp;amp; RBO&lt;/h3&gt;
+&lt;p&gt;For Jaccard and RBO, this is the process.  We compare two models at a time, and not all four.&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;For one query, take &lt;em&gt;two&lt;/em&gt; models, and their respective summaries with citations.&lt;/li&gt;
+&lt;li&gt;For each model/summary, get the citation numbers (now we have &lt;em&gt;two&lt;/em&gt; lists of citations - one  per model)&lt;/li&gt;
+&lt;li&gt;Calculate Jaccard&lt;/li&gt;
+&lt;li&gt;Calculate RBO&lt;/li&gt;
+&lt;li&gt;Do this for every query in the list (all 976 of them)&lt;/li&gt;
+&lt;li&gt;Average the Jaccard and RBO results for the model pair&lt;/li&gt;
+&lt;li&gt;Pick another two models and do the process again.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;We plot the histograms of agreement in two different scenarios: family and size.  Up and to the right indicates stronger agreement between two models, and anything else indicates either disagreement or too much variance.&lt;/p&gt;
+&lt;h4 id=&quot;family-agreement&quot;&gt;Family agreement&lt;/h4&gt;
+&lt;p&gt;We compare how well the families agree with one another.  We compare Sonnet vs Haiku, and compare GPT-4.1 vs GPT-4.1 mini:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/llm-rag/agreement-family.jpg&quot; alt=&quot;Jaccard and RBO family agreement&quot;&gt;&lt;/p&gt;
+&lt;p&gt;In this figure we can clearly see that the GPT models have strong affinity with one another.  This is likely due to GPT-4.1-mini being a distilled version of its larger sibling.  Sonnet 4 and Haiku 3.5 don’t seem to agree on which results to pick.&lt;/p&gt;
+&lt;h4 id=&quot;size-agreement&quot;&gt;Size agreement&lt;/h4&gt;
+&lt;p&gt;We compare how well the models of similar size agree with one another.  We compare Sonnet vs GPT-4.1, and compare Haiku vs GPT-4.1 mini:&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;/articles/llm-rag/agreement-size.jpg&quot; alt=&quot;Jaccard and RBO size agreement&quot;&gt;&lt;/p&gt;
+&lt;p&gt;In this figure we can clearly see that the larger models are more likely to agree with one another than the smaller models. This reveals that consensus between the larger models may mean they are more trustworthy in their choice for relevant documents, and the small models less so.&lt;/p&gt;
+&lt;p&gt;In other words, if two independent models disagree, who can you trust?  If two independent models agree, it presents more confidence on their selection.&lt;/p&gt;
+&lt;h3 id=&quot;alpha&quot;&gt;Alpha&lt;/h3&gt;
+&lt;p&gt;For &lt;em&gt;Alpha&lt;/em&gt; the process is a bit different than Jaccard/RBO, since we use all the results for a query and assign 1 or 0 whether it is cited by a model or not (binary relevance). We then look for agreement between two or more models using their respective binary relevance ratings.  We can then take the average of all the alpha agreement measures found.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxirwin.com/articles/llm-rag/alpha.png&quot; alt=&quot;Krippendorff Alpha&quot;&gt;&lt;/p&gt;
+&lt;p&gt;Alpha is the overall &lt;em&gt;likelihood&lt;/em&gt; of agreement.  Numbers closer to 1 indicate very likely probability that the models will agree.  Numbers closer to -1 indicate likelihood of randomness (and not necessarily disagreement).  I read this plot as there is some agreement likelihood.  I use this as a check to make sure that the majority of these numbers are not less than 0 (that would mean I can’t trust any of these models to have consensus). I am confident also that this is likely skewed by the two GPT models agreeing due to what we learned with Jaccard and RBO, but that’s OK.&lt;/p&gt;
+&lt;h2 id=&quot;concept-p-r-f1&quot;&gt;Concept P/R/F1&lt;/h2&gt;
+&lt;p&gt;Here’s how this metric works:&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;Get all the nouns that are found in all the results cited in the summary, and put them in a list. This represents our set of factual concepts.  We expect the summary to use these nouns, and these nouns only.&lt;/li&gt;
+&lt;li&gt;Get all the nouns used in the summary.&lt;/li&gt;
+&lt;li&gt;If the summary uses a noun from the factual concepts, that’s a true positive.&lt;/li&gt;
+&lt;li&gt;If the summary uses a new noun, not seen in the factual concepts, that’s a false positive. I consider this a hallucination (more on this later)&lt;/li&gt;
+&lt;li&gt;If the summary skips a noun from the factual concepts, that’s a false negative. I consider this a loss of recall.&lt;/li&gt;
+&lt;li&gt;With our true positives, false positives, and false negatives, we can calculate Precision, Recall, and F1 for the summary!&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Why is using a new noun a hallucination? We’re not asking the model for its opinion, we’re asking it to compile the list of facts. Therefore we expect the summary output to be just that: a compilation of what was provided by the retriever.  If the model is introducing new concepts (nouns) that the source results material did not provide, that is a deviation from expected behavior and is suspect.&lt;/p&gt;
+&lt;h3 id=&quot;a-quick-note-about-p-r-f1&quot;&gt;A quick note about P/R/F1&lt;/h3&gt;
+&lt;p&gt;Precision and Recall is a delicate balance in search. It requires a choice between correctness and coverage.  Some information needs require correctness (such as targeted or trivial answers), and some information needs require coverage (such as survey or broad research).  It is rare to excel at both, and usually you need to choose one or the other.  F1 provides an equal blend of the two, so that is usually the metric you end up going with since you’re likely to be in both scenarios.&lt;/p&gt;
+&lt;p&gt;For concept scoring, we look at violin plots to show the distribution. Using this visualization is clearer than the histogram, since the details are easier to discern with this plot type. Distributions that clump higher are better for all three plots.&lt;/p&gt;
+&lt;h3 id=&quot;concept-recall&quot;&gt;Concept Recall&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxirwin.com/articles/llm-rag/recall.png&quot; alt=&quot;Recall&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;concept-precision&quot;&gt;Concept Precision&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxirwin.com/articles/llm-rag/precision.png&quot; alt=&quot;Precision&quot;&gt;&lt;/p&gt;
+&lt;h3 id=&quot;concept-f1&quot;&gt;Concept F1&lt;/h3&gt;
+&lt;p&gt;&lt;img src=&quot;https://maxirwin.com/articles/llm-rag/f1.png&quot; alt=&quot;F1&quot;&gt;&lt;/p&gt;
+&lt;p&gt;These three figures make it clear who NOT to pick.  Haiku 3.5 is definitely out of the running.  I am happy with the results of the other 3 though.&lt;/p&gt;
+&lt;h2 id=&quot;business-metric-cost&quot;&gt;Business Metric: Cost&lt;/h2&gt;
+&lt;p&gt;I am already forming an opinion on what to choose, but I’ll save my choice until we see cost. These are the real business factors.&lt;/p&gt;
+&lt;p&gt;This is the last metric, but it might be the most important one.  Because if each query costs a penny each, and your platform has 10000 queries per day, that’s $3000 per month in LLM costs just for the summaries. I’ve ordered these from most expensive to least expensive.&lt;/p&gt;
+&lt;table class=&quot;datasheet&quot; style=&quot;width:100%&quot;&gt;
+&lt;thead&gt;
+&lt;tr&gt;&lt;th&gt; Model&lt;/th&gt;&lt;th&gt;Total cost&lt;/th&gt;&lt;th&gt;Cost Per Query&lt;/th&gt;&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr&gt;&lt;td&gt; claude-sonnet-4-20250514&lt;/td&gt;&lt;td&gt;$15.19&lt;/td&gt;&lt;td&gt;$0.0156&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt; gpt-4.1&lt;/td&gt;&lt;td&gt;$8.02&lt;/td&gt;&lt;td&gt;$0.0082&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt; claude-3-5-haiku-20241022&lt;/td&gt;&lt;td&gt;$3.46&lt;/td&gt;&lt;td&gt;$0.0035&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt; gpt-4.1-mini&lt;/td&gt;&lt;td&gt;$1.69&lt;/td&gt;&lt;td&gt;$0.0017&lt;/td&gt;&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;br&gt;
+
+&lt;p&gt;This blog post cost me $28.36 in LLM API calls. If you like this post and you see me somewhere, you’re welcome to buy me a coffee so I can recoup some costs :)&lt;/p&gt;
+&lt;h2 id=&quot;decision&quot;&gt;Decision&lt;/h2&gt;
+&lt;p&gt;Let’s lay it all out and I’ll make a pick.  But first, which would you choose?  I hid my choice under a spoiler tag. Go ahead and decide what you would do, make a choice and it will reveal what I picked…&lt;/p&gt;
+&lt;h3 id=&quot;make-your-choice-&quot;&gt;Make your choice!&lt;/h3&gt;
+&lt;p&gt;Choose what model you would use based on the data above, and I’ll reveal my selection!&lt;/p&gt;
+&lt;style&gt;
+    .llm-choice {
+        font-size: 1.0em;
+        background-color: #55ccff;
+        border-radius: 5px;
+        border-width: 1px;
+        border-color: #2299ee;
+        padding:5px;
+        padding-left:10px;
+        padding-right:10px;
+    }
+
+    @media (max-width: 690px) {
+        .llm-choice {
+            font-size: 0.8em;
+            padding:2px;
+            padding-left:4px;
+            padding-right:4px;
+        }
+    }
+&lt;/style&gt;
+
+&lt;form id=&quot;llm-form&quot;&gt;
+     &lt;button id=&quot;haiku35&quot; class=&quot;llm-choice&quot;&gt;Claude Haiku 3.5&lt;/button&gt; 
+     &lt;button id=&quot;sonnet4&quot; class=&quot;llm-choice&quot;&gt;Claude Sonnet 4&lt;/button&gt; 
+     &lt;button id=&quot;gpt41&quot; class=&quot;llm-choice&quot;&gt;GPT 4.1&lt;/button&gt; 
+     &lt;button id=&quot;gpt41mini&quot; class=&quot;llm-choice&quot;&gt;GPT 4.1-mini&lt;/button&gt; 
+&lt;/form&gt;
+
+&lt;div id=&quot;spoiler&quot; style=&quot;display:none;&quot;&gt;
+&lt;p&gt;You chose &lt;strong&gt;&lt;em id=&quot;chosen&quot;&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/p&gt;
+
+&lt;p&gt;I chose &lt;strong&gt;&lt;em&gt;GPT-4.1&lt;/em&gt;&lt;/strong&gt;. I made this choice because it is better than Sonnet in the Concept F1 metric, I see less variance of agreement with its littler sibling in case it gets too expensive, and it's also almost half the cost of Sonnet.  I am paying for accuracy here - this is my personal search engine and I want to keep the quality high and the cost is minimal to me.  Were I requiring the scale of thousands of queries per day I'd certainly re-evaluate and likely use a mini model unless I could balance it with revenue.
+
+&lt;p&gt;Comparatively the two Claude models are in violent disagreement, their Concept-F1 is lower than GPT, and they are expensive. So this was a fairly easy decision for me.&lt;/p&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+&lt;noscript&gt;
+&lt;p&gt;I chose &lt;strong&gt;&lt;em&gt;GPT-4.1&lt;/em&gt;&lt;/strong&gt;. I made this choice because it is better than Sonnet in the Concept F1 metric, I see less variance of agreement with its littler sibling in case it gets too expensive, and it's also almost half the cost of Sonnet.  I am paying for accuracy here - this is my personal search engine and I want to keep the quality high and the cost is minimal to me.  Were I requiring the scale of thousands of queries per day I'd certainly re-evaluate and likely use a mini model unless I could balance it with revenue.
+
+&lt;p&gt;Comparatively the two Claude models are in violent disagreement, their Concept-F1 is lower than GPT, and they are expensive. So this was a fairly easy decision for me.&lt;/p&gt;
+&lt;/noscript&gt;&lt;/p&gt;
+&lt;script&gt;
+    (function(){
+        var els = document.querySelectorAll(&quot;.llm-choice&quot;);
+        els.forEach(el=&gt;{
+            el.addEventListener(&quot;click&quot;,function(e){
+                e.preventDefault();
+                var id = el.id;
+                document.getElementById(&quot;chosen&quot;).innerText = el.innerText;
+                document.getElementById(&quot;spoiler&quot;).style=&quot;display:block;&quot;;
+                els.forEach(ee=&gt;{
+                    ee.style=&quot;display:none;&quot;;
+                });
+                return null;
+            })
+        });
+        document.getElementById(&quot;llm-form&quot;).addEventListener(&quot;submit&quot;,function(e){
+            e.preventDefault();
+            return null;
+        })
+    })()
+&lt;/script&gt;
+
+&lt;hr&gt;
+&lt;p&gt;Well that was very informative, and lots of fun.  See kids?  Data science really works!  Now I’m off to implement my model upgrade.  See you next time.&lt;/p&gt;
+</description>
+    </item>
     <item>
       <title>Interleaving for Retrieval Augmented Generation</title>
       <link>https://maxirwin.com/articles/interleaving-rag/</link>
       <pubDate>Sun, 17  Aug 2025 20:00:00 -0400</pubDate>
       <guid isPermaLink="true">https://maxirwin.com/articles/interleaving-rag/</guid>
       <author></author>
-      <description>&lt;p&gt;Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary LLM model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or configurations.&lt;/p&gt;
+      <description>&lt;ul&gt;
+&lt;li&gt;Part 1 - Choosing a Retriever&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://maxirwin.com/articles/llm-rag&quot;&gt;Part 2 - Choosing a Model&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary LLM model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or configurations.&lt;/p&gt;
 &lt;p&gt;This is an important article, because when a summary is present less people click on results. This means we have less data to use when iterating on retrieval engines and configurations.  Since everyone is showing summaries these days, I outline a pragmatic approach to choosing a search retriever from two or three candidates when using RAG, and how to use interleaving to iterate over configurations with one or more LLMs providing stake in the choice.&lt;/p&gt;
 &lt;p&gt;Furthermore, I will show that Bing and Brave absolutely TROUNCE Google in a showdown for use as context in a summary, that you need to use multiple pages of results for success, and how to effectively measure outcomes to make retriever decisions.  In part 2, I will outline how to select an LLM using the results we gather in this part 1.&lt;/p&gt;
 &lt;p&gt;First we ask the question: What kinds of search results work best for an LLM during RAG?  When asking this, the first thing that jumps into most minds is that of relevance. But the answer is more complex.&lt;/p&gt;
@@ -115,8 +299,8 @@
 &lt;li&gt;Iterate and tune by interleaving different versions of your retriever configuration and see which works best for the LLM.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your RAG prompt template.&lt;/p&gt;
-&lt;h2 id=&quot;stay-tuned-for-part-2-&quot;&gt;Stay Tuned for Part 2!&lt;/h2&gt;
-&lt;p&gt;Soon, I’ll release part 2, where I show how to choose one of the four models by leveraging our interleaved results. Also I’d like to as a favor - please &lt;a href=&quot;https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/&quot;&gt;share this article&lt;/a&gt;! Get in touch with me on &lt;a href=&quot;https://www.linkedin.com/in/maxirwin/&quot;&gt;LinkedIn&lt;/a&gt; if you are interested in discussing more, or if you’d like some help integrating these or other techniques into your products.&lt;/p&gt;
+&lt;p&gt;Up next, in part 2 &lt;a href=&quot;https://maxirwin.com/articles/llm-rag&quot;&gt;“Comparing Models for RAG”&lt;/a&gt;, I show how to choose one of the four models by leveraging our interleaved results and a set of metrics.&lt;/p&gt;
+&lt;p&gt;Also I’d like to as a favor - please &lt;a href=&quot;https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/&quot;&gt;share this article&lt;/a&gt;! Get in touch with me on &lt;a href=&quot;https://www.linkedin.com/in/maxirwin/&quot;&gt;LinkedIn&lt;/a&gt; if you are interested in discussing more, or if you’d like some help integrating these or other techniques into your products.&lt;/p&gt;
 &lt;div class=&quot;newspaper is-columns&quot;&gt;
   &lt;span class=&quot;kicker&quot;&gt;The Irwin Gazette | August 18, 2025&lt;/span&gt;
   &lt;hr&gt;

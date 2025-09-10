@@ -54,7 +54,11 @@
     <div id="content">
       <div class="content-wrap">
         <article class="article">
-          <section class="content"><p>Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary <span class="caps">LLM</span> model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or&nbsp;configurations.</p>
+          <section class="content"><ul>
+<li>Part 1 - Choosing a&nbsp;Retriever</li>
+<li><a href="/articles/llm-rag">Part 2 - Choosing a&nbsp;Model</a></li>
+</ul>
+<p>Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary <span class="caps">LLM</span> model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or&nbsp;configurations.</p>
 <p>This is an important article, because when a summary is present less people click on results. This means we have less data to use when iterating on retrieval engines and configurations.  Since everyone is showing summaries these days, I outline a pragmatic approach to choosing a search retriever from two or three candidates when using <span class="caps">RAG</span>, and how to use interleaving to iterate over configurations with one or more LLMs providing stake in the&nbsp;choice.</p>
 <p>Furthermore, I will show that Bing and Brave absolutely <span class="caps">TROUNCE</span> Google in a showdown for use as context in a summary, that you need to use multiple pages of results for success, and how to effectively measure outcomes to make retriever decisions.  In part 2, I will outline how to select an LLM using the results we gather in this part&nbsp;1.</p>
 <p>First we ask the question: What kinds of search results work best for an <span class="caps">LLM</span> during RAG?  When asking this, the first thing that jumps into most minds is that of relevance. But the answer is more&nbsp;complex.</p>
@@ -155,8 +159,8 @@
 <li>Iterate and tune by interleaving different versions of your retriever configuration and see which works best for the&nbsp;<span class="caps">LLM</span>.</li>
 </ol>
 <p>I propose in fact, having two snippet versions per result: one for people and one for LLMs.  Show the former in the result list on the page, and use the latter for your <span class="caps">RAG</span> prompt&nbsp;template.</p>
-<h2 id="stay-tuned-for-part-2-">Stay Tuned for Part&nbsp;2!</h2>
-<p>Soon, I’ll release part 2, where I show how to choose one of the four models by leveraging our interleaved results. Also I’d like to as a favor - please <a href="https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/">share this article</a>! Get in touch with me on <a href="https://www.linkedin.com/in/maxirwin/">LinkedIn</a> if you are interested in discussing more, or if you’d like some help integrating these or other techniques into your&nbsp;products.</p>
+<p>Up next, in part 2 <a href="/articles/llm-rag">“Comparing Models for <span class="caps">RAG</span>”</a>, I show how to choose one of the four models by leveraging our interleaved results and a set of&nbsp;metrics.</p>
+<p>Also I’d like to as a favor - please <a href="https://www.linkedin.com/feed/update/urn:li:share:7363238374230450177/">share this article</a>! Get in touch with me on <a href="https://www.linkedin.com/in/maxirwin/">LinkedIn</a> if you are interested in discussing more, or if you’d like some help integrating these or other techniques into your&nbsp;products.</p>
 <div class="newspaper is-columns">
   <span class="kicker">The Irwin Gazette | August 18, 2025</span>
   <hr>

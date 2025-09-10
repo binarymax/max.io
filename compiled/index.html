@@ -58,15 +58,21 @@
       <div class="content-wrap">
         <article class="article intro">
           <header>
+            <p class="date"><span>10. September 2025</span></p>
+            <h2><a href="/articles/llm-rag/">Comparing Models for Retrieval Augmented Generation</a></h2>
+          </header>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)-->How would you choose a model for RAG? In this article we use a comprehensive set of metrics and good practices to compare and choose the best large language model to power your summaries for Retrieval Augmented Generation.
+            <p class="more"><a href="/articles/llm-rag/">more</a></p>
+          </section>
+        </article>
+        <article class="article intro">
+          <header>
             <p class="date"><span>18. August 2025</span></p>
             <h2><a href="/articles/interleaving-rag/">Interleaving for Retrieval Augmented Generation</a></h2>
           </header>
-          <section class="content"><p>Hello friends. This is part 1 of a two-part series covering retriever interleaving and summary <span class="caps">LLM</span> model selection. In this part our goal is to decide which retriever to use when confronted with multiple engines or&nbsp;configurations.</p>
-<p>This is an important article, because when a summary is present less people click on results. This means we have less data to use when iterating on retrieval engines and configurations.  Since everyone is showing summaries these days, I outline a pragmatic approach to choosing a search retriever from two or three candidates when using <span class="caps">RAG</span>, and how to use interleaving to iterate over configurations with one or more LLMs providing stake in the&nbsp;choice.</p>
-<p>Furthermore, I will show that Bing and Brave absolutely <span class="caps">TROUNCE</span> Google in a showdown for use as context in a summary, that you need to use multiple pages of results for success, and how to effectively measure outcomes to make retriever decisions.  In part 2, I will outline how to select an LLM using the results we gather in this part&nbsp;1.</p>
-<p>First we ask the question: What kinds of search results work best for an <span class="caps">LLM</span> during RAG?  When asking this, the first thing that jumps into most minds is that of relevance. But the answer is more&nbsp;complex.</p>
-<p>When exploring the best solution to this question, comparing outcomes of retrieval engine configurations one at a time with A/B testing poses significant challenges. This is because A/B testing and contrasting metrics deny you of understanding true comparative preference, and unless the same queries are used enough by multiple people, the data is too sparse and you are unable to make trustworthy&nbsp;conclusions.</p>
-
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)-->Interleaving and Retrieval Augmented Generation (RAG) presents a powerful opportunity to validate the retriever configuration, the model, and the prompt, in one package. In this article I focus on comparing the outcomes of Bing, Google, and Brave search results when using team-draft interleaving in a RAG web research platform.
             <p class="more"><a href="/articles/interleaving-rag/">more</a></p>
           </section>
         </article>
@@ -85,9 +91,8 @@
             <p class="date"><span>22. June 2025</span></p>
             <h2><a href="/articles/persona-enriched-prompting/">Automating Persona Enriched Prompting</a></h2>
           </header>
-          <section class="content"><p>Approaching prompting from a domain, persona, and user context perspective.  Add some <span class="caps">PEP</span> as a&nbsp;step!</p>
-<p>For awhile now, I’ve been using a technique that I have developed which I call <strong>Persona Enriched Prompting</strong> (“<span class="caps">PEP</span>”). With this technique, you instruct the model to generate knowledge about the inferred domain and then generate UX personas for that domain contextual to the problem. Once this context is generated, only then do you continue on to final answer&nbsp;generation.</p>
-
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)-->Persona Enriched Prompting is technique to instruct an LLM to generate knowledge about the inferred domain and then generate UX personas for that domain contextual to the problem. Once this context is generated, you use that for final answer generation.
             <p class="more"><a href="/articles/persona-enriched-prompting/">more</a></p>
           </section>
         </article>
@@ -427,7 +432,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>30. October 2016</span></p>
             <h2><a href="/articles/ambient-guilloche/">Ambient Guilloché</a></h2>
           </header>
-          <section class="content"><p>A year ago, I created a small demo of animating guilloches as two dimensional graphics on an <span class="caps">HTML5</span> canvas.  In this post I revisit the beautiful and elegant patterns as 3d constructs that resonate with sounds from the physical&nbsp;world.</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>A year ago, I created a small demo of animating guilloches as two dimensional graphics on an <span class="caps">HTML5</span> canvas.  In this post I revisit the beautiful and elegant patterns as 3d constructs that resonate with sounds from the physical&nbsp;world.</p>
 
             <p class="more"><a href="/articles/ambient-guilloche/">more</a></p>
           </section>
@@ -437,7 +443,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>17. February 2016</span></p>
             <h2><a href="/articles/calendar-year-converter/">Calendar Year Converter</a></h2>
           </header>
-          <section class="content"><p>This tool converts a calendar year between Gregorian Common Era (<span class="caps">CE</span>) คริสต์ศักราช (ค.ศ.), Buddhist Era (BE) พุทธศักราช (พ.ศ.), Jula Sakarat (JS) จุลศักราช (จ.ศ.), and Ratanakosin Sakarat (RS) รัตนโกสินทร์ศก&nbsp;(ร.ศ.)</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>This tool converts a calendar year between Gregorian Common Era (<span class="caps">CE</span>) คริสต์ศักราช (ค.ศ.), Buddhist Era (BE) พุทธศักราช (พ.ศ.), Jula Sakarat (JS) จุลศักราช (จ.ศ.), and Ratanakosin Sakarat (RS) รัตนโกสินทร์ศก&nbsp;(ร.ศ.)</p>
 
             <p class="more"><a href="/articles/calendar-year-converter/">more</a></p>
           </section>
@@ -447,7 +454,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>15. February 2016</span></p>
             <h2><a href="/articles/porting-numpy-to-torch/">Porting a Numpy neural network to Torch</a></h2>
           </header>
-          <section class="content"><p>This article outlines the process for porting Andrew Trask’s (aka IAmTrask) 11-line neural network[1] from Numpy (Python) to Torch&nbsp;(Lua).</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>This article outlines the process for porting Andrew Trask’s (aka IAmTrask) 11-line neural network[1] from Numpy (Python) to Torch&nbsp;(Lua).</p>
 <p>I’ve documented my progress here, for those who are interested in learning about Torch and Numpy and their differences.  As I started from scratch I hope this can prove useful to others who get stuck or need&nbsp;guidance.  </p>
 
             <p class="more"><a href="/articles/porting-numpy-to-torch/">more</a></p>
@@ -458,7 +466,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>22. July 2015</span></p>
             <h2><a href="/articles/liquid-guilloche/">Liquid Guilloché</a></h2>
           </header>
-          <section class="content"><p>Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an <span class="caps">HTML5</span> canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated&nbsp;guilloches.</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>Having recently read a blog post on guilloches[1], I became intrigued and the post inspired me to recreate them.  They are beautiful patterns, and the starting formula to draw a rosette looked very simple to replicate in an <span class="caps">HTML5</span> canvas.  The 30 minute project quickly took off into a several hour excursion into the beauty of animated&nbsp;guilloches.</p>
 
             <p class="more"><a href="/articles/liquid-guilloche/">more</a></p>
           </section>
@@ -468,7 +477,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>12. July 2015</span></p>
             <h2><a href="/articles/the-state-of-state-in-the-browser/">The State of State in the Browser</a></h2>
           </header>
-          <section class="content"><p>The mechanisms for storing data in the client are inadequate and unprepared for the next generation of web applications.  A new solution for persistent state management in the client is needed that is based on well understood foundations long prevalent on the desktop and&nbsp;server.</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>The mechanisms for storing data in the client are inadequate and unprepared for the next generation of web applications.  A new solution for persistent state management in the client is needed that is based on well understood foundations long prevalent on the desktop and&nbsp;server.</p>
 
             <p class="more"><a href="/articles/the-state-of-state-in-the-browser/">more</a></p>
           </section>
@@ -478,7 +488,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>10. July 2015</span></p>
             <h2><a href="/articles/harissa/">Harissa</a></h2>
           </header>
-          <section class="content"><p>After some hammock driven development, Harissa is mature enough to release some results.  Originally intended for entire videos, I found the process better suited for only several frame remixes, usually of an identical source&nbsp;image.</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>After some hammock driven development, Harissa is mature enough to release some results.  Originally intended for entire videos, I found the process better suited for only several frame remixes, usually of an identical source&nbsp;image.</p>
 
             <p class="more"><a href="/articles/harissa/">more</a></p>
           </section>
@@ -488,7 +499,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>25. August 2013</span></p>
             <h2><a href="/articles/hidden-shapes/">Hidden Shapes</a></h2>
           </header>
-          <section class="content"><p>I am slowly working on a side-project that makes a video into a mishmash of circles for each frame.  I have an early version running, that manually takes a video, splits it into frames, remixes each frame into the circle mishmash, and recomposes the video with the new remixed frames.  The project is called ‘Harissa’.  The name Harissa comes from an Armenian dish and is made from chicken and a local type of wheat.  It cooks for a long time, until it is a thick porridge.  It is a fitting name because fully rendering a video is a slow process, and the result is an interesting mishmash of the&nbsp;original.</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>I am slowly working on a side-project that makes a video into a mishmash of circles for each frame.  I have an early version running, that manually takes a video, splits it into frames, remixes each frame into the circle mishmash, and recomposes the video with the new remixed frames.  The project is called ‘Harissa’.  The name Harissa comes from an Armenian dish and is made from chicken and a local type of wheat.  It cooks for a long time, until it is a thick porridge.  It is a fitting name because fully rendering a video is a slow process, and the result is an interesting mishmash of the&nbsp;original.</p>
 
             <p class="more"><a href="/articles/hidden-shapes/">more</a></p>
           </section>
@@ -498,7 +510,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>06. August 2013</span></p>
             <h2><a href="/articles/theories-on-artificial-expression/">Theories on Artificial Expression</a></h2>
           </header>
-          <section class="content"><p>It is hard to write a program that invents original art.  Two of the main reasons that software cannot create original expressive art are lack of context, and lack of&nbsp;experience.</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>It is hard to write a program that invents original art.  Two of the main reasons that software cannot create original expressive art are lack of context, and lack of&nbsp;experience.</p>
 <p>Software lacks the ability to derive a human-like context from its surroundings.  Some trivial examples are not knowing whether a flower is beautiful, or whether satire is funny.  Software also does not know how to learn to understand this context, it cannot experience its surroundings in a similar fashion to that of the observer, and therefore cannot relate to the subject nor connect with the observer in any meaningful&nbsp;way.</p>
 
             <p class="more"><a href="/articles/theories-on-artificial-expression/">more</a></p>
@@ -509,7 +522,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>03. August 2013</span></p>
             <h2><a href="/articles/anagramica-now-foss/">Anagramica is now FOSS</a></h2>
           </header>
-          <section class="content"><p>I’ve finally open sourced Anagramica (<a href="http://anagramica.com/">http://anagramica.com/</a>) </p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>I’ve finally open sourced Anagramica (<a href="http://anagramica.com/">http://anagramica.com/</a>) </p>
 <p>The code is now available under the <span class="caps">MIT</span> license at <a href="https://github.com/binarymax/anagramica">https://github.com/binarymax/anagramica</a></p>
 <p>I’m not entirely sure why I never open sourced it in the first place.  After 25 years of coding I’ve only recently become active in opening my code for others to see and use.  I have a cathartic story to tell about a previous project, which I’ve never told anyone about, and silently open sourced this past&nbsp;winter.</p>
 
@@ -521,7 +535,8 @@ Generative search, hybrid search, multimodal search, and the search&nbsp;frontie
             <p class="date"><span>28. July 2013</span></p>
             <h2><a href="/articles/the-idea-is-art/">The Idea Is Art</a></h2>
           </header>
-          <section class="content"><p>I’ve been known to debate about a subject, which I like to call ‘The Idea is Art’.  I defend that whatever imagery we can conceive of in our mind can be considered art, even when lacking a physical&nbsp;manifestation.</p>
+          <section class="content">
+            <!-- != JSON.stringify(article.metadata,null,2)--><p>I’ve been known to debate about a subject, which I like to call ‘The Idea is Art’.  I defend that whatever imagery we can conceive of in our mind can be considered art, even when lacking a physical&nbsp;manifestation.</p>
 <p>‘What is art’ has been debated ad infinitum, and some like to draw the line and say something is not art if it cannot be expressed - as art is, by definition,&nbsp;expression.</p>
 
             <p class="more"><a href="/articles/the-idea-is-art/">more</a></p>
