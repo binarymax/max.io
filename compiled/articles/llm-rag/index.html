@@ -214,6 +214,7 @@
                 els.forEach(ee=>{
                     ee.style="display:none;";
                 });
+                fetch('/voting-stats/llm-rag/'+id, {method: 'GET'});
                 return null;
             })
         });
