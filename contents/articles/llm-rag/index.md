@@ -48,7 +48,7 @@ What about other models? I considered adding Gemini, and maybe I will do a compa
 
 ## Metrics
 
-I use three metrics to understand whether our models choose the same results (and in which priority). These metrics are Jaccard, Rank Biased Overlap, and Krippendorff's alpha.  To help with summary deviation from context (hallucinations and recall issues). I also introduce a new metric which I'm calling “concept F1”. And I also look at cost.
+I use three metrics to understand whether our models choose the same results (and in which priority). These metrics are Jaccard, Rank Biased Overlap, and Krippendorff's alpha.  To help understand summary deviation from context I also introduce a new metric which I'm calling “concept F1” to analyze hallucinations and recall issues. And I also look at cost.
 
 __Jaccard__ compares how much the result choices of two models overlap, regardless of order. This is used to see how much models deviate from each other in the choice they make for results.
 
